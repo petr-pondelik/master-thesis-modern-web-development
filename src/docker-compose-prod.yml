@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  server-side:
+    build:
+      dockerfile: Dockerfile
+      context: ./server-side
+      # Build production stage from Dockerfile
+      target: production
+    depends_on:
+      - postgres
+    ports:
+      - '8080:3000'
+
+  postgres:
+    image: postgres:12.10
+    restart: always
+    environment:
+      - POSTGRES_USER=mthesis_u
+      - POSTGRES_PASSWORD=mthesis_p
+      - POSTGRES_DB=mthesis_db
+    ports:
+      - '5438:5432'
+    volumes:
+      - ./database/postgres-data:/var/lib/postgresql/data
+      - ./database/sql/create.sql:/docker-entrypoint-initdb.d/create.sql
+
+# Commands to build and run this docker-compose file
+# sudo docker-compose -f docker-compose-prod.yml build
+# sudo docker-compose -f docker-compose-prod.yml up
