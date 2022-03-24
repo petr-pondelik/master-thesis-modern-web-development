@@ -1,15 +1,33 @@
-# Use this docker-compose file to override the base docker-file.yml
-
 version: "3.7"
 services:
   m-thesis-server-side:
+    container_name: m-thesis-server-side
     build:
-      # Build the production stage from the Dockerfile
-      target: production
-    command: node dist/main
+      context: ./server-side
+      dockerfile: Dockerfile-prod
+    # Run in debug mode: yarn run start:debug
+    # Run in dev mode: yarn run start:dev
+    depends_on:
+      - m-thesis-db
+    ports:
+      - '8080:3000'
+    command: yarn start:prod
 
+  m-thesis-db:
+    image: postgres:12.10
+    container_name: m-thesis-db
+    restart: always
+    environment:
+      - POSTGRES_USER=mthesis_u
+      - POSTGRES_PASSWORD=mthesis_p
+      - POSTGRES_DB=mthesis_db
+    ports:
+      - '5438:5432'
+    volumes:
+      - ./database/postgres-data:/var/lib/postgresql/data
+      - ./database/sql/create.sql:/docker-entrypoint-initdb.d/create.sql
 
 # Commands to build and run the composition
 
-# docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
-# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+# docker-compose -f docker-compose.prod.yml build
+# docker-compose -f docker-compose.prod.yml up

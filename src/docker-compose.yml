@@ -5,14 +5,11 @@ services:
     build:
       context: ./server-side
       dockerfile: Dockerfile
-      # Build the base stage from the Dockerfile
-      target: base
     # Mount our host directory to the docker container
     # Mount api directory (./server-side) to (:) docker container (/usr/src/app)
     # Reflect host file changes within the container
     volumes:
-      - ./server-side/src:/usr/m-thesis/app/src
-#      - /usr/src/app/node_modules/
+      - ./server-side:/usr/m-thesis/app
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
     depends_on:
@@ -21,7 +18,9 @@ services:
       - '3000'
     ports:
       - '8080:3000'
-    command: yarn start:dev
+    command: >
+      sh -c "yarn &&
+             yarn start:dev"
 
   m-thesis-db:
     image: postgres:12.10
