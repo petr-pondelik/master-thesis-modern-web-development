@@ -5,3 +5,15 @@
 ```bash
 sudo docker-compose up
 ```
+
+## Docker Commands
+
+Remove all images:
+```bash
+docker rmi -f $(docker images -a -q)
+```
+
+Remove all containers:
+```bash
+docker rm -vf $(docker ps -a -q)
+```

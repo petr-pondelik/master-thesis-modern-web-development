@@ -1,0 +1,15 @@
+# Use this docker-compose file to override the base docker-file.yml
+
+version: "3.7"
+services:
+  m-thesis-server-side:
+    build:
+      # Build the production stage from the Dockerfile
+      target: production
+    command: node dist/main
+
+
+# Commands to build and run the composition
+
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up

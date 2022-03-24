@@ -1,27 +1,31 @@
 version: "3.7"
 services:
-  server-side:
+  m-thesis-server-side:
+    container_name: m-thesis-server-side
     build:
-      dockerfile: Dockerfile
       context: ./server-side
-      # Build development stage from Dockerfile
-      target: development
+      dockerfile: Dockerfile
+      # Build the base stage from the Dockerfile
+      target: base
     # Mount our host directory to the docker container
     # Mount api directory (./server-side) to (:) docker container (/usr/src/app)
     # Reflect host file changes within the container
     volumes:
-      - ./server-side:/usr/src/app
-      - /usr/src/app/node_modules/
+      - ./server-side/src:/usr/m-thesis/app/src
+#      - /usr/src/app/node_modules/
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
-    command: yarn run start:dev
     depends_on:
-      - postgres
+      - m-thesis-db
+    expose:
+      - '3000'
     ports:
       - '8080:3000'
+    command: yarn start:dev
 
-  postgres:
+  m-thesis-db:
     image: postgres:12.10
+    container_name: m-thesis-db
     restart: always
     environment:
       - POSTGRES_USER=mthesis_u
@@ -33,6 +37,7 @@ services:
       - ./database/postgres-data:/var/lib/postgresql/data
       - ./database/sql/create.sql:/docker-entrypoint-initdb.d/create.sql
 
-# Commands to build and run this docker-compose file
-# sudo docker-compose build
-# sudo docker-compose up
+# Commands to build and run the composition
+
+# docker-compose build
+# docker-compose up
