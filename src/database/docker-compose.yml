@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  m-thesis-db:
+    image: postgres:12.10
+    container_name: m-thesis-db
+    restart: always
+    environment:
+      - POSTGRES_USER=mthesis_u
+      - POSTGRES_PASSWORD=mthesis_p
+      - POSTGRES_DB=mthesis_db
+    ports:
+      - '5438:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+
+# Commands to build and run the composition
+
+# docker-compose build
+# docker-compose up

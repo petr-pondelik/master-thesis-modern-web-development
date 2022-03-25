@@ -17,3 +17,10 @@ Remove all images:
 ```bash
 docker rmi -f $(docker images -a -q)
 ```
+
+## Prisma Commands
+
+Push schema into database:
+```bash
+yarn prisma db push
+```

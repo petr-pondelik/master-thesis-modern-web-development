@@ -12,6 +12,7 @@ export class AppController {
   @Get()
   getHello(): string {
     console.log(this.configService.get('MY_ENV'));
+    console.log(this.configService.get('DATABASE_URL'));
     return this.appService.getHello();
   }
 }

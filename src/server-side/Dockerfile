@@ -15,3 +15,5 @@ ENV NODE_ENV=${NODE_ENV}
 
 # Bundle all app source files into the container
 COPY . .
+
+#RUN echo 'DATABASE_URL="postgresql://mthesis_u:mthesis_p@m-thesis-db:5432/mthesis_db?schema=public"' > /usr/m-thesis/app/prisma/.env
