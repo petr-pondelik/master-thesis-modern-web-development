@@ -1,5 +1,20 @@
 version: "3.7"
+
 services:
+
+  m-thesis-db:
+    image: postgres:12.10
+    container_name: m-thesis-db
+    restart: always
+    environment:
+      - POSTGRES_USER=mthesis_u
+      - POSTGRES_PASSWORD=mthesis_p
+      - POSTGRES_DB=mthesis_db
+    ports:
+      - '5438:5432'
+    volumes:
+      - ./database/postgres-data:/var/lib/postgresql/data
+
   m-thesis-server-side:
     container_name: m-thesis-server-side
     build:
@@ -20,24 +35,24 @@ services:
       - '8080:3000'
     command: >
       sh -c "yarn &&
-             yarn prisma db push &&
+             yarn prisma generate &&
+             yarn prisma db push --force-reset &&
+             yarn prisma db seed &&
              yarn start:dev
             "
 
-  m-thesis-db:
-    image: postgres:12.10
-    container_name: m-thesis-db
-    restart: always
-    environment:
-      - POSTGRES_USER=mthesis_u
-      - POSTGRES_PASSWORD=mthesis_p
-      - POSTGRES_DB=mthesis_db
+  prisma-studio:
+    container_name: prisma-studio
+    build:
+      context: ./server-side/prisma
+      dockerfile: Dockerfile
+    depends_on:
+      - m-thesis-server-side
     ports:
-      - '5438:5432'
-    volumes:
-      - ./database/postgres-data:/var/lib/postgresql/data
+      - '5555:5555'
+    command: yarn prisma studio
+
 
 # Commands to build and run the composition
-
-# docker-compose build
-# docker-compose up
+#   docker-compose build
+#   docker-compose up

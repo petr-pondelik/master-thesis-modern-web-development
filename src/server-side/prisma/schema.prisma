@@ -64,7 +64,7 @@ model Subscription {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    subscriptionName String
+    title String
 
     subscriber User @relation("subscriber", fields: [subscriberId], references: [id])
     subscriberId Int

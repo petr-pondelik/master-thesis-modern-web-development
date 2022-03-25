@@ -25,10 +25,9 @@ COPY . .
 # Build the app into the /dist folder
 RUN yarn build
 
-#RUN echo 'DATABASE_URL="postgresql://mthesis_u:mthesis_p@m-thesis-db:5432/mthesis_db?schema=public"' > /usr/m-thesis/app/prisma/.env
-
 EXPOSE 3000
 
+
 # Example Commands to build and run this dockerfile
-# sudo docker build . -t petr-pondelik/master-thesis-server-side
-# sudo docker run -p 8080:3000 petr-pondelik/master-thesis-server-side
+#   sudo docker build . -t petr-pondelik/master-thesis-server-side
+#   sudo docker run -p 8080:3000 petr-pondelik/master-thesis-server-side
