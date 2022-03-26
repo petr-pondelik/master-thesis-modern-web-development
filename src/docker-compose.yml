@@ -35,9 +35,7 @@ services:
       - '8080:3000'
     command: >
       sh -c "yarn &&
-             yarn prisma generate &&
-             yarn prisma db push --force-reset &&
-             yarn prisma db seed &&
+             yarn db:restart &&
              yarn start:dev
             "
 

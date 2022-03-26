@@ -3,7 +3,6 @@ import * as fs from 'fs';
 
 let users = JSON.parse(fs.readFileSync('./prisma/data/users.json', 'utf8'));
 users = users.map((user) => ({
-  username: user.username,
   email: user.email,
   password: user.passwordHash,
   givenName: user.givenName,
@@ -11,9 +10,7 @@ users = users.map((user) => ({
   profileDescription: user.profileDescription,
 }));
 
-const articles = JSON.parse(
-  fs.readFileSync('./prisma/data/articles.json', 'utf8'),
-);
+const posts = JSON.parse(fs.readFileSync('./prisma/data/posts.json', 'utf8'));
 
 const comments = JSON.parse(
   fs.readFileSync('./prisma/data/comments.json', 'utf8'),
@@ -29,8 +26,8 @@ async function insert() {
   await prisma.user.createMany({
     data: users,
   });
-  await prisma.article.createMany({
-    data: articles,
+  await prisma.post.createMany({
+    data: posts,
   });
   await prisma.comment.createMany({
     data: comments,

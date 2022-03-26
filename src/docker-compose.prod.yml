@@ -27,8 +27,7 @@ services:
     ports:
       - '8080:3000'
     command: >
-      sh -c "yarn prisma generate &&
-             yarn prisma db push &&
+      sh -c "yarn db:restart &&
              yarn start:prod"
 
 

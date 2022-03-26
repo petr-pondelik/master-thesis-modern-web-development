@@ -15,21 +15,22 @@ model User {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    username String
-    email String
+    email String @unique
     password String
 
     givenName String?
     familyName String?
     profileDescription String?
 
-    articles Article[]
+    posts Post[]
     comments Comment[]
     subscribedBy Subscription[] @relation("subscriber")
     subscribing Subscription[] @relation("subscribing")
+
+    @@map("users")
 }
 
-model Article {
+model Post {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -42,6 +43,8 @@ model Article {
     authorId Int
 
     comments Comment[]
+
+    @@map("posts")
 }
 
 
@@ -55,8 +58,10 @@ model Comment {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    article Article @relation(fields: [articleId], references: [id])
-    articleId Int
+    post Post @relation(fields: [postId], references: [id])
+    postId Int
+
+    @@map("comments")
 }
 
 model Subscription {
@@ -71,4 +76,6 @@ model Subscription {
 
     subscribing User @relation("subscribing", fields: [subscribingId], references: [id])
     subscribingId Int
+
+    @@map("subscriptions")
 }
