@@ -10,15 +10,15 @@ users = users.map((user) => ({
   profileDescription: user.profileDescription,
 }));
 
-const posts = JSON.parse(fs.readFileSync('./prisma/data/posts.json', 'utf8'));
+const articles = JSON.parse(fs.readFileSync('./prisma/data/articles.json', 'utf8'));
 
-const comments = JSON.parse(
-  fs.readFileSync('./prisma/data/comments.json', 'utf8'),
-);
+const comments = JSON.parse(fs.readFileSync('./prisma/data/comments.json', 'utf8'));
 
-const subscriptions = JSON.parse(
-  fs.readFileSync('./prisma/data/subscriptions.json', 'utf8'),
-);
+const subscriptions = JSON.parse(fs.readFileSync('./prisma/data/subscriptions.json', 'utf8'));
+
+const readingLists = JSON.parse(fs.readFileSync('./prisma/data/reading-lists.json', 'utf8'));
+
+const articlesOnReadingLists = JSON.parse(fs.readFileSync('./prisma/data/articles-on-reading-lists.json', 'utf8'));
 
 const prisma = new PrismaClient();
 
@@ -26,11 +26,17 @@ async function insert() {
   await prisma.user.createMany({
     data: users,
   });
-  await prisma.post.createMany({
-    data: posts,
+  await prisma.article.createMany({
+    data: articles,
   });
   await prisma.comment.createMany({
     data: comments,
+  });
+  await prisma.readingList.createMany({
+    data: readingLists,
+  });
+  await prisma.articlesOnReadingLists.createMany({
+    data: articlesOnReadingLists,
   });
   await prisma.subscription.createMany({
     data: subscriptions,

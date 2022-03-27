@@ -22,15 +22,16 @@ model User {
     familyName String?
     profileDescription String?
 
-    posts Post[]
+    articles Article[]
     comments Comment[]
+    readingLists ReadingList[]
     subscribedBy Subscription[] @relation("subscriber")
     subscribing Subscription[] @relation("subscribing")
 
     @@map("users")
 }
 
-model Post {
+model Article {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -43,8 +44,9 @@ model Post {
     authorId Int
 
     comments Comment[]
+    readingLists ArticlesOnReadingLists[]
 
-    @@map("posts")
+    @@map("articles")
 }
 
 
@@ -58,18 +60,39 @@ model Comment {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    post Post @relation(fields: [postId], references: [id])
-    postId Int
+    article Article @relation(fields: [articleId], references: [id])
+    articleId Int
 
     @@map("comments")
+}
+
+model ReadingList {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    title String
+
+    author User @relation(fields: [authorId], references: [id])
+    authorId Int
+
+    articles ArticlesOnReadingLists[]
+
+    @@map("reading_lists")
+}
+
+model ArticlesOnReadingLists {
+    article         Article         @relation(fields: [articleId], references: [id])
+    articleId       Int
+    readingList     ReadingList     @relation(fields: [readingListId], references: [id])
+    readingListId   Int
+    @@id([articleId, readingListId])
 }
 
 model Subscription {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
-    title String
 
     subscriber User @relation("subscriber", fields: [subscriberId], references: [id])
     subscriberId Int
