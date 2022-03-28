@@ -1,38 +1,83 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guard';
 import { ArticleService } from './article.service';
 import { NotFoundInterceptor } from '../common/interceptor/not-found.interceptor';
 import { Messages } from './messages';
 import { CreateDto, SearchDto, UpdateDto } from './dto';
+import { ResponseEnvelope } from '../common/envelope';
+import { Article } from '@prisma/client';
+import { addCollectionLinks, addEntityLinks, createLink } from '../common/hateoas';
+import { UserPath } from '../user/user.controller';
+import { User } from '../common/decorator';
+import { apiPath } from '../common/helper';
+
+export const ArticlePath = 'articles';
+export const ArticleVersion = '1';
 
 @Controller({
-  path: 'articles',
-  version: '1',
+  path: ArticlePath,
+  version: ArticleVersion,
 })
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Get()
   async findAll() {
-    return this.articleService.findAll();
-  }
-
-  @Get(':id')
-  @UseInterceptors(new NotFoundInterceptor(Messages.NOT_FOUND))
-  async findOne(@Param('id', ParseIntPipe) _id: number) {
-    return this.articleService.findUnique({ id: _id });
+    const articles = await this.articleService.findMany();
+    const envelope = new ResponseEnvelope<Array<Article>>(articles);
+    addCollectionLinks(envelope, [createLink('self', `/${ArticlePath}`, 'GET')]);
+    for (const a of envelope.data) {
+      addEntityLinks(a, [
+        createLink('self', apiPath(ArticlePath, a.id), 'GET'),
+        createLink('author', apiPath(UserPath, a.authorId), 'GET'),
+      ]);
+    }
+    return envelope;
   }
 
   @Post('search')
   async search(@Body() dto: SearchDto) {
-    return this.articleService.search(dto);
+    const articles = await this.articleService.search(dto);
+    const envelope = new ResponseEnvelope<Array<Article>>(articles);
+    addCollectionLinks(envelope, [createLink('self', apiPath(ArticlePath), 'GET')]);
+    for (const a of envelope.data) {
+      addEntityLinks(a, [
+        createLink('self', apiPath(ArticlePath, a.id), 'GET'),
+        createLink('author', apiPath(UserPath, a.authorId), 'GET'),
+      ]);
+    }
+    return envelope;
   }
 
-  @Get(':id/comments')
-  async findComments(@Param('id', ParseIntPipe) _id: number) {
-    //  TODO
-    return _id;
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) _id: number, @User() user) {
+    const article = await this.articleService.findUnique({ id: _id });
+    if (article === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    const links = [
+      createLink('self', apiPath(ArticlePath, article.id), 'GET'),
+      createLink('author', apiPath(UserPath, article.authorId), 'GET'),
+    ];
+    if (article.authorId === user.id) {
+      links.push(createLink('update', apiPath(ArticlePath, article.id), 'PATCH'));
+      links.push(createLink('delete', apiPath(ArticlePath, article.id), 'DELETE'));
+    }
+    addEntityLinks(article, links);
+    return article;
   }
 
   @Post()
@@ -42,13 +87,15 @@ export class ArticleController {
 
   @Patch(':id')
   async update(@Param('id', ParseIntPipe) _id: number, @Body() dto: UpdateDto) {
-    //  TODO
-    return dto;
+    return this.articleService.update(_id, dto);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) _id: number) {
-    //  TODO
-    return _id;
+    const article = await this.articleService.findUnique({ id: _id });
+    if (!article) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    await this.articleService.delete(_id);
   }
 }

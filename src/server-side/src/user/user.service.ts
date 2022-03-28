@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SignUpDto } from './dto';
 import * as argon from 'argon2';
@@ -33,16 +33,63 @@ export class UserService {
   }
 
   async findUnique(where: Prisma.UserWhereUniqueInput) {
-    return this.prisma.user.findUnique(this.getFindUniqueArgs(where));
+    const user = await this.prisma.user.findUnique(this.getFindUniqueArgs(where));
+    if (user === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return user;
   }
 
   async findOne(where: Prisma.UserWhereInput) {
-    return this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: where,
       orderBy: {
         id: 'desc',
       },
     });
+    if (user === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return user;
+  }
+
+  async findArticles(_where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.findUnique({
+      where: _where,
+      select: {
+        articles: true
+      }
+    });
+    if (user === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return user;
+  }
+
+  async findReadingLists(_where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.findUnique({
+      where: _where,
+      select: {
+        readingLists: true
+      }
+    });
+    if (user === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return user;
+  }
+
+  async findSubscriptions(_where: Prisma.UserWhereUniqueInput) {
+    const user = await this.prisma.user.findUnique({
+      where: _where,
+      select: {
+        subscribing: true
+      }
+    });
+    if (user === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return user;
   }
 
   async signUp(dto: SignUpDto) {

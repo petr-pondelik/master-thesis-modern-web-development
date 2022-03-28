@@ -7,8 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { ArticleModule } from './article/article.module';
-import { CommentModule } from './comment/comment.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { ReadingListModule } from './reading-list/reading-list.module';
 
 const envFilePath = getConfigPath(`${__dirname}/../config`);
 
@@ -18,9 +18,9 @@ const envFilePath = getConfigPath(`${__dirname}/../config`);
     AuthModule,
     UserModule,
     ArticleModule,
-    CommentModule,
     SubscriptionModule,
     PrismaModule,
+    ReadingListModule,
   ],
   controllers: [AppController],
   providers: [AppService],

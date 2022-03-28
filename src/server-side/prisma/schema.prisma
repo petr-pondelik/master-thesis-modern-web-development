@@ -44,7 +44,7 @@ model Article {
     authorId Int
 
     comments Comment[]
-    readingLists ArticlesOnReadingLists[]
+    readingLists ReadingList[]
 
     @@map("articles")
 }
@@ -76,18 +76,20 @@ model ReadingList {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    articles ArticlesOnReadingLists[]
+    articles Article[]
+
+    @@unique([title,authorId])
 
     @@map("reading_lists")
 }
 
-model ArticlesOnReadingLists {
-    article         Article         @relation(fields: [articleId], references: [id])
-    articleId       Int
-    readingList     ReadingList     @relation(fields: [readingListId], references: [id])
-    readingListId   Int
-    @@id([articleId, readingListId])
-}
+//model ArticlesOnReadingLists {
+//    article         Article         @relation(fields: [articleId], references: [id])
+//    articleId       Int
+//    readingList     ReadingList     @relation(fields: [readingListId], references: [id])
+//    readingListId   Int
+//    @@id([articleId, readingListId])
+//}
 
 model Subscription {
     id Int @id @default(autoincrement())
