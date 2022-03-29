@@ -65,6 +65,7 @@ export class ArticleService {
         where: {
           id: _id,
         },
+        select: entityIdSelector()
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {

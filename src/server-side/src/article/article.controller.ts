@@ -2,7 +2,7 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpCode,
   Param,
   ParseIntPipe,
   Patch,
@@ -45,6 +45,7 @@ export class ArticleController {
   }
 
   @Post('search')
+  @HttpCode(200)
   async search(@Body() dto: ArticleSearchDto) {
     const articles = await this.articleService.search(dto);
     const envelope = new ResponseEnvelope<Array<Article>>(articles);
@@ -89,12 +90,13 @@ export class ArticleController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async delete(@Param('id', ParseIntPipe) _id: number, @User() user) {
     /** Owner-level access restriction */
     const article = await this.articleService.findUnique({id: _id});
     if (user.id !== article.authorId) {
       throw new UnauthorizedException();
     }
-    return this.articleService.delete(_id);
+    await this.articleService.delete(_id);
   }
 }

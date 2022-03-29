@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Patch,
@@ -23,6 +24,7 @@ import { User } from '../common/decorator';
 import { ReadingListService } from '../reading-list/reading-list.service';
 import { ReadingListCreateDto } from '../reading-list/dto';
 import { ReadingListUpdateDto } from '../reading-list/dto/reading-list.update.dto';
+import { ArticleService } from '../article/article.service';
 
 export const UserPath = 'users';
 export const UserVersion = '1';
@@ -32,7 +34,11 @@ export const UserVersion = '1';
   version: UserVersion,
 })
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly readingListService: ReadingListService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly readingListService: ReadingListService,
+    private readonly articleService: ArticleService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
@@ -155,6 +161,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/reading-lists/:title')
+  @HttpCode(201)
   async createReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
@@ -185,16 +192,18 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/reading-lists/:title')
+  @HttpCode(204)
   async deleteReadingList(@Param('id', ParseIntPipe) id: number, @Param('title') title: string, @User() user) {
     /** Owner-level access restriction */
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    return this.readingListService.delete(id, title);
+    await this.readingListService.delete(id, title);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/reading-lists/:title/articles/:articleId')
+  @HttpCode(201)
   async addArticleIntoReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
@@ -205,12 +214,13 @@ export class UserController {
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    console.log([id, title, articleId]);
+    await this.articleService.findUnique({ id: articleId });
     return this.readingListService.connectArticle(id, title, articleId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/reading-lists/:title/articles/:articleId')
+  @HttpCode(204)
   async deleteArticleFromReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
@@ -221,6 +231,7 @@ export class UserController {
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    return this.readingListService.disconnectArticle(id, title, articleId);
+    await this.articleService.findUnique({ id: articleId });
+    await this.readingListService.disconnectArticle(id, title, articleId);
   }
 }
