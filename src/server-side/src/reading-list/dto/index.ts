@@ -1,1 +1,1 @@
-export * from './reading-list.create.dto';
+export * from './create-reading-list.dto';

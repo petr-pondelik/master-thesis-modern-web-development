@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { SubscriptionCreateDto } from './dto';
+import { CreateSubscriptionDto } from './dto';
 import { entityIdSelector } from '../prisma/helper';
 import { Prisma } from '@prisma/client';
 
@@ -15,7 +15,7 @@ export class SubscriptionService {
     });
   }
 
-  async create(dto: SubscriptionCreateDto) {
+  async create(dto: CreateSubscriptionDto) {
     this.prisma.subscription.create({
       data: dto,
       select: entityIdSelector(),

@@ -5,6 +5,7 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from './strategy';
+import { JwtEnvelope } from './envelopes';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,8 @@ export class AuthService {
     private readonly configService: ConfigService,
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+  }
 
   async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.userService.findOne({
@@ -25,14 +27,12 @@ export class AuthService {
     return null;
   }
 
-  async signToken(user: User): Promise<{ access_token: string }> {
+  async signToken(user: User): Promise<JwtEnvelope>  {
     const payload: JwtPayload = { sub: user.id, email: user.email };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '12h',
       secret: this.configService.get('JWT_SECRET'),
     });
-    return {
-      access_token: token,
-    };
+    return new JwtEnvelope(token);
   }
 }

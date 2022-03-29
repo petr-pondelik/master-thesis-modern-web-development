@@ -1,8 +1,8 @@
-import { Link } from '../hateoas';
+import { HateoasLink } from './index';
 
 export class ResponseEnvelope<T> {
   public data: T;
-  public links: Array<Link>;
+  public links: Array<HateoasLink>;
 
   constructor(data: T) {
     this.data = data;

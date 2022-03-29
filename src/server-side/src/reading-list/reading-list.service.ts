@@ -2,17 +2,18 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { Messages } from './messages';
-import { ReadingListCreateDto } from './dto';
+import { CreateReadingListDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
-import { entityIdSelector } from '../prisma/helper';
-import { ReadingListUpdateDto } from './dto/reading-list.update.dto';
+import { UpdateReadingListDto } from './dto/update-reading-list.dto';
+import { ReadingListEntity } from './entities';
+import { ArticleEntity } from '../article/entities';
 
 @Injectable()
 export class ReadingListService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findUnique(_where: Prisma.ReadingListWhereUniqueInput) {
+  async findUnique(_where: Prisma.ReadingListWhereUniqueInput): Promise<ReadingListEntity> {
     const readingList = await this.prisma.readingList.findUnique({
       where: _where,
     });
@@ -22,24 +23,23 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findAllArticles(_where: Prisma.ReadingListWhereUniqueInput) {
-    const articles = await this.prisma.readingList.findUnique({
+  async findAllArticles(_where: Prisma.ReadingListWhereUniqueInput): Promise<Array<ArticleEntity>> {
+    const data = await this.prisma.readingList.findUnique({
       where: _where,
       select: {
         articles: true,
       },
     });
-    if (articles === null) {
+    if (data === null) {
       throw new NotFoundException();
     }
-    return articles;
+    return data.articles;
   }
 
-  async create(dto: ReadingListCreateDto) {
+  async create(dto: CreateReadingListDto): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.create({
-        data: dto,
-        select: entityIdSelector(),
+        data: dto
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {
@@ -49,7 +49,7 @@ export class ReadingListService {
     }
   }
 
-  async update(_authorId: number, _title: string, dto: ReadingListUpdateDto) {
+  async update(_authorId: number, _title: string, dto: UpdateReadingListDto): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.update({
         data: dto,
@@ -73,7 +73,7 @@ export class ReadingListService {
     }
   }
 
-  async delete(_authorId: number, _title: string) {
+  async delete(_authorId: number, _title: string): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.delete({
         where: {
@@ -91,7 +91,7 @@ export class ReadingListService {
     }
   }
 
-  async connectArticle(_authorId: number, _title: string, _articleId: number) {
+  async connectArticle(_authorId: number, _title: string, _articleId: number): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.update({
         where: {
@@ -109,7 +109,6 @@ export class ReadingListService {
         },
       });
     } catch (error) {
-      console.log(error);
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
         throw new NotFoundException();
       }
@@ -117,7 +116,7 @@ export class ReadingListService {
     }
   }
 
-  async disconnectArticle(_authorId: number, _title: string, _articleId: number) {
+  async disconnectArticle(_authorId: number, _title: string, _articleId: number): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.update({
         where: {

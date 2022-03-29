@@ -1,16 +1,18 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserSignUpDto } from './dto';
+import { SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
 import { Messages } from './messages';
-import { Prisma } from '@prisma/client';
-import { entityIdSelector } from '../prisma/helper';
+import { Prisma, User as UserModel } from '@prisma/client';
+import { UserEntity } from './entities';
+import { ArticleEntity } from '../article/entities';
+import { ReadingListEntity } from '../reading-list/entities';
 
 @Injectable()
 export class UserService {
-  allowedFields: Prisma.UserSelect | null = {
+  allowedFields = {
     id: true,
     createdAt: true,
     email: true,
@@ -31,7 +33,7 @@ export class UserService {
     return args;
   }
 
-  async findUnique(where: Prisma.UserWhereUniqueInput) {
+  async findUnique(where: Prisma.UserWhereUniqueInput): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique(this.getFindUniqueArgs(where));
     if (user === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
@@ -39,7 +41,7 @@ export class UserService {
     return user;
   }
 
-  async findOne(where: Prisma.UserWhereInput) {
+  async findOne(where: Prisma.UserWhereInput): Promise<UserEntity> {
     const user = await this.prisma.user.findFirst({
       where: where,
       orderBy: {
@@ -52,46 +54,46 @@ export class UserService {
     return user;
   }
 
-  async findArticles(_where: Prisma.UserWhereUniqueInput) {
-    const articles = await this.prisma.user.findUnique({
+  async findArticles(_where: Prisma.UserWhereUniqueInput): Promise<Array<ArticleEntity>> {
+    const data = await this.prisma.user.findUnique({
       where: _where,
       select: {
-        articles: true
-      }
+        articles: true,
+      },
     });
-    if (articles === null) {
+    if (data === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
-    return articles;
+    return data.articles;
   }
 
-  async findReadingLists(_where: Prisma.UserWhereUniqueInput) {
-    const readingLists = await this.prisma.user.findUnique({
+  async findReadingLists(_where: Prisma.UserWhereUniqueInput): Promise<Array<ReadingListEntity>> {
+    const data = await this.prisma.user.findUnique({
       where: _where,
       select: {
-        readingLists: true
-      }
+        readingLists: true,
+      },
     });
-    if (readingLists === null) {
+    if (data === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
-    return readingLists;
+    return data.readingLists;
   }
 
-  async findSubscriptions(_where: Prisma.UserWhereUniqueInput) {
-    const user = await this.prisma.user.findUnique({
-      where: _where,
-      select: {
-        subscribing: true
-      }
-    });
-    if (user === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
-    }
-    return user;
-  }
+  // async findSubscriptions(_where: Prisma.UserWhereUniqueInput) {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: _where,
+  //     select: {
+  //       subscribing: true,
+  //     },
+  //   });
+  //   if (user === null) {
+  //     throw new NotFoundException(Messages.NOT_FOUND);
+  //   }
+  //   return user;
+  // }
 
-  async signUp(dto: UserSignUpDto) {
+  async signUp(dto: SignUpDto): Promise<UserEntity> {
     const passwordHash = await argon.hash(dto.password);
     try {
       return await this.prisma.user.create({
@@ -100,8 +102,7 @@ export class UserService {
           password: passwordHash,
           givenName: dto.givenName,
           familyName: dto.familyName,
-        },
-        select: entityIdSelector(),
+        }
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {
