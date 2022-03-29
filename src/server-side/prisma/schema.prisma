@@ -23,7 +23,6 @@ model User {
     profileDescription String?
 
     articles Article[]
-    comments Comment[]
     readingLists ReadingList[]
     subscribedBy Subscription[] @relation("subscriber")
     subscribing Subscription[] @relation("subscribing")
@@ -34,7 +33,6 @@ model User {
 model Article {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
     title String
     description String?
@@ -43,33 +41,14 @@ model Article {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    comments Comment[]
     readingLists ReadingList[]
 
     @@map("articles")
 }
 
-
-model Comment {
-    id Int @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    content String
-
-    author User @relation(fields: [authorId], references: [id])
-    authorId Int
-
-    article Article @relation(fields: [articleId], references: [id])
-    articleId Int
-
-    @@map("comments")
-}
-
 model ReadingList {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
     title String
 
@@ -82,14 +61,6 @@ model ReadingList {
 
     @@map("reading_lists")
 }
-
-//model ArticlesOnReadingLists {
-//    article         Article         @relation(fields: [articleId], references: [id])
-//    articleId       Int
-//    readingList     ReadingList     @relation(fields: [readingListId], references: [id])
-//    readingListId   Int
-//    @@id([articleId, readingListId])
-//}
 
 model Subscription {
     id Int @id @default(autoincrement())

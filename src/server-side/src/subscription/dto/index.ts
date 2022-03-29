@@ -1,1 +1,1 @@
-export * from './create.dto';
+export * from './subscription.create.dto';

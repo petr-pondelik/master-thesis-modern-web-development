@@ -1,7 +1,7 @@
-import { SearchDto } from '../dto';
+import { ArticleSearchDto } from '../dto';
 import { Prisma } from '@prisma/client';
 
-export const searchConditionHelper = (dto: SearchDto): Prisma.ArticleWhereInput => {
+export const searchConditionHelper = (dto: ArticleSearchDto): Prisma.ArticleWhereInput => {
   if (dto.searchString !== '' && dto.author !== '') {
     return {
       AND: [

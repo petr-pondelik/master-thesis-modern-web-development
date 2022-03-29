@@ -1,6 +1,6 @@
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateDto {
+export class ArticleCreateDto {
   @IsString()
   @IsNotEmpty()
   title: string;

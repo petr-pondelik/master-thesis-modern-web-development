@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { SignUpDto } from './dto';
+import { UserSignUpDto } from './dto';
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
@@ -54,29 +54,29 @@ export class UserService {
   }
 
   async findArticles(_where: Prisma.UserWhereUniqueInput) {
-    const user = await this.prisma.user.findUnique({
+    const articles = await this.prisma.user.findUnique({
       where: _where,
       select: {
         articles: true
       }
     });
-    if (user === null) {
+    if (articles === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
-    return user;
+    return articles;
   }
 
   async findReadingLists(_where: Prisma.UserWhereUniqueInput) {
-    const user = await this.prisma.user.findUnique({
+    const readingLists = await this.prisma.user.findUnique({
       where: _where,
       select: {
         readingLists: true
       }
     });
-    if (user === null) {
+    if (readingLists === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
-    return user;
+    return readingLists;
   }
 
   async findSubscriptions(_where: Prisma.UserWhereUniqueInput) {
@@ -92,7 +92,7 @@ export class UserService {
     return user;
   }
 
-  async signUp(dto: SignUpDto) {
+  async signUp(dto: UserSignUpDto) {
     const passwordHash = await argon.hash(dto.password);
     try {
       return this.prisma.user.create({

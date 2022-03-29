@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class CreateDto {
+export class SubscriptionCreateDto {
   @IsNumber()
   @IsNotEmpty()
   subscriberId: number;

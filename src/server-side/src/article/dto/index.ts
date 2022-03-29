@@ -1,3 +1,3 @@
-export * from './create.dto';
-export * from './update.dto';
-export * from './search.dto';
+export * from './article.create.dto';
+export * from './article.update.dto';
+export * from './article.search.dto';

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Param, ParseIntPipe, Post } from '@nestjs/common';
-import { CreateDto } from './dto';
+import { SubscriptionCreateDto } from './dto';
 import { SubscriptionService } from './subscription.service';
 
 @Controller('subscription')
@@ -7,7 +7,7 @@ export class SubscriptionController {
   constructor(private subscriptionService: SubscriptionService) {}
 
   @Post()
-  async create(@Body() dto: CreateDto) {
+  async create(@Body() dto: SubscriptionCreateDto) {
     await this.subscriptionService.create(dto);
   }
 

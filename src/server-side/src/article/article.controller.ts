@@ -9,13 +9,11 @@ import {
   Patch,
   Post,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guard';
 import { ArticleService } from './article.service';
-import { NotFoundInterceptor } from '../common/interceptor/not-found.interceptor';
 import { Messages } from './messages';
-import { CreateDto, SearchDto, UpdateDto } from './dto';
+import { ArticleCreateDto, ArticleSearchDto, ArticleUpdateDto } from './dto';
 import { ResponseEnvelope } from '../common/envelope';
 import { Article } from '@prisma/client';
 import { addCollectionLinks, addEntityLinks, createLink } from '../common/hateoas';
@@ -49,7 +47,7 @@ export class ArticleController {
   }
 
   @Post('search')
-  async search(@Body() dto: SearchDto) {
+  async search(@Body() dto: ArticleSearchDto) {
     const articles = await this.articleService.search(dto);
     const envelope = new ResponseEnvelope<Array<Article>>(articles);
     addCollectionLinks(envelope, [createLink('self', apiPath(ArticlePath), 'GET')]);
@@ -65,9 +63,6 @@ export class ArticleController {
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) _id: number, @User() user) {
     const article = await this.articleService.findUnique({ id: _id });
-    if (article === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
-    }
     const links = [
       createLink('self', apiPath(ArticlePath, article.id), 'GET'),
       createLink('author', apiPath(UserPath, article.authorId), 'GET'),
@@ -81,21 +76,19 @@ export class ArticleController {
   }
 
   @Post()
-  async create(@Body() dto: CreateDto) {
+  async create(@Body() dto: ArticleCreateDto) {
     return this.articleService.create(dto);
   }
 
   @Patch(':id')
-  async update(@Param('id', ParseIntPipe) _id: number, @Body() dto: UpdateDto) {
+  async update(@Param('id', ParseIntPipe) _id: number, @Body() dto: ArticleUpdateDto) {
+    //TODO: Secure on author
     return this.articleService.update(_id, dto);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) _id: number) {
-    const article = await this.articleService.findUnique({ id: _id });
-    if (!article) {
-      throw new NotFoundException(Messages.NOT_FOUND);
-    }
-    await this.articleService.delete(_id);
+    //TODO: Secure on author
+    return this.articleService.delete(_id);
   }
 }

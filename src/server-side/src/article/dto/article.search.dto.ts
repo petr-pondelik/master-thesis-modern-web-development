@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class SearchDto {
+export class ArticleSearchDto {
   @IsString()
   searchString: string;
 

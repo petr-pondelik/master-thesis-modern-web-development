@@ -121,11 +121,14 @@ const generateSubscriptions = () => {
 
 const generateReadingLists = () => {
   const readingListsData = [];
-  const articlesOnReadingLists = [];
   for (let i = 1; i <= readingListsAmount; i++) {
+    const articles = [];
     readingListsData.push({
       title: faker.word.noun(),
       authorId: getRandomInt(usersAmount) + 1,
+      articles: {
+        connect: []
+      }
     });
     const articlesCnt = randomInt(3, 8);
     const usedArticles = [];
@@ -135,17 +138,15 @@ const generateReadingLists = () => {
         const articleId = randomInt(articlesAmount) + 1;
         if (!usedArticles.includes(articleId)) {
           validArticle = true;
-          articlesOnReadingLists.push({
-            readingListId: i,
-            articleId: articleId,
-          });
+          articles.push({id: articleId});
         }
         usedArticles.push(articleId);
       }
     }
+    readingListsData[i-1].articles.connect = articles;
   }
   fs.writeFileSync('./prisma/data/reading-lists.json', JSON.stringify(readingListsData));
-  fs.writeFileSync('./prisma/data/articles-on-reading-lists.json', JSON.stringify(articlesOnReadingLists));
+  // fs.writeFileSync('./prisma/data/articles-on-reading-lists.json', JSON.stringify(articlesOnReadingLists));
 };
 
 generateUsers().then(() => {
