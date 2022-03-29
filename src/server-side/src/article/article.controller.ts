@@ -3,16 +3,14 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
-  Post,
+  Post, UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guard';
 import { ArticleService } from './article.service';
-import { Messages } from './messages';
 import { ArticleCreateDto, ArticleSearchDto, ArticleUpdateDto } from './dto';
 import { ResponseEnvelope } from '../common/envelope';
 import { Article } from '@prisma/client';
@@ -81,14 +79,22 @@ export class ArticleController {
   }
 
   @Patch(':id')
-  async update(@Param('id', ParseIntPipe) _id: number, @Body() dto: ArticleUpdateDto) {
-    //TODO: Secure on author
+  async update(@Param('id', ParseIntPipe) _id: number, @Body() dto: ArticleUpdateDto, @User() user) {
+    /** Owner-level access restriction */
+    const article = await this.articleService.findUnique({id: _id});
+    if (user.id !== article.authorId) {
+      throw new UnauthorizedException();
+    }
     return this.articleService.update(_id, dto);
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) _id: number) {
-    //TODO: Secure on author
+  async delete(@Param('id', ParseIntPipe) _id: number, @User() user) {
+    /** Owner-level access restriction */
+    const article = await this.articleService.findUnique({id: _id});
+    if (user.id !== article.authorId) {
+      throw new UnauthorizedException();
+    }
     return this.articleService.delete(_id);
   }
 }

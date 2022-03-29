@@ -92,38 +92,53 @@ export class ReadingListService {
   }
 
   async connectArticle(_authorId: number, _title: string, _articleId: number) {
-    return this.prisma.readingList.update({
-      where: {
-        title_authorId: {
-          title: _title,
-          authorId: _authorId,
-        },
-      },
-      data: {
-        articles: {
-          connect: {
-            id: _articleId,
+    try {
+      return await this.prisma.readingList.update({
+        where: {
+          title_authorId: {
+            title: _title,
+            authorId: _authorId,
           },
         },
-      },
-    });
+        data: {
+          articles: {
+            connect: {
+              id: _articleId,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
+        throw new NotFoundException();
+      }
+      throw error;
+    }
   }
 
   async disconnectArticle(_authorId: number, _title: string, _articleId: number) {
-    return this.prisma.readingList.update({
-      where: {
-        title_authorId: {
-          title: _title,
-          authorId: _authorId,
-        },
-      },
-      data: {
-        articles: {
-          disconnect: {
-            id: _articleId,
+    try {
+      return await this.prisma.readingList.update({
+        where: {
+          title_authorId: {
+            title: _title,
+            authorId: _authorId,
           },
         },
-      },
-    });
+        data: {
+          articles: {
+            disconnect: {
+              id: _articleId,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
+        throw new NotFoundException();
+      }
+      throw error;
+    }
   }
 }

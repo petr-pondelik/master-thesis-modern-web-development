@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Put,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { UserSignUpDto } from './dto';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guard';
@@ -20,10 +32,7 @@ export const UserVersion = '1';
   version: UserVersion,
 })
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly readingListService: ReadingListService
-  ) {}
+  constructor(private readonly userService: UserService, private readonly readingListService: ReadingListService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
@@ -66,7 +75,11 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/reading-lists')
-  async findAllReadingLists(@Param('id', ParseIntPipe) _id: number) {
+  async findAllReadingLists(@Param('id', ParseIntPipe) _id: number, @User() user) {
+    /** Owner-level access restriction */
+    if (_id !== user.id) {
+      throw new UnauthorizedException();
+    }
     const data = await this.userService.findReadingLists({ id: _id });
     const envelope = new ResponseEnvelope<Array<ReadingList>>(data.readingLists);
     addCollectionLinks(envelope, [
@@ -91,7 +104,11 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/reading-lists/:title')
-  async findReadingList(@Param('id', ParseIntPipe) id: number, @Param('title') title: string) {
+  async findReadingList(@Param('id', ParseIntPipe) id: number, @Param('title') title: string, @User() user) {
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
     const readingList = await this.readingListService.findUnique({
       title_authorId: {
         authorId: id,
@@ -103,18 +120,18 @@ export class UserController {
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
       createLink('addArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'PUT'),
-      createLink(
-        'removeArticle',
-        apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`),
-        'DELETE',
-      ),
+      createLink('removeArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'DELETE'),
     ]);
     return readingList;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/reading-lists/:title/articles')
-  async findReadingListArticles(@Param('id', ParseIntPipe) id: number, @Param('title') title: string) {
+  async findReadingListArticles(@Param('id', ParseIntPipe) id: number, @Param('title') title: string, @User() user) {
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
     const data = await this.readingListService.findAllArticles({ title_authorId: { authorId: id, title: title } });
     const envelope = new ResponseEnvelope<Array<Article>>(data.articles);
     addCollectionLinks(envelope, [
@@ -139,46 +156,71 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put(':id/reading-lists/:title')
   async createReadingList(
-    @Param('id', ParseIntPipe) _id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
     @Body() dto: ReadingListCreateDto,
+    @User() user,
   ) {
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
     return this.readingListService.create(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/reading-lists/:title')
   async updateReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
     @Body() dto: ReadingListUpdateDto,
+    @User() user,
   ) {
-    //TODO: Secure on author
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
     return this.readingListService.update(id, title, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/reading-lists/:title')
-  async deleteReadingList(@Param('id', ParseIntPipe) id: number, @Param('title') title: string) {
-    //TODO: Secure on author
+  async deleteReadingList(@Param('id', ParseIntPipe) id: number, @Param('title') title: string, @User() user) {
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
     return this.readingListService.delete(id, title);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id/reading-lists/:title/articles/:articleId')
   async addArticleIntoReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
     @Param('articleId', ParseIntPipe) articleId: number,
+    @User() user,
   ) {
-    //TODO: Secure on author
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
+    console.log([id, title, articleId]);
     return this.readingListService.connectArticle(id, title, articleId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/reading-lists/:title/articles/:articleId')
   async deleteArticleFromReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
     @Param('articleId', ParseIntPipe) articleId: number,
+    @User() user,
   ) {
-    //TODO: Secure on author
+    /** Owner-level access restriction */
+    if (id !== user.id) {
+      throw new UnauthorizedException();
+    }
     return this.readingListService.disconnectArticle(id, title, articleId);
   }
 }
