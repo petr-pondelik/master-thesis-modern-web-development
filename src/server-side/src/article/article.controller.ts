@@ -8,6 +8,7 @@ import {
   Patch,
   Post, UnauthorizedException,
   UseGuards,
+  Response as Res
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guard';
 import { ArticleService } from './article.service';
@@ -18,6 +19,7 @@ import { addCollectionLinks, addEntityLinks, createLink } from '../common/hateoa
 import { UserPath } from '../user/user.controller';
 import { User } from '../common/decorator';
 import { apiPath } from '../common/helper';
+import { Response } from 'express';
 
 export const ArticlePath = 'articles';
 export const ArticleVersion = '1';
@@ -75,8 +77,9 @@ export class ArticleController {
   }
 
   @Post()
-  async create(@Body() dto: ArticleCreateDto) {
-    return this.articleService.create(dto);
+  async create(@Body() dto: ArticleCreateDto, @Res() res: Response) {
+    const data = await this.articleService.create(dto);
+    return res.setHeader('Location', apiPath(ArticlePath, data.id)).json();
   }
 
   @Patch(':id')

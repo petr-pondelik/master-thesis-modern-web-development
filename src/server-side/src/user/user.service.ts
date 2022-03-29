@@ -13,7 +13,6 @@ export class UserService {
   allowedFields: Prisma.UserSelect | null = {
     id: true,
     createdAt: true,
-    updatedAt: true,
     email: true,
     givenName: true,
     familyName: true,
@@ -95,7 +94,7 @@ export class UserService {
   async signUp(dto: UserSignUpDto) {
     const passwordHash = await argon.hash(dto.password);
     try {
-      return this.prisma.user.create({
+      return await this.prisma.user.create({
         data: {
           email: dto.email,
           password: passwordHash,

@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -25,6 +26,7 @@ import { ReadingListService } from '../reading-list/reading-list.service';
 import { ReadingListCreateDto } from '../reading-list/dto';
 import { ReadingListUpdateDto } from '../reading-list/dto/reading-list.update.dto';
 import { ArticleService } from '../article/article.service';
+import { Response } from 'express';
 
 export const UserPath = 'users';
 export const UserVersion = '1';
@@ -155,8 +157,10 @@ export class UserController {
   }
 
   @Post('sign-up')
-  async signUp(@Body() dto: UserSignUpDto) {
-    return this.userService.signUp(dto);
+  @HttpCode(201)
+  async signUp(@Body() dto: UserSignUpDto, @Res() res: Response) {
+    const data = await this.userService.signUp(dto);
+    return res.setHeader('Location', apiPath(UserPath, data.id)).json();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -167,12 +171,14 @@ export class UserController {
     @Param('title') title: string,
     @Body() dto: ReadingListCreateDto,
     @User() user,
+    @Res() res: Response,
   ) {
     /** Owner-level access restriction */
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    return this.readingListService.create(dto);
+    await this.readingListService.create(dto);
+    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}`)).json();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -187,7 +193,7 @@ export class UserController {
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    return this.readingListService.update(id, title, dto);
+    return await this.readingListService.update(id, title, dto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -209,13 +215,15 @@ export class UserController {
     @Param('title') title: string,
     @Param('articleId', ParseIntPipe) articleId: number,
     @User() user,
+    @Res() res: Response,
   ) {
     /** Owner-level access restriction */
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
     await this.articleService.findUnique({ id: articleId });
-    return this.readingListService.connectArticle(id, title, articleId);
+    await this.readingListService.connectArticle(id, title, articleId);
+    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}/${articleId}`)).json();
   }
 
   @UseGuards(JwtAuthGuard)
