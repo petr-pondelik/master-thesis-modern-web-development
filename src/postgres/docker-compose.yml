@@ -1,8 +1,8 @@
 version: "3.7"
 services:
-  m-thesis-db:
+  mthesis-postgres:
     image: postgres:12.10
-    container_name: m-thesis-db
+    container_name: mthesis-postgres
     restart: always
     environment:
       - POSTGRES_USER=mthesis_u
@@ -15,6 +15,4 @@ services:
 
 
 # Commands to build and run the composition
-
-# docker-compose build
-# docker-compose up
+#   docker-compose up

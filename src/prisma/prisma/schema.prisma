@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+
+    email String @unique
+    password String
+
+    givenName String?
+    familyName String?
+    profileDescription String?
+
+    articles Article[]
+    readingLists ReadingList[]
+    subscribedBy Subscription[] @relation("subscriber")
+    subscribing Subscription[] @relation("subscribing")
+
+    @@map("users")
+}
+
+model Article {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+
+    title String
+    description String?
+    content String
+
+    author User @relation(fields: [authorId], references: [id])
+    authorId Int
+
+    readingLists ReadingList[]
+
+    @@map("articles")
+}
+
+model ReadingList {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+
+    title String
+
+    author User @relation(fields: [authorId], references: [id])
+    authorId Int
+
+    articles Article[]
+
+    @@unique([title,authorId])
+
+    @@map("reading_lists")
+}
+
+model Subscription {
+    id Int @id @default(autoincrement())
+    createdAt DateTime @default(now())
+
+    subscriber User @relation("subscriber", fields: [subscriberId], references: [id])
+    subscriberId Int
+
+    subscribing User @relation("subscribing", fields: [subscribingId], references: [id])
+    subscribingId Int
+
+    @@map("subscriptions")
+}

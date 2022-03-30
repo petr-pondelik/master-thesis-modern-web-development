@@ -36,27 +36,6 @@ export const ArticleVersion = '1';
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
-  @Get()
-  @ApiOperation({
-    summary: 'Find all articles.',
-  })
-  @ApiOkResponse({
-    description: 'Articles successfully retrieved.',
-    type: ArticleCollectionEnvelope,
-  })
-  async findAll(): Promise<ArticleCollectionEnvelope> {
-    const articles = await this.articleService.findMany();
-    const envelope = new ArticleCollectionEnvelope(articles);
-    addLinks(envelope, [createLink('self', `/${ArticlePath}`, 'GET')]);
-    for (const a of envelope.data) {
-      addLinks(a, [
-        createLink('self', apiPath(ArticlePath, a.id), 'GET'),
-        createLink('author', apiPath(UserPath, a.authorId), 'GET'),
-      ]);
-    }
-    return envelope;
-  }
-
   @ApiOperation({
     summary: 'Search articles.',
   })

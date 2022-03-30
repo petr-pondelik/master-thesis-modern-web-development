@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "db:restart": "prisma generate && prisma db push --force-reset && prisma db seed",
+    "prisma:generate-client": "prisma generate",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -29,7 +29,6 @@
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.2.1",
-    "@nestjs/typeorm": "^8.0.3",
     "@prisma/client": "^3.11.0",
     "argon2": "^0.28.5",
     "class-transformer": "^0.5.1",
@@ -41,8 +40,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "swagger-ui-express": "^4.3.0",
-    "typeorm": "^0.3.1"
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.0.0",
@@ -86,8 +84,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   }
 }

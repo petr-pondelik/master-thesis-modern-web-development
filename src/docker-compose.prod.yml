@@ -13,7 +13,7 @@ services:
     ports:
       - '5438:5432'
     volumes:
-      - ./database/postgres-data:/var/lib/postgresql/data
+      - ./postgres/postgres-data:/var/lib/postgresql/data
 
   m-thesis-server-side:
     container_name: m-thesis-server-side

@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 
 let users = JSON.parse(fs.readFileSync('./prisma/data/users.json', 'utf8'));
-users = users.map((user) => ({
+users = users.map((user: any) => ({
   email: user.email,
   password: user.passwordHash,
   givenName: user.givenName,

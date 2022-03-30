@@ -2,9 +2,9 @@ version: "3.7"
 
 services:
 
-  m-thesis-db:
+  mthesis-postgres:
     image: postgres:12.10
-    container_name: m-thesis-db
+    container_name: mthesis-postgres
     restart: always
     environment:
       - POSTGRES_USER=mthesis_u
@@ -13,10 +13,31 @@ services:
     ports:
       - '5438:5432'
     volumes:
-      - ./database/postgres-data:/var/lib/postgresql/data
+      - ./postgres/postgres-data:/var/lib/postgresql/data
 
-  m-thesis-server-side:
-    container_name: m-thesis-server-side
+  mtheses-prisma:
+    container_name: mthesis-prisma
+    build:
+      context: ./prisma
+      dockerfile: Dockerfile
+    command: yarn prisma:up
+    depends_on:
+      - mthesis-postgres
+
+  prisma-studio:
+    container_name: prisma-studio
+    build:
+      context: ./prisma
+      dockerfile: Dockerfile-prisma-studio
+    depends_on:
+      - mthesis-postgres
+      - mtheses-prisma
+    ports:
+      - '5555:5555'
+    command: yarn prisma studio
+
+  mthesis-server-side:
+    container_name: mthesis-server-side
     build:
       context: ./server-side
       dockerfile: Dockerfile
@@ -24,31 +45,20 @@ services:
     # Mount api directory (./server-side) to (:) docker container (/usr/src/app)
     # Reflect host file changes within the container
     volumes:
-      - ./server-side:/usr/m-thesis/app
+      - ./server-side:/usr/mthesis/app
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
     depends_on:
-      - m-thesis-db
+      - mthesis-postgres
+      - mtheses-prisma
     expose:
       - '3000'
     ports:
       - '8080:3000'
     command: >
       sh -c "yarn &&
-             yarn db:restart &&
-             yarn start:dev
-            "
-
-  prisma-studio:
-    container_name: prisma-studio
-    build:
-      context: ./server-side/prisma
-      dockerfile: Dockerfile
-    depends_on:
-      - m-thesis-server-side
-    ports:
-      - '5555:5555'
-    command: yarn prisma studio
+             yarn prisma:generate-client &&
+             yarn start:dev"
 
 
 # Commands to build and run the composition
