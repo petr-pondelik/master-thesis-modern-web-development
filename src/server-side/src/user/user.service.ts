@@ -7,7 +7,7 @@ import { Constants } from '../prisma/constants';
 import { Messages } from './messages';
 import { Prisma, User as UserModel } from '@prisma/client';
 import { UserEntity } from './entities';
-import { ArticleEntity } from '../article/entities';
+import { StoryEntity } from '../story/entities';
 import { ReadingListEntity } from '../reading-list/entities';
 
 @Injectable()
@@ -54,17 +54,36 @@ export class UserService {
     return user;
   }
 
-  async findArticles(_where: Prisma.UserWhereUniqueInput): Promise<Array<ArticleEntity>> {
+  async findStories(_where: Prisma.UserWhereUniqueInput): Promise<Array<StoryEntity>> {
     const data = await this.prisma.user.findUnique({
       where: _where,
       select: {
-        articles: true,
+        stories: true,
       },
     });
     if (data === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
-    return data.articles;
+    return data.stories;
+  }
+
+  async findStory(userId: number, storyId: number): Promise<StoryEntity> {
+    const data = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        stories: {
+          where: {
+            id: storyId
+          }
+        }
+      },
+    });
+    if (data === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return data.stories[0];
   }
 
   async findReadingLists(_where: Prisma.UserWhereUniqueInput): Promise<Array<ReadingListEntity>> {

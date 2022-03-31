@@ -3,17 +3,17 @@ import faker from '@faker-js/faker';
 import * as fs from 'fs';
 import { randomInt } from 'crypto';
 
-function getRandomInt(max) {
+function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
 }
 
 const usersAmount = 10;
-const articlesAmount = 100;
+const storiesAmount = 100;
 const commentsCnt = 500;
 const readingListsAmount = 20;
 const subscriptionsCnt = Math.floor((usersAmount * usersAmount) / 4);
 
-const usersData = [];
+const usersData: any[] = [];
 
 async function generateUsers() {
   for (let i = 0; i < usersAmount; i++) {
@@ -33,7 +33,7 @@ async function generateUsers() {
 }
 
 const generateAritcles = () => {
-  const articlesData = Array.from({ length: articlesAmount }).map(() => {
+  const storiesData = Array.from({ length: storiesAmount }).map(() => {
     const _description = faker.hacker.phrase();
     const phraseCleaned = _description.replace(/[^\w\s]/gi, '');
     const phraseParts = phraseCleaned.split(' ');
@@ -60,14 +60,14 @@ const generateAritcles = () => {
     };
   });
 
-  fs.writeFileSync('./prisma/data/articles.json', JSON.stringify(articlesData));
+  fs.writeFileSync('./prisma/data/stories.json', JSON.stringify(storiesData));
 };
 
 const generateComments = () => {
   const commentsData = Array.from({ length: commentsCnt }).map(() => ({
     content: faker.hacker.phrase(),
     authorId: getRandomInt(usersAmount) + 1,
-    articleId: getRandomInt(articlesAmount) + 1,
+    storyId: getRandomInt(storiesAmount) + 1,
   }));
 
   fs.writeFileSync('./prisma/data/comments.json', JSON.stringify(commentsData));
@@ -120,33 +120,33 @@ const generateSubscriptions = () => {
 };
 
 const generateReadingLists = () => {
-  const readingListsData = [];
+  const readingListsData: any[] = [];
   for (let i = 1; i <= readingListsAmount; i++) {
-    const articles = [];
+    const stories = [];
     readingListsData.push({
       title: faker.word.noun(),
       authorId: getRandomInt(usersAmount) + 1,
-      articles: {
+      stories: {
         connect: []
       }
     });
-    const articlesCnt = randomInt(3, 8);
-    const usedArticles = [];
-    for (let j = 0; j < articlesCnt; j++) {
-      let validArticle = false;
-      while (!validArticle) {
-        const articleId = randomInt(articlesAmount) + 1;
-        if (!usedArticles.includes(articleId)) {
-          validArticle = true;
-          articles.push({id: articleId});
+    const storiesCnt = randomInt(3, 8);
+    const usedStories: any[]  = [];
+    for (let j = 0; j < storiesCnt; j++) {
+      let validStory = false;
+      while (!validStory) {
+        const storyId = randomInt(storiesAmount) + 1;
+        if (!usedStories.includes(storyId)) {
+          validStory = true;
+          stories.push({id: storyId});
         }
-        usedArticles.push(articleId);
+        usedStories.push(storyId);
       }
     }
-    readingListsData[i-1].articles.connect = articles;
+    readingListsData[i-1].stories.connect = stories;
   }
   fs.writeFileSync('./prisma/data/reading-lists.json', JSON.stringify(readingListsData));
-  // fs.writeFileSync('./prisma/data/articles-on-reading-lists.json', JSON.stringify(articlesOnReadingLists));
+  // fs.writeFileSync('./prisma/data/stories-on-reading-lists.json', JSON.stringify(storiesOnReadingLists));
 };
 
 generateUsers().then(() => {

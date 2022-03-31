@@ -20,17 +20,18 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guard';
 import { addLinks, createLink } from '../common/hateoas';
 import { apiPath } from '../common/helper';
-import { ArticlePath } from '../article/article.controller';
+import { StoryPath } from '../story/story.controller';
 import { User } from '../common/decorator';
 import { ReadingListService } from '../reading-list/reading-list.service';
 import { CreateReadingListDto } from '../reading-list/dto';
 import { UpdateReadingListDto } from '../reading-list/dto/update-reading-list.dto';
-import { ArticleService } from '../article/article.service';
+import { StoryService } from '../story/story.service';
 import { Response } from 'express';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
-  ApiForbiddenResponse, ApiHeader,
+  ApiForbiddenResponse,
+  ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -38,7 +39,7 @@ import {
 } from '@nestjs/swagger';
 import { LocationResponseHeaderInterceptor } from '../common/interceptor';
 import { UserEnvelope } from './envelopes';
-import { ArticleCollectionEnvelope } from '../article/envelopes';
+import { StoryCollectionEnvelope, StoryEnvelope } from '../story/envelopes';
 import { ReadingListCollectionEnvelope, ReadingListEnvelope } from '../reading-list/envelopes';
 import { ErrorMessage } from '../common/message';
 
@@ -54,7 +55,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly readingListService: ReadingListService,
-    private readonly articleService: ArticleService,
+    private readonly storyService: StoryService,
   ) {}
 
   @Post('sign-up')
@@ -71,13 +72,12 @@ export class UserController {
     envelope = { ...envelope, ...user };
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, user.id), 'GET'),
-      createLink('articles', apiPath(UserPath, `${user.id}/articles`), 'GET'),
+      createLink('stories', apiPath(UserPath, `${user.id}/stories`), 'GET'),
       createLink('reading-lists', apiPath(UserPath, `${user.id}/reading-lists`), 'GET'),
     ]);
     return envelope;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({
     summary: 'Find user.',
@@ -90,32 +90,64 @@ export class UserController {
     envelope = { ...envelope, ...user };
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, user.id), 'GET'),
-      createLink('articles', apiPath(UserPath, `${user.id}/articles`), 'GET'),
-      createLink('reading-lists', apiPath(UserPath, `${user.id}/reading-lists`), 'GET'),
+      createLink('stories', apiPath(UserPath, `${user.id}/stories`), 'GET'),
+      // createLink('reading-lists', apiPath(UserPath, `${user.id}/reading-lists`), 'GET'),
     ]);
     return envelope;
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get(':id/articles')
+  @Get(':id/stories')
   @ApiOperation({
-    summary: "Find user's articles.",
+    summary: "Find user's stories.",
   })
-  @ApiOkResponse({ description: 'Articles successfully retrieved.', type: ArticleCollectionEnvelope })
+  @ApiOkResponse({ description: 'Stories successfully retrieved.', type: StoryCollectionEnvelope })
   @ApiNotFoundResponse({ description: 'User not found.', type: ErrorMessage })
-  async findArticles(@Param('id', ParseIntPipe) _id: number): Promise<ArticleCollectionEnvelope> {
-    const articles = await this.userService.findArticles({ id: _id });
-    const envelope = new ArticleCollectionEnvelope(articles);
-    addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${_id}/articles`), 'GET'),
-      createLink('create', apiPath(UserPath, `${_id}/articles`), 'POST'),
-    ]);
+  async findStories(@Param('id', ParseIntPipe) _id: number, @User() user): Promise<StoryCollectionEnvelope> {
+    const stories = await this.userService.findStories({ id: _id });
+    const envelope = new StoryCollectionEnvelope(stories);
+    const links = [createLink('self', apiPath(UserPath, `${_id}/stories`), 'GET')];
+    links.push(createLink('create', apiPath(UserPath, `${_id}/stories`), 'POST'));
+    addLinks(envelope, links);
     for (const a of envelope.data) {
       addLinks(a, [
-        createLink('detail', apiPath(ArticlePath, a.id), 'GET'),
+        createLink('detail', apiPath(StoryPath, a.id), 'GET'),
         createLink('author', apiPath(UserPath, a.authorId), 'GET'),
       ]);
     }
+    return envelope;
+  }
+
+  @Get(':id/stories/:storyId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Find story under user.',
+  })
+  @ApiOkResponse({
+    description: 'Story successfully retrieved.',
+    type: StoryEnvelope,
+  })
+  @ApiNotFoundResponse({
+    description: 'Story not found.',
+    type: ErrorMessage,
+  })
+  async findStoryUnderUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('storyId', ParseIntPipe) storyId: number,
+    @User() user,
+  ): Promise<StoryEnvelope> {
+    if (id !== user.id) {
+      throw new ForbiddenException();
+    }
+    const story = await this.userService.findStory(id, storyId);
+    let envelope = new StoryEnvelope();
+    envelope = { ...envelope, ...story };
+    const links = [
+      createLink('self', apiPath(UserPath, `${id}/stories/${story.id}`), 'GET'),
+      createLink('author', apiPath(UserPath, story.authorId), 'GET'),
+      createLink('update', apiPath(StoryPath, story.id), 'PATCH'),
+      createLink('delete', apiPath(StoryPath, story.id), 'DELETE'),
+    ];
+    addLinks(envelope, links);
     return envelope;
   }
 
@@ -165,12 +197,8 @@ export class UserController {
         createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET'),
         createLink('update', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'PATCH'),
         createLink('delete', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'DELETE'),
-        createLink('addArticle', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/articles/:articleId`), 'PUT'),
-        createLink(
-          'removeArticle',
-          apiPath(UserPath, `${_id}/reading-lists/${rl.title}/articles/:articleId`),
-          'DELETE',
-        ),
+        createLink('addStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'PUT'),
+        createLink('removeStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'DELETE'),
       ]);
     }
     return envelope;
@@ -205,38 +233,38 @@ export class UserController {
       createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
-      createLink('addArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'PUT'),
-      createLink('removeArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'DELETE'),
+      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
+      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
     ]);
     return envelope;
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id/reading-lists/:title/articles')
+  @Get(':id/reading-lists/:title/stories')
   @ApiOperation({
-    summary: 'Find articles stored within the reading list .',
+    summary: 'Find stories stored within the reading list .',
   })
-  @ApiOkResponse({ description: 'Articles successfully retrieved.', type: ArticleCollectionEnvelope })
+  @ApiOkResponse({ description: 'Stories successfully retrieved.', type: StoryCollectionEnvelope })
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  async findReadingListArticles(
+  async findReadingListStories(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
     @User() user,
-  ): Promise<ArticleCollectionEnvelope> {
+  ): Promise<StoryCollectionEnvelope> {
     /** Owner-level access restriction */
     if (id !== user.id) {
       throw new ForbiddenException();
     }
-    const articles = await this.readingListService.findAllArticles({ title_authorId: { authorId: id, title: title } });
-    const envelope = new ArticleCollectionEnvelope(articles);
+    const stories = await this.readingListService.findAllStories({ title_authorId: { authorId: id, title: title } });
+    const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
       createLink('create', apiPath(UserPath, `${id}/reading-lists`), 'PUT'),
     ]);
     for (const a of envelope.data) {
       addLinks(a, [
-        createLink('detail', apiPath(ArticlePath, `${a.id}`), 'GET'),
+        createLink('detail', apiPath(StoryPath, `${a.id}`), 'GET'),
         createLink('create', apiPath(UserPath, `${id}/reading-lists/${title}/${a.id}`), 'PUT'),
         createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/${a.id}`), 'DELETE'),
       ]);
@@ -270,8 +298,8 @@ export class UserController {
       createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
-      createLink('addArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'PUT'),
-      createLink('removeArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'DELETE'),
+      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
+      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
     ]);
     return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}`)).json(envelope);
   }
@@ -300,8 +328,8 @@ export class UserController {
       createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
-      createLink('addArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'PUT'),
-      createLink('removeArticle', apiPath(UserPath, `${id}/reading-lists/${title}/articles/:articleId`), 'DELETE'),
+      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
+      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
     ]);
     return envelope;
   }
@@ -324,19 +352,19 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id/reading-lists/:title/articles/:articleId')
+  @Put(':id/reading-lists/:title/stories/:storyId')
   @HttpCode(201)
   @ApiOperation({
-    summary: 'Add article into reading list.',
+    summary: 'Add story into reading list.',
   })
-  @ApiOkResponse({ description: 'Article successfully added into reading list.' })
+  @ApiOkResponse({ description: 'Story successfully added into reading list.' })
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  @ApiHeader({name: 'Location', description: 'Location of the new resource.'})
-  async addArticleIntoReadingList(
+  @ApiHeader({ name: 'Location', description: 'Location of the new resource.' })
+  async addStoryIntoReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
-    @Param('articleId', ParseIntPipe) articleId: number,
+    @Param('storyId', ParseIntPipe) storyId: number,
     @User() user,
     @Res() res: Response,
   ) {
@@ -344,31 +372,31 @@ export class UserController {
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    await this.articleService.findUnique({ id: articleId });
-    await this.readingListService.connectArticle(id, title, articleId);
-    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}/${articleId}`)).json();
+    await this.storyService.findUnique({ id: storyId });
+    await this.readingListService.connectStory(id, title, storyId);
+    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}/${storyId}`)).json();
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete(':id/reading-lists/:title/articles/:articleId')
+  @Delete(':id/reading-lists/:title/stories/:storyId')
   @HttpCode(204)
   @ApiOperation({
-    summary: 'Remove article from reading list.',
+    summary: 'Remove story from reading list.',
   })
-  @ApiOkResponse({ description: 'Article successfully removed from reading list.' })
+  @ApiOkResponse({ description: 'Story successfully removed from reading list.' })
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  async deleteArticleFromReadingList(
+  async deleteStoryFromReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
-    @Param('articleId', ParseIntPipe) articleId: number,
+    @Param('storyId', ParseIntPipe) storyId: number,
     @User() user,
   ) {
     /** Owner-level access restriction */
     if (id !== user.id) {
       throw new UnauthorizedException();
     }
-    await this.articleService.findUnique({ id: articleId });
-    await this.readingListService.disconnectArticle(id, title, articleId);
+    await this.storyService.findUnique({ id: storyId });
+    await this.readingListService.disconnectStory(id, title, storyId);
   }
 }

@@ -11,5 +11,5 @@ export class UserCollectionEnvelope extends ResponseEnvelope<Array<UserEntity>> 
   @ApiProperty({
     type: [HateoasLink],
   })
-  links: Array<HateoasLink>;
+  _links: Array<HateoasLink>;
 }

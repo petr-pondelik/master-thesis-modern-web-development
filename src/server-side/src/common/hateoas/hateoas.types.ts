@@ -3,14 +3,15 @@ import { ApiProperty } from '@nestjs/swagger';
 export type LinkRel =
   | 'self'
   | 'author'
-  | 'articles'
+  | 'stories'
   | 'reading-lists'
   | 'detail'
   | 'create'
   | 'update'
   | 'delete'
-  | 'addArticle'
-  | 'removeArticle';
+  | 'addStory'
+  | 'removeStory'
+  | 'searchStories';
 
 export type LinkMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

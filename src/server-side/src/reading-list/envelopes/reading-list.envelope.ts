@@ -6,5 +6,5 @@ export class ReadingListEnvelope extends ReadingListEntity {
   @ApiProperty({
     type: [HateoasLink],
   })
-  links: Array<HateoasLink>;
+  _links: Array<HateoasLink>;
 }

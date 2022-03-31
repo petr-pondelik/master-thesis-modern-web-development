@@ -12,5 +12,5 @@ export class ReadingListCollectionEnvelope extends ResponseEnvelope<Array<Readin
   @ApiProperty({
     type: [HateoasLink],
   })
-  links: Array<HateoasLink>;
+  _links: Array<HateoasLink>;
 }

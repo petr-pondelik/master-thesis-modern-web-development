@@ -4,8 +4,8 @@ import { User } from '@prisma/client';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './strategy';
 import { JwtEnvelope } from './envelopes';
+import { JwtPayload } from './strategy/jwt.strategy';
 
 @Injectable()
 export class AuthService {

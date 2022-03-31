@@ -15,7 +15,7 @@ services:
     volumes:
       - ./postgres/postgres-data:/var/lib/postgresql/data
 
-  mtheses-prisma:
+  mthesis-prisma:
     container_name: mthesis-prisma
     build:
       context: ./prisma
@@ -31,7 +31,7 @@ services:
       dockerfile: Dockerfile-prisma-studio
     depends_on:
       - mthesis-postgres
-      - mtheses-prisma
+      - mthesis-prisma
     ports:
       - '5555:5555'
     command: yarn prisma studio
@@ -50,7 +50,7 @@ services:
     # Run in dev mode: yarn run start:dev
     depends_on:
       - mthesis-postgres
-      - mtheses-prisma
+      - mthesis-prisma
     expose:
       - '3000'
     ports:

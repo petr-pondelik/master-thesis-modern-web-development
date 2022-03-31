@@ -24,11 +24,17 @@ async function bootstrap() {
     .addTag('API Root')
     .addTag('Users')
     .addTag('Authentication')
-    .addTag('Articles')
+    .addTag('Stories')
     .addTag('Subscriptions')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('open-api', app, document);
+
+  app.enableCors({
+    allowedHeaders: '*',
+    methods: '*',
+    origin: '*'
+  })
 
   await app.listen(3000);
 }

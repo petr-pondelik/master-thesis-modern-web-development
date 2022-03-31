@@ -7,7 +7,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
 import { UpdateReadingListDto } from './dto/update-reading-list.dto';
 import { ReadingListEntity } from './entities';
-import { ArticleEntity } from '../article/entities';
+import { StoryEntity } from '../story/entities';
 
 @Injectable()
 export class ReadingListService {
@@ -23,17 +23,17 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findAllArticles(_where: Prisma.ReadingListWhereUniqueInput): Promise<Array<ArticleEntity>> {
+  async findAllStories(_where: Prisma.ReadingListWhereUniqueInput): Promise<Array<StoryEntity>> {
     const data = await this.prisma.readingList.findUnique({
       where: _where,
       select: {
-        articles: true,
+        stories: true,
       },
     });
     if (data === null) {
       throw new NotFoundException();
     }
-    return data.articles;
+    return data.stories;
   }
 
   async create(dto: CreateReadingListDto): Promise<ReadingListEntity> {
@@ -91,7 +91,7 @@ export class ReadingListService {
     }
   }
 
-  async connectArticle(_authorId: number, _title: string, _articleId: number): Promise<ReadingListEntity> {
+  async connectStory(_authorId: number, _title: string, _storyId: number): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.update({
         where: {
@@ -101,9 +101,9 @@ export class ReadingListService {
           },
         },
         data: {
-          articles: {
+          stories: {
             connect: {
-              id: _articleId,
+              id: _storyId,
             },
           },
         },
@@ -116,7 +116,7 @@ export class ReadingListService {
     }
   }
 
-  async disconnectArticle(_authorId: number, _title: string, _articleId: number): Promise<ReadingListEntity> {
+  async disconnectStory(_authorId: number, _title: string, _storyId: number): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.update({
         where: {
@@ -126,9 +126,9 @@ export class ReadingListService {
           },
         },
         data: {
-          articles: {
+          stories: {
             disconnect: {
-              id: _articleId,
+              id: _storyId,
             },
           },
         },

@@ -1,20 +1,31 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { addLinks, createLink, ResponseEnvelope } from './common/hateoas';
+import { StoryPath } from './story/story.controller';
+import { apiPath } from './common/helper';
+
+type ClientConfig = {
+  apiVersion: string
+};
+
+const clientConfig: ClientConfig = {
+  apiVersion: 'v1'
+};
 
 @ApiTags('API Root')
-@Controller()
+@Controller({
+  path: ''
+})
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly configService: ConfigService) {}
-
   @Get()
   @ApiOperation({
     summary: "Return API Root definition.",
   })
-  getHello(): string {
-    console.log(this.configService.get('MY_ENV'));
-    console.log(this.configService.get('DATABASE_URL'));
-    return this.appService.getHello();
+  getApiRoot(): ResponseEnvelope<ClientConfig> {
+    const envelope = new ResponseEnvelope<ClientConfig>(clientConfig);
+    addLinks(envelope, [
+      createLink('searchStories', apiPath(StoryPath, 'search'), 'POST')
+    ]);
+    return envelope;
   }
 }

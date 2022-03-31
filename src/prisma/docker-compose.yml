@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  mtheses-prisma:
+  mthesis-prisma:
     container_name: mthesis-prisma
     build:
       context: .

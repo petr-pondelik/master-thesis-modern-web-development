@@ -6,5 +6,5 @@ export class UserEnvelope extends UserEntity {
   @ApiProperty({
     type: [HateoasLink],
   })
-  links: Array<HateoasLink>;
+  _links: Array<HateoasLink>;
 }

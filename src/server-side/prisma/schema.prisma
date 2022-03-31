@@ -21,7 +21,7 @@ model User {
     familyName String?
     profileDescription String?
 
-    articles Article[]
+    stories Story[]
     readingLists ReadingList[]
     subscribedBy Subscription[] @relation("subscriber")
     subscribing Subscription[] @relation("subscribing")
@@ -29,7 +29,7 @@ model User {
     @@map("users")
 }
 
-model Article {
+model Story {
     id Int @id @default(autoincrement())
     createdAt DateTime @default(now())
 
@@ -42,7 +42,7 @@ model Article {
 
     readingLists ReadingList[]
 
-    @@map("articles")
+    @@map("stories")
 }
 
 model ReadingList {
@@ -54,7 +54,7 @@ model ReadingList {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    articles Article[]
+    stories Story[]
 
     @@unique([title,authorId])
 
