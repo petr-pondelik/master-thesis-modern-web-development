@@ -1,5 +1,6 @@
 export * from './header-bar';
-export * from './AuthorLink';
+export * from './CustomLink';
 export * from './ErrorPlaceholder';
 export * from './PageContainer';
 export * from './story-list-item';
+export * from './inputs';

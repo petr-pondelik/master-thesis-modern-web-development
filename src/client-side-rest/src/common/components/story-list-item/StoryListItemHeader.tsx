@@ -1,5 +1,5 @@
 import { Avatar, CardActionArea, CardHeader } from '@mui/material';
-import AuthorLink from '../AuthorLink';
+import CustomLink from '../CustomLink';
 import { linkHref, StoryEnvelope } from '../../../rest-api';
 import { red } from '@mui/material/colors';
 import { formatAuthor } from '../../helpers';
@@ -10,7 +10,7 @@ type Props = {
 
 export const StoryListItemHeader = (props: Props) => {
   return <CardActionArea>
-    <AuthorLink to={linkHref(props.story._links, 'author')}>
+    <CustomLink to={linkHref(props.story._links, 'author')}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
@@ -20,7 +20,7 @@ export const StoryListItemHeader = (props: Props) => {
         title={formatAuthor(props.story.author)}
         subheader={props.story.createdAt}
       />
-    </AuthorLink>
+    </CustomLink>
   </CardActionArea>;
 };
 

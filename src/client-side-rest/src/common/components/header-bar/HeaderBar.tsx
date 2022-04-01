@@ -4,12 +4,14 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { AppBar } from '@mui/material';
 import { useGoBack } from '../../../hooks';
 import HeaderArrowBack from './ArrowBack';
+import CustomLink from '../CustomLink';
+import { CSSProperties } from 'react';
+import SignInLink from './SignInLink';
 
-const homeLinkStyle = {
+const homeLinkStyle: CSSProperties = {
   margin: '1rem',
   textDecoration: 'none',
   color: 'white',
@@ -33,11 +35,11 @@ export const HeaderBar = () => {
             {displayArrow() ? <HeaderArrowBack /> : <MenuIcon />}
           </IconButton>
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-            <Link to={'/'} style={homeLinkStyle}>
+            <CustomLink to={'/'} customStyles={homeLinkStyle}>
               Storify
-            </Link>
+            </CustomLink>
           </Typography>
-          <Button color='inherit'>Login</Button>
+          <SignInLink/>
         </Toolbar>
       </AppBar>
     </Box>

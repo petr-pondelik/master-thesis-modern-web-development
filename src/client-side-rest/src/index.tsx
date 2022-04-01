@@ -12,6 +12,7 @@ import {
 import UserViewPage from './user/components/UserViewPage';
 import Homepage from './home/components/Homepage';
 import { StoryListPage, StoryViewPage } from './story/component';
+import { SignInPage } from './sign-in';
 
 const rootElement = document.getElementById('root');
 render(
@@ -19,6 +20,7 @@ render(
     <Routes>
       <Route path='/' element={<App />}>
         <Route index element={<Homepage />} />
+        <Route path={'/sign-in'} element={<SignInPage />} />
         <Route path={'/stories'} element={<StoryListPage />} />
         <Route path={'/stories/:storyId'} element={<StoryViewPage />} />
         <Route path={'/users/:userId'} element={<UserViewPage />} />

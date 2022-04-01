@@ -1,7 +1,7 @@
 import { linkHref, StoryEnvelope } from '../../../rest-api';
 import { Avatar, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
-import AuthorLink from '../../../common/components/AuthorLink';
+import CustomLink from '../../../common/components/CustomLink';
 import useFetch from '../../../hooks/useFetch';
 import { ErrorPlaceholder, formatAuthor } from '../../../common';
 
@@ -15,7 +15,7 @@ export const StoryView = () => {
 
   if (story) {
     return <Card sx={{ minWidth: '100%', maxWidth: '100%' }} variant={'elevation'} elevation={0}>
-      <AuthorLink to={linkHref(story._links, 'author')}>
+      <CustomLink to={linkHref(story._links, 'author')}>
         <CardHeader
           title={formatAuthor(story.author)}
           subheader={story.createdAt}
@@ -25,7 +25,7 @@ export const StoryView = () => {
             </Avatar>
           }
         />
-      </AuthorLink>
+      </CustomLink>
       <CardContent>
         <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
           {story.title}
