@@ -1,4 +1,4 @@
-class ApiConfig {
+export class ApiConfig {
   host = 'http://localhost:8080';
   apiVersion = 'v1';
 

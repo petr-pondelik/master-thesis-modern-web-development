@@ -8,7 +8,8 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post, UseGuards,
+  Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { StoryService } from './story.service';
@@ -33,6 +34,31 @@ export const StoryVersion = '1';
 })
 export class StoryController {
   constructor(private readonly storyService: StoryService) {}
+
+  @ApiOperation({
+    summary: 'Find newest stories.',
+  })
+  @ApiOkResponse({
+    description: 'Stories successfully retrieved.',
+    type: StoryCollectionEnvelope,
+  })
+  @Get()
+  @HttpCode(200)
+  async findNewest(): Promise<StoryCollectionEnvelope> {
+    const stories = await this.storyService.findMany();
+    const envelope = new StoryCollectionEnvelope(stories);
+    addLinks(envelope, [
+      createLink('self', apiPath(StoryPath), 'GET'),
+      createLink('search', apiPath(StoryPath, 'search'), 'POST'),
+    ]);
+    for (const a of envelope.data) {
+      addLinks(a, [
+        createLink('self', apiPath(StoryPath, a.id), 'GET'),
+        createLink('author', apiPath(UserPath, a.authorId), 'GET'),
+      ]);
+    }
+    return envelope;
+  }
 
   @ApiOperation({
     summary: 'Search stories.',
@@ -71,7 +97,7 @@ export class StoryController {
   async findOne(@Param('id', ParseIntPipe) _id: number): Promise<StoryEnvelope> {
     const story = await this.storyService.findUnique({ id: _id });
     let envelope = new StoryEnvelope();
-    envelope = {...envelope, ...story};
+    envelope = { ...envelope, ...story };
     const links = [
       createLink('self', apiPath(StoryPath, story.id), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
@@ -93,7 +119,7 @@ export class StoryController {
   async create(@Body() dto: CreateStoryDto): Promise<StoryEnvelope> {
     const story = await this.storyService.create(dto);
     let envelope = new StoryEnvelope();
-    envelope = {...envelope, ...story};
+    envelope = { ...envelope, ...story };
     addLinks(envelope, [
       createLink('self', apiPath(StoryPath, story.id), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
@@ -133,7 +159,7 @@ export class StoryController {
     }
     const storyNew = await this.storyService.update(_id, dto);
     let envelope = new StoryEnvelope();
-    envelope = {...storyNew, ...envelope};
+    envelope = { ...storyNew, ...envelope };
     addLinks(envelope, [
       createLink('self', apiPath(StoryPath, story.id), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),

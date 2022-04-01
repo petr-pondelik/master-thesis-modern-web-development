@@ -1,26 +1,28 @@
 import ApiConfig from './api-config';
-import { LinkMethod } from './hateoas';
+import { HttpMethod } from '../common';
 
-export async function HttpRequest(_method: LinkMethod = 'GET', urlTail = '', dto: object) {
-  const url = `${ApiConfig.path()}${urlTail}`;
+export async function HttpRequest(url: string, method: HttpMethod = 'GET', dto: object = {}) {
+  url = `${ApiConfig.path()}${url}`;
 
   const defaultInit = {
-    method: _method,
+    method: method,
     headers: {
-    'Content-Type': 'application/json',
-    }
+      'Content-Type': 'application/json',
+    },
   };
 
   let customInit = {};
 
-  switch (_method) {
+  switch (method) {
     case 'POST':
       customInit = {
-        body: JSON.stringify(dto)
-      }
+        body: JSON.stringify(dto),
+      };
   }
 
-  const init = {...defaultInit, ...customInit};
+  const init = { ...defaultInit, ...customInit };
 
   return await fetch(url, init).then(res => res.json());
 }
+
+export default HttpRequest;

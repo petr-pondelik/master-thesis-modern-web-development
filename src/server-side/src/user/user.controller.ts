@@ -110,7 +110,7 @@ export class UserController {
     addLinks(envelope, links);
     for (const a of envelope.data) {
       addLinks(a, [
-        createLink('detail', apiPath(StoryPath, a.id), 'GET'),
+        createLink('self', apiPath(StoryPath, a.id), 'GET'),
         createLink('author', apiPath(UserPath, a.authorId), 'GET'),
       ]);
     }
@@ -264,7 +264,7 @@ export class UserController {
     ]);
     for (const a of envelope.data) {
       addLinks(a, [
-        createLink('detail', apiPath(StoryPath, `${a.id}`), 'GET'),
+        createLink('self', apiPath(StoryPath, `${a.id}`), 'GET'),
         createLink('create', apiPath(UserPath, `${id}/reading-lists/${title}/${a.id}`), 'PUT'),
         createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/${a.id}`), 'DELETE'),
       ]);

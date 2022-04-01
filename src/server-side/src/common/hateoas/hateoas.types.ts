@@ -5,13 +5,13 @@ export type LinkRel =
   | 'author'
   | 'stories'
   | 'reading-lists'
-  | 'detail'
+  | 'view'
   | 'create'
   | 'update'
   | 'delete'
   | 'addStory'
   | 'removeStory'
-  | 'searchStories';
+  | 'search';
 
 export type LinkMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

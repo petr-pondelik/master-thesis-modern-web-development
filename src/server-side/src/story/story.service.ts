@@ -12,10 +12,19 @@ import { StoryEntity } from './entities';
 export class StoryService {
   constructor(private prisma: PrismaService) {}
 
-  async findMany(_where: Prisma.StoryWhereInput = {}, _take = 2): Promise<Array<StoryEntity>> {
+  async findMany(_where: Prisma.StoryWhereInput = {}, _take = 10): Promise<Array<StoryEntity>> {
     return this.prisma.story.findMany({
       take: _take,
       where: _where,
+      orderBy: { id: 'desc' },
+      include: {
+        author: {
+          select: {
+            givenName: true,
+            familyName: true,
+          },
+        },
+      },
     });
   }
 

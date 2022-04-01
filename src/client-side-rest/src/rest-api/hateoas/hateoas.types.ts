@@ -1,20 +1,20 @@
+import { HttpMethod } from '../../common';
+
 export type LinkRel =
   | 'self'
   | 'author'
   | 'stories'
   | 'reading-lists'
-  | 'detail'
+  | 'view'
   | 'create'
   | 'update'
   | 'delete'
   | 'addStory'
   | 'removeStory'
-  | 'searchStories';
-
-export type LinkMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  | 'search';
 
 export type HateoasLink = {
-  method: LinkMethod;
+  method: HttpMethod;
   rel: LinkRel;
   href: string;
 }

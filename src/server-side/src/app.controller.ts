@@ -1,8 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { addLinks, createLink, ResponseEnvelope } from './common/hateoas';
-import { StoryPath } from './story/story.controller';
-import { apiPath } from './common/helper';
+import { ResponseEnvelope } from './common/hateoas';
 
 type ClientConfig = {
   apiVersion: string
@@ -22,10 +20,6 @@ export class AppController {
     summary: "Return API Root definition.",
   })
   getApiRoot(): ResponseEnvelope<ClientConfig> {
-    const envelope = new ResponseEnvelope<ClientConfig>(clientConfig);
-    addLinks(envelope, [
-      createLink('searchStories', apiPath(StoryPath, 'search'), 'POST')
-    ]);
-    return envelope;
+    return new ResponseEnvelope<ClientConfig>(clientConfig);
   }
 }

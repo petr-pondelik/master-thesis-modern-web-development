@@ -7,7 +7,7 @@ type SearchBarProps = {
   setSearchQuery: (query: string) => void,
 };
 
-export default function SearchBar(props: SearchBarProps) {
+export function SearchBar(props: SearchBarProps) {
 
   const [query, setQuery] = useState<string>(props.query);
 
@@ -18,7 +18,7 @@ export default function SearchBar(props: SearchBarProps) {
   };
 
   return (
-    <Container style={{ margin: '2rem 0' }}>
+    <Container style={{ marginBottom: '1rem' }}>
       <Paper
         component='form'
         sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
@@ -37,3 +37,5 @@ export default function SearchBar(props: SearchBarProps) {
     </Container>
   );
 }
+
+export default SearchBar;

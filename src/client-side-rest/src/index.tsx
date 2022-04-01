@@ -9,10 +9,9 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import SearchPage from './story/component/search-page/SearchPage';
-import UserPage from './user/components/UserPage';
-import ViewPage from './story/component/view-page/ViewPage';
+import UserViewPage from './user/components/UserViewPage';
 import Homepage from './home/components/Homepage';
+import { StoryListPage, StoryViewPage } from './story/component';
 
 const rootElement = document.getElementById('root');
 render(
@@ -20,9 +19,9 @@ render(
     <Routes>
       <Route path='/' element={<App />}>
         <Route index element={<Homepage />} />
-        <Route path={'/users/:userId'} element={<UserPage />} />
-        <Route path={'/stories/:storyId'} element={<ViewPage />} />
-        <Route path={'/stories/search'} element={<SearchPage />} />
+        <Route path={'/stories'} element={<StoryListPage />} />
+        <Route path={'/stories/:storyId'} element={<StoryViewPage />} />
+        <Route path={'/users/:userId'} element={<UserViewPage />} />
       </Route>
     </Routes>
   </BrowserRouter>,

@@ -3,7 +3,7 @@ import {
 } from 'react-router-dom';
 
 const Homepage = () => {
-  return <Navigate replace to={'/stories/search'} />;
+  return <Navigate replace to={'/stories'} />;
 };
 
 export default Homepage;
