@@ -9,7 +9,7 @@ import { useGoBack } from '../../../hooks';
 import HeaderArrowBack from './ArrowBack';
 import CustomLink from '../CustomLink';
 import { CSSProperties } from 'react';
-import SignInLink from './SignInLink';
+import { SessionControl } from './SessionControl';
 
 const homeLinkStyle: CSSProperties = {
   margin: '1rem',
@@ -39,7 +39,7 @@ export const HeaderBar = () => {
               Storify
             </CustomLink>
           </Typography>
-          <SignInLink/>
+          <SessionControl />
         </Toolbar>
       </AppBar>
     </Box>

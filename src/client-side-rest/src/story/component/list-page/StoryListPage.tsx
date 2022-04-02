@@ -2,8 +2,8 @@ import { StoriesList } from './StoriesList';
 import { useCallback, useEffect, useState } from 'react';
 import { SearchStoryDto } from '../../dto';
 import debounce from 'lodash.debounce';
-import { findLink, HateoasLink, StoryCollectionEnvelope } from '../../../rest-api';
-import { HttpRequest } from '../../../rest-api/http-request';
+import { findLink, HateoasLink, StoryCollectionEnvelope } from '../../../api';
+import { HttpRequest } from '../../../api/http-request';
 import { SearchBar } from './SearchBar';
 import { PageContainer } from '../../../common';
 

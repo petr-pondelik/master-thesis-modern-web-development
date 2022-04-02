@@ -1,6 +1,6 @@
 import { Avatar, CardActionArea, CardHeader } from '@mui/material';
 import CustomLink from '../CustomLink';
-import { linkHref, StoryEnvelope } from '../../../rest-api';
+import { linkHref, StoryEnvelope } from '../../../api';
 import { red } from '@mui/material/colors';
 import { formatAuthor } from '../../helpers';
 

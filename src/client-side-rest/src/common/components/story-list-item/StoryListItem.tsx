@@ -5,7 +5,7 @@ import {
   Typography,
   CardActionArea,
 } from '@mui/material';
-import { linkHref, StoryEnvelope } from '../../../rest-api';
+import { linkHref, StoryEnvelope } from '../../../api';
 import { Link } from 'react-router-dom';
 import StoryListItemHeader from './StoryListItemHeader';
 

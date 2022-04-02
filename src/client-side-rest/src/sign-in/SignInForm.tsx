@@ -1,8 +1,8 @@
 import { Button, Grid } from '@mui/material';
-import { EmailField, PasswordField } from '../common';
+import { EmailField, MessageBox, PasswordField, StatusCodes } from '../common';
 import { SignInDto } from './dto';
-import { useState } from 'react';
-import { HttpRequest } from '../rest-api';
+import { useEffect, useState } from 'react';
+import { useSignIn } from '../hooks/useSignIn';
 
 const Messages = {
   invalidCredentials: 'Please enter valid credentials.',
@@ -18,25 +18,34 @@ export const SignInForm = () => {
   const [dto, setDto] = useState<SignInDto>({ email: '', password: '' });
   const [validation, setValidation] = useState<SignInValidationState>({ email: false, password: false });
   const [enabled, setEnabled] = useState<boolean>(false);
+  const [performSignIn, setPerformSignIn] = useState<boolean>(false);
+
+  const { authorized, loading, error } = useSignIn(performSignIn, dto);
+
+  useEffect(() => {
+    setPerformSignIn(false);
+  }, [authorized]);
 
   const update = (dtoFragment: any, validationFragment: any) => {
     const newValidation: SignInValidationState = { ...validation, ...validationFragment };
-    if (newValidation.email && newValidation.password) {
-      const newDto: SignInDto = { ...dto, ...dtoFragment };
-      setDto(newDto);
-    }
+    const newDto: SignInDto = { ...dto, ...dtoFragment };
+    setDto(newDto);
     setValidation(newValidation);
     setEnabled(newValidation.password && newValidation.email);
   };
 
-  const signIn = () => {
-    HttpRequest('/auth/sign-in', 'POST', dto)
-      .then(res => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const renderErrors = () => {
+    // if (!error) {
+    //   return null;
+    // }
+    // if (error.statusCode === StatusCodes.UNAUTHORIZED) {
+    if (authorized === false) {
+      return <MessageBox
+        msg={Messages.invalidCredentials}
+        sx={{ color: 'error.main', marginTop: '1rem' }}
+      />;
+    }
+    // }
   };
 
   return <Grid container rowSpacing={3} direction={'column'}
@@ -69,9 +78,11 @@ export const SignInForm = () => {
     <Grid container
           justifyContent='center'>
       <Grid item xs={10} md={6} lg={4}>
-        <Button variant='contained' sx={{ minWidth: '100%' }} disabled={!enabled} onClick={signIn}>
+        <Button variant='contained' sx={{ minWidth: '100%' }} disabled={!enabled}
+                onClick={() => setPerformSignIn(true)}>
           Sign In
         </Button>
+        {renderErrors()}
       </Grid>
     </Grid>
   </Grid>;

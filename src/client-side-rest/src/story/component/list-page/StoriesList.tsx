@@ -1,6 +1,6 @@
 import { FC, ReactElement } from 'react';
 import { List } from '@mui/material';
-import { StoryCollectionEnvelope } from '../../../rest-api';
+import { StoryCollectionEnvelope } from '../../../api';
 import { StoryListItem } from '../../../common';
 
 type StoriesListProps = {

@@ -1,4 +1,4 @@
-import { HateoasLink, StoryCollectionEnvelope } from '../../rest-api';
+import { HateoasLink, StoryCollectionEnvelope } from '../../api';
 import { useFetch } from '../../hooks';
 import { Typography } from '@mui/material';
 import { Fragment } from 'react';

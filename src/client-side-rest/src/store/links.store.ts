@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { HateoasLink, LinkRel } from '../rest-api';
+import { HateoasLink, LinkRel } from '../api';
 
 type LinksState = {
   rootLinks: HateoasLink[];

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HttpRequest } from '../rest-api';
+import { HttpRequest } from '../api';
 import { HttpMethod } from '../common';
 
 export function useFetch<T>(url: string, method: HttpMethod = 'GET', dto: any = {}) {

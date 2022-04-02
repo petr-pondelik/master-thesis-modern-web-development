@@ -1,7 +1,7 @@
 import { useFetch } from '../../hooks';
 import { ErrorPlaceholder } from '../../common';
 import { Card, CardContent, Typography } from '@mui/material';
-import { findLink, UserEnvelope } from '../../rest-api';
+import { findLink, UserEnvelope } from '../../api';
 import StoriesList from './StoriesList';
 
 export const UserView = () => {

@@ -1,4 +1,4 @@
-import { linkHref, StoryEnvelope } from '../../../rest-api';
+import { linkHref, StoryEnvelope } from '../../../api';
 import { Avatar, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
 import CustomLink from '../../../common/components/CustomLink';

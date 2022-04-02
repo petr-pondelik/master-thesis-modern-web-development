@@ -1,4 +1,4 @@
 export * from './components';
-export * from './http-methods';
+export * from './http-types';
 export * from './helpers';
 export * from './types';
