@@ -1,8 +1,9 @@
 import { Button, Grid } from '@mui/material';
-import { EmailField, MessageBox, PasswordField, StatusCodes } from '../common';
+import { CustomInput, MessageBox } from '../common';
 import { SignInDto } from './dto';
 import { useEffect, useState } from 'react';
 import { useSignIn } from '../hooks/useSignIn';
+import { validateEmail, validatePassword } from '../common/validation';
 
 const Messages = {
   invalidCredentials: 'Please enter valid credentials.',
@@ -20,7 +21,7 @@ export const SignInForm = () => {
   const [enabled, setEnabled] = useState<boolean>(false);
   const [performSignIn, setPerformSignIn] = useState<boolean>(false);
 
-  const { authorized, loading, error } = useSignIn(performSignIn, dto);
+  const { authorized } = useSignIn(performSignIn, dto);
 
   useEffect(() => {
     setPerformSignIn(false);
@@ -51,10 +52,15 @@ export const SignInForm = () => {
           marginBottom={'1.25rem'}
     >
       <Grid item xs={10} md={6} lg={4}>
-        <EmailField name={'email'} label={'Email*'}
-                    updateParent={
-                      (dtoFragment: any, validationFragment: any) => update(dtoFragment, validationFragment)
-                    }
+        <CustomInput
+          type={'email'}
+          name={'email'}
+          label={'Email*'}
+          errorMsg={'Please enter valid e-mail address.'}
+          validationFunction={validateEmail}
+          updateParent={
+            (dtoFragment: any, validationFragment: any) => update(dtoFragment, validationFragment)
+          }
         />
       </Grid>
     </Grid>
@@ -63,10 +69,15 @@ export const SignInForm = () => {
           marginBottom={'2.5rem'}
     >
       <Grid item xs={10} md={6} lg={4}>
-        <PasswordField name={'password'} label={'Password*'}
-                       updateParent={
-                         (dtoFragment: any, validationFragment: any) => update(dtoFragment, validationFragment)
-                       }
+        <CustomInput
+          type={'password'}
+          name={'password'}
+          label={'Password*'}
+          errorMsg={'Please enter valid password.'}
+          validationFunction={validatePassword}
+          updateParent={
+            (dtoFragment: any, validationFragment: any) => update(dtoFragment, validationFragment)
+          }
         />
       </Grid>
     </Grid>

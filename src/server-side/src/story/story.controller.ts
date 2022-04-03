@@ -153,6 +153,7 @@ export class StoryController {
     @Body() dto: UpdateStoryDto,
     @User() user,
   ): Promise<StoryEnvelope> {
+    console.log(dto);
     /** Owner-level access restriction */
     const story = await this.storyService.findUnique({ id: _id });
     if (user.id !== story.authorId) {

@@ -27,6 +27,11 @@ export async function HttpRequest<TResponse, TDto = undefined>(
       customInit = {
         body: JSON.stringify(dto),
       };
+      break;
+    case 'PATCH':
+      customInit = {
+        body: JSON.stringify(dto),
+      };
   }
 
   const init = { ...defaultInit, ...customInit };

@@ -4,23 +4,23 @@ import { red } from '@mui/material/colors';
 import { Fragment } from 'react';
 import { findLink, linkHref, StoryEnvelope } from '../../../../../api';
 import { Shell_StoryCardHeader } from './Shell_StoryCardHeader';
-import { StoryUpdate } from './StoryUpdate';
+import { StoryUpdate } from '../../../dialogs';
 import { StoryDelete } from './StoryDelete';
 
 
-export const StoryCardHeader = (props: { story: StoryEnvelope|undefined, isLoading: boolean }) => {
+export const StoryCardHeader = (props: { story: StoryEnvelope | undefined, isLoading: boolean, refetch: any}) => {
 
-  const {story, isLoading} = props;
+  const { story, isLoading, refetch } = props;
 
   if (!story || isLoading) {
-    return <Shell_StoryCardHeader/>
+    return <Shell_StoryCardHeader />;
   }
 
   const renderUpdate = () => {
     const updateLink = findLink(story._links, 'update');
     if (updateLink.href) {
       return <IconButton aria-label='settings'>
-        <StoryUpdate link={updateLink} />
+        <StoryUpdate story={story} refetch={refetch} />
       </IconButton>;
     }
     return null;
@@ -40,16 +40,16 @@ export const StoryCardHeader = (props: { story: StoryEnvelope|undefined, isLoadi
   const renderAuthorLink = () => {
     if (!story) {
       return <CustomLink>
-        <Avatar aria-label='recipe'/>
-      </CustomLink>
+        <Avatar aria-label='recipe' />
+      </CustomLink>;
     } else {
       return <CustomLink to={linkHref(story._links, 'author')}>
         <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
           {story.author?.givenName?.charAt(0)}
         </Avatar>
-      </CustomLink>
+      </CustomLink>;
     }
-  }
+  };
 
   return <CardHeader
     title={formatAuthor(story?.author)}

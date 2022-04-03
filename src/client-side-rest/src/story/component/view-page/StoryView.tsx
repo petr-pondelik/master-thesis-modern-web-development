@@ -5,15 +5,15 @@ import { useQuery } from 'react-query';
 
 
 export const StoryView = () => {
-  const response = useQuery<StoryEnvelope>(
+  const {data, isLoading, isError, refetch} = useQuery<StoryEnvelope>(
     window.location.pathname, () => getRequest<StoryEnvelope>(window.location.pathname)
   );
 
-  if (response.isError) {
+  if (isError) {
     return <ErrorPlaceholder />;
   }
 
-  return <StoryCard story={response.data} isLoading={response.isLoading} />;
+  return <StoryCard story={data} isLoading={isLoading} refetch={refetch} />;
 };
 
 export default StoryView;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { User } from '@prisma/client';
 import * as argon from 'argon2';
@@ -19,9 +19,17 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string): Promise<User | null> {
-    const user = await this.userService.findOne({
-      email: email,
-    });
+    let user;
+    try {
+      user = await this.userService.findOne({
+        email: email,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new UnauthorizedException();
+      }
+      throw error;
+    }
     const passwordMatches = await argon.verify(user.password, pass);
     if (user && passwordMatches) {
       return user;
