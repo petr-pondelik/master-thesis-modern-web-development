@@ -3,7 +3,8 @@ import { CustomInput } from '../../../common';
 import { BaseStoryDto } from '../../dto';
 import { useState } from 'react';
 import { StoryEnvelope } from '../../../api';
-import { StoryUpdateState } from '../dialogs';
+import { StoryUpdateDialogState } from '../dialogs';
+import { StoryCreateDialogState } from '../dialogs/StoryCreateDialog';
 
 type Validation = {
   title: boolean,
@@ -19,7 +20,7 @@ type StoryFormState = {
 
 type StoryFormProps = {
   story?: StoryEnvelope,
-  updateParent: (stateFragment: Partial<StoryUpdateState>) => void
+  updateParent: (stateFragment: any) => void
 }
 
 export const StoryForm = (props: StoryFormProps) => {
@@ -53,6 +54,7 @@ export const StoryForm = (props: StoryFormProps) => {
     const newDto = { ...state.dto, ...dtoFragment };
     const newValidation = { ...state.validation, ...validationFragment };
     const valid = isValid(newValidation);
+    console.log(newDto);
     setState({
       ...state,
       ...{
@@ -61,7 +63,7 @@ export const StoryForm = (props: StoryFormProps) => {
       },
       enabled: valid,
     });
-    updateParent({ dto: newDto, saveEnabled: valid });
+    updateParent({ dto: newDto, actionEnabled: valid });
   };
 
   return (

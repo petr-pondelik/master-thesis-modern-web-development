@@ -103,11 +103,13 @@ export class UserController {
   })
   @ApiOkResponse({ description: 'Stories successfully retrieved.', type: StoryCollectionEnvelope })
   @ApiNotFoundResponse({ description: 'User not found.', type: ErrorMessage })
-  async findStories(@Param('id', ParseIntPipe) _id: number): Promise<StoryCollectionEnvelope> {
+  async findStories(@Param('id', ParseIntPipe) _id: number, @Jwt() jwt): Promise<StoryCollectionEnvelope> {
     const stories = await this.userService.findStories({ id: _id });
     const envelope = new StoryCollectionEnvelope(stories);
     const links = [createLink('self', apiPath(UserPath, `${_id}/stories`), 'GET')];
-    links.push(createLink('create', apiPath(UserPath, `${_id}/stories`), 'POST'));
+    if (jwt.sub === _id) {
+      links.push(createLink('create', apiPath(StoryPath), 'POST'));
+    }
     addLinks(envelope, links);
     for (const s of envelope.data) {
       const links = [

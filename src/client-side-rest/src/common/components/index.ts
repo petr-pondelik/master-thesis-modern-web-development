@@ -5,3 +5,4 @@ export * from './PageContainer';
 export * from './story-list';
 export * from './inputs';
 export * from './MessageBox';
+export * from './buttons/FloatingAdd';

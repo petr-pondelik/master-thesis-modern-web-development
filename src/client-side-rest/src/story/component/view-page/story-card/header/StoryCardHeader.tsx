@@ -4,8 +4,8 @@ import { red } from '@mui/material/colors';
 import { Fragment } from 'react';
 import { findLink, linkHref, StoryEnvelope } from '../../../../../api';
 import { Shell_StoryCardHeader } from './Shell_StoryCardHeader';
-import { StoryUpdate } from '../../../dialogs';
 import { StoryDelete } from './StoryDelete';
+import { StoryUpdateDialog } from '../../../dialogs';
 
 
 export const StoryCardHeader = (props: { story: StoryEnvelope | undefined, isLoading: boolean, refetch: any}) => {
@@ -20,7 +20,7 @@ export const StoryCardHeader = (props: { story: StoryEnvelope | undefined, isLoa
     const updateLink = findLink(story._links, 'update');
     if (updateLink.href) {
       return <IconButton aria-label='settings'>
-        <StoryUpdate story={story} refetch={refetch} />
+        <StoryUpdateDialog story={story} refetch={refetch} />
       </IconButton>;
     }
     return null;

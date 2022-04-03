@@ -1,1 +1,1 @@
-export * from './StoryUpdate';
+export * from './StoryUpdateDialog';
