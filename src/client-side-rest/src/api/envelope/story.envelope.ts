@@ -4,7 +4,7 @@ import { PartialUserEntity } from '../../entity';
 export type StoryEnvelope = {
   authorId: number;
   content: string;
-  createdAt: Date;
+  createdAt: string;
   description: string;
   id: number;
   title: string;

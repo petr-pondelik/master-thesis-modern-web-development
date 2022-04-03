@@ -1,34 +1,34 @@
-import { useFetch } from '../../../hooks';
-import { ErrorPlaceholder, StoriesList } from '../../../common';
-import { Card, CardContent, Typography } from '@mui/material';
-import { findLink, UserEnvelope } from '../../../api';
+import { getRequest, HttpRequest, StoryCollectionEnvelope, UserEnvelope } from '../../../api';
+import { useQuery } from 'react-query';
+import { Fragment } from 'react';
+import { UserCard } from './user-card/UserCard';
+import { UserStories } from './user-stories/UserStories';
+import { Shell_UserCard } from './user-card/Shell_UserCard';
+import Shell_UserView from './Shell_UserView';
 
 export const UserView = () => {
-  const { response: user, loading: loading } = useFetch<UserEnvelope>(true, window.location.pathname);
+  const { data: user, isLoading } = useQuery<UserEnvelope>(
+    window.location.pathname, () => getRequest<UserEnvelope>(window.location.pathname),
+  );
 
-  if (loading) {
-    return <h1>Loading...</h1>;
+  if (isLoading) {
+    return <Shell_UserView/>
   }
 
-  if (user) {
-    const storiesLink = findLink(user._links, 'stories');
-    return <Card sx={{ minWidth: '100%', maxWidth: '100%' }} variant={'elevation'} elevation={0}>
-      <CardContent>
-        <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
-          {user.givenName} {user.familyName}
-        </Typography>
-        <Typography variant={'body1'} style={{ marginBottom: '2rem' }}>
-          {user.profileDescription}
-        </Typography>
-        <Typography variant={'h5'}>
-          Stories
-        </Typography>
-        <StoriesList fetchLink={storiesLink} />
-      </CardContent>
-    </Card>;
-  }
+  // // Then get the user's projects
+  // const { data: stories } = useQuery<StoryCollectionEnvelope>(
+  //   ['usersStories' + user?.id],
+  //   fetchMethod,
+  //   {
+  //     // The query will not execute until the storiesLink exists
+  //     enabled: !!user,
+  //   },
+  // );
 
-  return <ErrorPlaceholder />;
+  return <Fragment>
+      <UserCard user={user} isLoading={isLoading}/>
+      <UserStories user={user} isLoading={isLoading} />
+    </Fragment>
 };
 
 export default UserView;

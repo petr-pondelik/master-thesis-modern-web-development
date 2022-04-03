@@ -1,31 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { SearchStoryDto } from '../../dto';
 import debounce from 'lodash.debounce';
-import { findLink, HateoasLink } from '../../../api';
-import { HttpRequest } from '../../../api/http-request';
+import {
+  createLink,
+  HateoasLink,
+  StoryCollectionEnvelope,
+} from '../../../api';
+import { HttpRequest } from '../../../api/requests/http-request';
 import { SearchBar } from './SearchBar';
-import { PageContainer, StoriesList } from '../../../common';
+import { PageContainer, StoryList } from '../../../common';
+import { useQuery } from 'react-query';
 
 type SearchPageState = {
-  searchLink: HateoasLink | undefined,
+  searchLink: HateoasLink,
   dto: SearchStoryDto
 }
 
 export const StoryListPage = () => {
 
   const [state, setState] = useState<SearchPageState>({
-    searchLink: undefined,
+    searchLink: createLink('POST', `${window.location.pathname}/search`, 'self'),
     dto: { searchString: '', author: '' },
   });
 
-
-  useEffect(() => {
-    HttpRequest(window.location.pathname)
-      .then(res => {
-        const _searchLink = findLink(res._links, 'search');
-        setState({ ...state, ['searchLink']: _searchLink });
-      });
-  }, []);
+  const fetchMethod = () => HttpRequest<StoryCollectionEnvelope, SearchStoryDto>(
+    state.searchLink.href, state.searchLink.method, state.dto,
+  );
+  const storiesResponse = useQuery<StoryCollectionEnvelope>([state.searchLink.href, state.dto], fetchMethod);
 
   const setSearchQuery = (query: string) => {
     debouncedFilter(state, query);
@@ -46,7 +47,7 @@ export const StoryListPage = () => {
       query={state.dto.searchString}
       setSearchQuery={setSearchQuery}
     />
-    <StoriesList fetchLink={state.searchLink} dto={state.dto} />
+    <StoryList stories={storiesResponse.data} isLoading={storiesResponse.isLoading} error={storiesResponse.error} />
   </PageContainer>;
 };
 

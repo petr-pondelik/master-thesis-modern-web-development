@@ -1,19 +1,24 @@
 import { Avatar, CardHeader, IconButton } from '@mui/material';
-import { CustomLink, formatAuthor } from '../../../../common';
+import { CustomLink, formatAuthor } from '../../../../../common';
 import { red } from '@mui/material/colors';
 import { Fragment } from 'react';
-import { findLink, linkHref, StoryEnvelope } from '../../../../api';
-import { StoryDelete } from './StoryDelete';
+import { findLink, linkHref, StoryEnvelope } from '../../../../../api';
+import { Shell_StoryCardHeader } from './Shell_StoryCardHeader';
 import { StoryUpdate } from './StoryUpdate';
+import { StoryDelete } from './StoryDelete';
 
 
-export const StoryCardHeader = (props: { story: StoryEnvelope }) => {
+export const StoryCardHeader = (props: { story: StoryEnvelope|undefined, isLoading: boolean }) => {
 
-  const story = props.story;
+  const {story, isLoading} = props;
+
+  if (!story || isLoading) {
+    return <Shell_StoryCardHeader/>
+  }
 
   const renderUpdate = () => {
     const updateLink = findLink(story._links, 'update');
-    if (updateLink) {
+    if (updateLink.href) {
       return <IconButton aria-label='settings'>
         <StoryUpdate link={updateLink} />
       </IconButton>;
@@ -24,7 +29,7 @@ export const StoryCardHeader = (props: { story: StoryEnvelope }) => {
   const renderDelete = () => {
     const deleteLink = findLink(story._links, 'delete');
     const parentLink = findLink(story._links, 'parent');
-    if (deleteLink && parentLink) {
+    if (deleteLink.href && parentLink.href) {
       return <IconButton aria-label='settings'>
         <StoryDelete deleteLink={deleteLink} parentLink={parentLink} />
       </IconButton>;
@@ -32,16 +37,24 @@ export const StoryCardHeader = (props: { story: StoryEnvelope }) => {
     return null;
   };
 
-  return <CardHeader
-    title={formatAuthor(story.author)}
-    subheader={story.createdAt}
-    avatar={
-      <CustomLink to={linkHref(story._links, 'author')}>
+  const renderAuthorLink = () => {
+    if (!story) {
+      return <CustomLink>
+        <Avatar aria-label='recipe'/>
+      </CustomLink>
+    } else {
+      return <CustomLink to={linkHref(story._links, 'author')}>
         <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
-          R
+          {story.author?.givenName?.charAt(0)}
         </Avatar>
       </CustomLink>
     }
+  }
+
+  return <CardHeader
+    title={formatAuthor(story?.author)}
+    subheader={story?.createdAt}
+    avatar={renderAuthorLink()}
     action={
       <Fragment>
         {renderUpdate()}

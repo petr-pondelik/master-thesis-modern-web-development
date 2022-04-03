@@ -1,8 +1,8 @@
 import { Avatar, CardActionArea, CardHeader } from '@mui/material';
-import CustomLink from '../CustomLink';
-import { linkHref, StoryEnvelope } from '../../../api';
+import CustomLink from '../../CustomLink';
+import { linkHref, StoryEnvelope } from '../../../../api';
 import { red } from '@mui/material/colors';
-import { formatAuthor } from '../../helpers';
+import { formatAuthor } from '../../../helpers';
 
 type Props = {
   story: StoryEnvelope

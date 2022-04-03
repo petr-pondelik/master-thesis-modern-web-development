@@ -1,11 +1,12 @@
 import { SignInDto } from '../sign-in';
 import { useEffect, useState } from 'react';
 import { JwtEnvelope } from '../api';
-import { ErrorMessage, HttpRequest } from '../api';
+import { ErrorMessage } from '../api';
 import { isError } from '../api/api.helpers';
 import { StatusCodes } from '../common';
 import { useJwtStore } from '../store';
 import { useNavigate } from 'react-router-dom';
+import { postRequest } from '../api';
 
 export const useSignIn = (call: boolean, dto: SignInDto) => {
 
@@ -24,15 +25,15 @@ export const useSignIn = (call: boolean, dto: SignInDto) => {
   useEffect(() => {
     if (call) {
       setLoading(true);
-      HttpRequest('/auth/sign-in', 'POST', dto)
+      postRequest<JwtEnvelope|ErrorMessage, SignInDto>('/auth/sign-in', dto)
         .then(res => {
           const error = isError(res);
           if (error) {
-            if (res.statusCode === StatusCodes.UNAUTHORIZED) {
+            if ((<ErrorMessage>res).statusCode === StatusCodes.UNAUTHORIZED) {
               setAuthorized(false);
             }
           } else {
-            jwtSignIn(res);
+            jwtSignIn(<JwtEnvelope>res);
             setAuthorized(true);
           }
         })

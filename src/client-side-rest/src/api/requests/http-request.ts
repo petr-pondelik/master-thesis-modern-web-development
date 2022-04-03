@@ -1,8 +1,10 @@
-import ApiConfig from './api-config';
-import { HttpMethod, StatusCodes } from '../common';
-import { getJwtFromStorage } from '../store';
+import ApiConfig from '../api-config';
+import { HttpMethod } from '../../common';
+import { getJwtFromStorage } from '../../store';
 
-export async function HttpRequest(url: string, method: HttpMethod = 'GET', dto: any = undefined) {
+export async function HttpRequest<TResponse, TDto = undefined>(
+  url: string, method: HttpMethod = 'GET', dto: TDto | undefined = undefined): Promise<TResponse> {
+
   url = `${ApiConfig.path()}${url}`;
 
   const jwt = getJwtFromStorage();
@@ -31,11 +33,12 @@ export async function HttpRequest(url: string, method: HttpMethod = 'GET', dto: 
 
   return fetch(url, init).then(res => {
     if (res.status === 204) {
-      return new Promise<boolean>((resolve => resolve(true)));
+      return new Promise<TResponse>((resolve => resolve({ data: [], _links: [] } as unknown as TResponse)));
     } else {
-      return res.json();
+      return res.json() as Promise<TResponse>;
     }
   });
+
 }
 
 export default HttpRequest;
