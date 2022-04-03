@@ -9,10 +9,11 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import UserViewPage from './user/components/UserViewPage';
+import UserViewPage from './user/view-page/components/UserViewPage';
 import Homepage from './home/components/Homepage';
 import { StoryListPage, StoryViewPage } from './story/component';
 import { SignInPage } from './sign-in';
+import { ReadingListCollectionPage, StoryCollectionPage, StoryViewPage as UserStoryViewPage } from './user';
 
 const rootElement = document.getElementById('root');
 render(
@@ -24,6 +25,10 @@ render(
         <Route path={'/stories'} element={<StoryListPage />} />
         <Route path={'/stories/:storyId'} element={<StoryViewPage />} />
         <Route path={'/users/:userId'} element={<UserViewPage />} />
+        <Route path={'/users/:userId/stories'} element={<StoryCollectionPage />} />
+        <Route path={'/users/:userId/stories/:storyId'} element={<UserStoryViewPage />} />
+        <Route path={'/users/:userId/reading-lists'} element={<ReadingListCollectionPage />} />
+        {/*  <Route path="*" element={<NotFound />} />*/}
       </Route>
     </Routes>
   </BrowserRouter>,

@@ -1,28 +1,41 @@
 import create from 'zustand';
 import { JwtPayload } from '../api';
+import jwtDecode from 'jwt-decode';
 
 type JwtState = {
-  jwt: JwtPayload | null,
-  setJwt: (jwt: JwtPayload) => void
-  removeJwt: () => void
+  jwt: string | null,
+  user: JwtPayload | null,
+  setUser: (jwt: string) => void,
+  removeUser: () => void
 }
 
-const getJwtFromStorage = () => {
-  const data = JSON.parse(localStorage.getItem('mthesis-jwt') ?? '{}')
-  if (data === {}) {
-    return null;
-  }
-  return data;
-}
+export const getJwtFromStorage = () => {
+  return localStorage.getItem('mthesis-jwt');
+};
+
+export const getUserFromStorage = () => {
+  const userStr = localStorage.getItem('mthesis-user');
+  return userStr ? JSON.parse(userStr) : null;
+};
 
 export const useJwtStore = create<JwtState>(set => ({
   jwt: getJwtFromStorage(),
-  setJwt: _jwt => {
-    localStorage.setItem('mthesis-jwt', JSON.stringify(_jwt));
-    set({ jwt: _jwt });
+  user: getUserFromStorage(),
+  setUser: _jwt => {
+    localStorage.setItem('mthesis-jwt', _jwt);
+    const _user: JwtPayload = jwtDecode(_jwt);
+    localStorage.setItem('mthesis-user', JSON.stringify(_user));
+    set({
+      jwt: _jwt,
+      user: _user,
+    });
   },
-  removeJwt: () => {
+  removeUser: () => {
     localStorage.removeItem('mthesis-jwt');
-    set({ jwt: null });
+    localStorage.removeItem('mthesis-user');
+    set({
+      jwt: null,
+      user: null,
+    });
   },
 }));

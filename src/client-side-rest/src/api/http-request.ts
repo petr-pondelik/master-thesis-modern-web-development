@@ -1,15 +1,22 @@
 import ApiConfig from './api-config';
-import { HttpMethod } from '../common';
+import { HttpMethod, StatusCodes } from '../common';
+import { getJwtFromStorage } from '../store';
 
-export async function HttpRequest(url: string, method: HttpMethod = 'GET', dto: object = {}) {
+export async function HttpRequest(url: string, method: HttpMethod = 'GET', dto: any = undefined) {
   url = `${ApiConfig.path()}${url}`;
 
-  const defaultInit = {
+  const jwt = getJwtFromStorage();
+
+  const defaultInit: any = {
     method: method,
     headers: {
       'Content-Type': 'application/json',
     },
   };
+
+  if (jwt) {
+    defaultInit.headers['Authorization'] = `Bearer ${jwt}`;
+  }
 
   let customInit = {};
 
@@ -22,7 +29,13 @@ export async function HttpRequest(url: string, method: HttpMethod = 'GET', dto: 
 
   const init = { ...defaultInit, ...customInit };
 
-  return await fetch(url, init).then(res => res.json());
+  return fetch(url, init).then(res => {
+    if (res.status === 204) {
+      return new Promise<boolean>((resolve => resolve(true)));
+    } else {
+      return res.json();
+    }
+  });
 }
 
 export default HttpRequest;

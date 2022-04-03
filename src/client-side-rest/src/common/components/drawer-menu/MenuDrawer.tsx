@@ -19,15 +19,14 @@ const ItemLinkStyle: CSSProperties = {
 export default function MenuDrawer() {
 
   const [state, setState] = React.useState({ opened: false });
+  const user = useJwtStore(state => state.user);
 
-  const jwt = useJwtStore(state => state.jwt);
-
-  if (!jwt) {
+  if (!user) {
     return null;
   }
 
-  const storiesLink = findLink(jwt._links, 'stories');
-  const readingListsLink = findLink(jwt._links, 'reading-lists');
+  const storiesLink = findLink(user._links, 'stories');
+  const readingListsLink = findLink(user._links, 'reading-lists');
 
   if (!storiesLink || !readingListsLink) {
     return null;
@@ -45,7 +44,7 @@ export default function MenuDrawer() {
 
   const list = () => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 300 }}
       role='presentation'
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
@@ -73,14 +72,8 @@ export default function MenuDrawer() {
 
   return (
     <div>
-      <IconButton
-        size='large'
-        edge='start'
-        color='inherit'
-        aria-label='menu'
-        sx={{ mr: 2 }}
-        onClick={toggleDrawer(true)}
-      >
+      <IconButton size='large' edge='start' color='inherit' aria-label='menu' sx={{ mr: 2 }}
+                  onClick={toggleDrawer(true)}>
         <MenuIcon />
       </IconButton>
       <Drawer

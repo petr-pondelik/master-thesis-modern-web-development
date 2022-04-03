@@ -35,17 +35,12 @@ export const SignInForm = () => {
   };
 
   const renderErrors = () => {
-    // if (!error) {
-    //   return null;
-    // }
-    // if (error.statusCode === StatusCodes.UNAUTHORIZED) {
     if (authorized === false) {
       return <MessageBox
         msg={Messages.invalidCredentials}
         sx={{ color: 'error.main', marginTop: '1rem' }}
       />;
     }
-    // }
   };
 
   return <Grid container rowSpacing={3} direction={'column'}

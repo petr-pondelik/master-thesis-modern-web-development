@@ -75,13 +75,13 @@ export class UserService {
       select: {
         stories: {
           where: {
-            id: storyId
-          }
-        }
+            id: storyId,
+          },
+        },
       },
     });
-    if (data === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+    if (!data || !data.stories[0]) {
+      throw new NotFoundException();
     }
     return data.stories[0];
   }
@@ -121,7 +121,7 @@ export class UserService {
           password: passwordHash,
           givenName: dto.givenName,
           familyName: dto.familyName,
-        }
+        },
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {

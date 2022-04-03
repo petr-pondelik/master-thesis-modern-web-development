@@ -1,5 +1,5 @@
 import UserView from './UserView';
-import { PageContainer } from '../../common';
+import { PageContainer } from '../../../common';
 
 const UserViewPage = () => {
   return <PageContainer>

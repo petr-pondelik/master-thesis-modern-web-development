@@ -2,6 +2,7 @@ import { HttpMethod } from '../../common';
 
 export type LinkRel =
   | 'self'
+  | 'parent'
   | 'author'
   | 'stories'
   | 'reading-lists'

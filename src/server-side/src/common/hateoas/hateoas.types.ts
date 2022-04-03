@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type LinkRel =
   | 'self'
+  | 'parent'
   | 'author'
   | 'stories'
   | 'reading-lists'

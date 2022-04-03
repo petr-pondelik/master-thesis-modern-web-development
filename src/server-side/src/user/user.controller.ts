@@ -42,6 +42,7 @@ import { UserEnvelope } from './envelopes';
 import { StoryCollectionEnvelope, StoryEnvelope } from '../story/envelopes';
 import { ReadingListCollectionEnvelope, ReadingListEnvelope } from '../reading-list/envelopes';
 import { ErrorMessage } from '../common/message';
+import { Jwt } from '../common/decorator/jwt.decorator';
 
 export const UserPath = 'users';
 export const UserVersion = '1';
@@ -102,23 +103,23 @@ export class UserController {
   })
   @ApiOkResponse({ description: 'Stories successfully retrieved.', type: StoryCollectionEnvelope })
   @ApiNotFoundResponse({ description: 'User not found.', type: ErrorMessage })
-  async findStories(@Param('id', ParseIntPipe) _id: number, @User() user): Promise<StoryCollectionEnvelope> {
+  async findStories(@Param('id', ParseIntPipe) _id: number): Promise<StoryCollectionEnvelope> {
     const stories = await this.userService.findStories({ id: _id });
     const envelope = new StoryCollectionEnvelope(stories);
     const links = [createLink('self', apiPath(UserPath, `${_id}/stories`), 'GET')];
     links.push(createLink('create', apiPath(UserPath, `${_id}/stories`), 'POST'));
     addLinks(envelope, links);
-    for (const a of envelope.data) {
-      addLinks(a, [
-        createLink('self', apiPath(StoryPath, a.id), 'GET'),
-        createLink('author', apiPath(UserPath, a.authorId), 'GET'),
-      ]);
+    for (const s of envelope.data) {
+      const links = [
+        createLink('self', apiPath(UserPath, `${_id}/stories/${s.id}`), 'GET'),
+        createLink('author', apiPath(UserPath, s.authorId), 'GET'),
+      ];
+      addLinks(s, links);
     }
     return envelope;
   }
 
   @Get(':id/stories/:storyId')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Find story under user.',
   })
@@ -127,26 +128,27 @@ export class UserController {
     type: StoryEnvelope,
   })
   @ApiNotFoundResponse({
-    description: 'Story not found.',
+    description: "User's story not found.",
     type: ErrorMessage,
   })
   async findStoryUnderUser(
     @Param('id', ParseIntPipe) id: number,
     @Param('storyId', ParseIntPipe) storyId: number,
-    @User() user,
+    @Jwt() jwt,
   ): Promise<StoryEnvelope> {
-    if (id !== user.id) {
-      throw new ForbiddenException();
-    }
-    const story = await this.userService.findStory(id, storyId);
+    const story = await this.storyService.findFirst({ id: storyId, authorId: id });
     let envelope = new StoryEnvelope();
     envelope = { ...envelope, ...story };
     const links = [
       createLink('self', apiPath(UserPath, `${id}/stories/${story.id}`), 'GET'),
+      createLink('parent', apiPath(UserPath, `${id}/stories`), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
-      createLink('update', apiPath(StoryPath, story.id), 'PATCH'),
-      createLink('delete', apiPath(StoryPath, story.id), 'DELETE'),
     ];
+    if (jwt && jwt.sub === story.authorId) {
+      links.push(createLink('update', apiPath(StoryPath, story.id), 'PATCH'))
+      links.push(createLink('delete', apiPath(StoryPath, story.id), 'DELETE'))
+    }
+    console.log(jwt);
     addLinks(envelope, links);
     return envelope;
   }

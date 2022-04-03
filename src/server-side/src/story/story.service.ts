@@ -46,6 +46,24 @@ export class StoryService {
     return story;
   }
 
+  async findFirst(where: Prisma.StoryWhereInput): Promise<StoryEntity> {
+    const story = await this.prisma.story.findFirst({
+      where: where,
+      include: {
+        author: {
+          select: {
+            givenName: true,
+            familyName: true,
+          },
+        },
+      },
+    });
+    if (story === null) {
+      throw new NotFoundException(Messages.NOT_FOUND);
+    }
+    return story;
+  }
+
   async search(dto: SearchStoryDto): Promise<Array<StoryEntity>> {
     const _where = searchConditionHelper(dto);
     return this.prisma.story.findMany({

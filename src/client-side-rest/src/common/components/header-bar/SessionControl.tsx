@@ -8,13 +8,11 @@ export const SessionControl = () => {
 
   const location = useLocation();
   const jwt = useJwtStore(state => state.jwt);
-  const removeJwt = useJwtStore(state => state.removeJwt);
+  const removeUser = useJwtStore(state => state.removeUser);
   const navigate = useNavigate();
 
-  console.log(jwt);
-
   const logOut = () => {
-    removeJwt();
+    removeUser();
     navigate('/');
   }
 

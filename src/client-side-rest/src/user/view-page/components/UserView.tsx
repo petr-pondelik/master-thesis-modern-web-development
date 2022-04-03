@@ -1,11 +1,10 @@
-import { useFetch } from '../../hooks';
-import { ErrorPlaceholder } from '../../common';
+import { useFetch } from '../../../hooks';
+import { ErrorPlaceholder, StoriesList } from '../../../common';
 import { Card, CardContent, Typography } from '@mui/material';
-import { findLink, UserEnvelope } from '../../api';
-import StoriesList from './StoriesList';
+import { findLink, UserEnvelope } from '../../../api';
 
 export const UserView = () => {
-  const { response: user, loading: loading } = useFetch<UserEnvelope>(window.location.pathname);
+  const { response: user, loading: loading } = useFetch<UserEnvelope>(true, window.location.pathname);
 
   if (loading) {
     return <h1>Loading...</h1>;
@@ -20,6 +19,9 @@ export const UserView = () => {
         </Typography>
         <Typography variant={'body1'} style={{ marginBottom: '2rem' }}>
           {user.profileDescription}
+        </Typography>
+        <Typography variant={'h5'}>
+          Stories
         </Typography>
         <StoriesList fetchLink={storiesLink} />
       </CardContent>

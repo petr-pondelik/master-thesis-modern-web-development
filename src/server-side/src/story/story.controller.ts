@@ -100,6 +100,7 @@ export class StoryController {
     envelope = { ...envelope, ...story };
     const links = [
       createLink('self', apiPath(StoryPath, story.id), 'GET'),
+      createLink('parent', apiPath(StoryPath), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
     ];
     addLinks(envelope, links);

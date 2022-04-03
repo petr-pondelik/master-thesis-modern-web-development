@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { CSSProperties } from 'react';
 
 type CustomLinkProps = {
-  children: JSX.Element | JSX.Element[] | string,
+  children: any,
   to: string,
   customStyles?: CSSProperties
 };
@@ -13,7 +13,7 @@ const DefaultStyles: CSSProperties = {
 };
 
 export const CustomLink = (props: CustomLinkProps) => {
-  return <Link style={{...DefaultStyles, ...props.customStyles}} to={props.to}>
+  return <Link style={{...DefaultStyles, ...props.customStyles}} to={props.to} >
     {props.children}
   </Link>
 }

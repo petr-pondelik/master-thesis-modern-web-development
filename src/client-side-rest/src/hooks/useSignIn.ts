@@ -1,30 +1,28 @@
 import { SignInDto } from '../sign-in';
 import { useEffect, useState } from 'react';
-import { JwtEnvelope, JwtPayload } from '../api';
+import { JwtEnvelope } from '../api';
 import { ErrorMessage, HttpRequest } from '../api';
 import { isError } from '../api/api.helpers';
 import { StatusCodes } from '../common';
-import jwtDecode from 'jwt-decode';
 import { useJwtStore } from '../store';
 import { useNavigate } from 'react-router-dom';
 
-export const useSignIn = (perform: boolean, dto: SignInDto) => {
+export const useSignIn = (call: boolean, dto: SignInDto) => {
 
   const [loading, setLoading] = useState(false);
   const [authorized, setAuthorized] = useState<boolean|undefined>(undefined);
   const [error, setError] = useState<ErrorMessage|undefined>(undefined);
 
-  const setJwt = useJwtStore(state => state.setJwt);
+  const setUser = useJwtStore(state => state.setUser);
   const navigate = useNavigate();
 
   const jwtSignIn = (res: JwtEnvelope) => {
-    const jwt: JwtPayload = jwtDecode(res.access_token);
-    setJwt(jwt);
+    setUser(res.access_token);
     navigate('/');
   }
 
   useEffect(() => {
-    if (perform) {
+    if (call) {
       setLoading(true);
       HttpRequest('/auth/sign-in', 'POST', dto)
         .then(res => {
@@ -45,7 +43,7 @@ export const useSignIn = (perform: boolean, dto: SignInDto) => {
         setLoading(false);
       });
     }
-  }, [perform]);
+  }, [call]);
 
   return { authorized, loading, error };
 
