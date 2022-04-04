@@ -1,10 +1,8 @@
 import { Grid } from '@mui/material';
 import { CustomInput } from '../../../common';
-import { BaseStoryDto } from '../../dto';
+import { UpdateStoryDto } from '../../dto';
 import { useState } from 'react';
 import { StoryEnvelope } from '../../../api';
-import { StoryUpdateDialogState } from '../dialogs';
-import { StoryCreateDialogState } from '../dialogs/StoryCreateDialog';
 
 type Validation = {
   title: boolean,
@@ -13,9 +11,9 @@ type Validation = {
 }
 
 type StoryFormState = {
-  dto: BaseStoryDto,
+  dto: UpdateStoryDto,
   validation: Validation,
-  enabled: boolean
+  actionEnabled: boolean
 }
 
 type StoryFormProps = {
@@ -38,7 +36,7 @@ export const StoryForm = (props: StoryFormProps) => {
       description: true,
       content: !!story,
     },
-    enabled: !!story,
+    actionEnabled: !!story,
   });
 
   const isValid = (validation: Validation) => {
@@ -50,18 +48,18 @@ export const StoryForm = (props: StoryFormProps) => {
     return true;
   };
 
-  const update = (dtoFragment: Partial<BaseStoryDto>, validationFragment: any) => {
+  const update = (dtoFragment: Partial<UpdateStoryDto>, validationFragment: any) => {
     const newDto = { ...state.dto, ...dtoFragment };
     const newValidation = { ...state.validation, ...validationFragment };
     const valid = isValid(newValidation);
-    console.log(newDto);
+    console.log(valid);
     setState({
       ...state,
       ...{
         dto: newDto,
         validation: newValidation,
       },
-      enabled: valid,
+      actionEnabled: valid,
     });
     updateParent({ dto: newDto, actionEnabled: valid });
   };

@@ -1,3 +1,3 @@
-export * from './view-page';
-export * from './story';
-export * from './reading-list';
+export * from './components';
+export * from './pages';
+

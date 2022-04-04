@@ -9,11 +9,11 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import UserViewPage from './user/view-page/components/UserViewPage';
-import Homepage from './home/components/Homepage';
-import { StoryListPage, StoryViewPage } from './story/component';
+import UserViewPage from './user/pages/UserViewPage';
+import Homepage from './home/Homepage';
 import { SignInPage } from './sign-in';
 import { ReadingListCollectionPage, StoryCollectionPage, StoryViewPage as UserStoryViewPage } from './user';
+import { StoryListPage, StoryViewPage } from './story';
 
 const rootElement = document.getElementById('root');
 render(

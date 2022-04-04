@@ -15,7 +15,7 @@ const Transition = forwardRef(function Transition(
 type FullscreenDialogProps = {
   title: string,
   isOpened: boolean,
-  isActionEnabled: boolean,
+  actionEnabled: boolean,
   handleClose: () => void,
   handleAction: () => void,
   containedElement: ReactElement
@@ -23,7 +23,9 @@ type FullscreenDialogProps = {
 
 export const FullscreenDialog = (props: FullscreenDialogProps) => {
 
-  const {title, isOpened, isActionEnabled, handleClose, handleAction, containedElement} = props;
+  const {title, isOpened, actionEnabled, handleClose, handleAction, containedElement} = props;
+
+  console.log(actionEnabled);
 
   return <Dialog
     fullScreen
@@ -44,7 +46,7 @@ export const FullscreenDialog = (props: FullscreenDialogProps) => {
         <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
           {title}
         </Typography>
-        <Button autoFocus color='inherit' onClick={handleAction} disabled={!isActionEnabled}>
+        <Button autoFocus color='inherit' onClick={handleAction} disabled={!actionEnabled}>
           save
         </Button>
       </Toolbar>

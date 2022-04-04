@@ -1,3 +1,3 @@
+export * from './component';
 export * from './pages';
-export * from './components';
 export * from './dto';

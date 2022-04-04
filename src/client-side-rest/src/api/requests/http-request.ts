@@ -21,17 +21,10 @@ export async function HttpRequest<TResponse, TDto = undefined>(
   }
 
   let customInit = {};
-
-  switch (method) {
-    case 'POST':
-      customInit = {
-        body: JSON.stringify(dto),
-      };
-      break;
-    case 'PATCH':
-      customInit = {
-        body: JSON.stringify(dto),
-      };
+  if (['POST', 'PATCH', 'PUT'].includes(method)) {
+    customInit = {
+      body: JSON.stringify(dto),
+    };
   }
 
   const init = { ...defaultInit, ...customInit };

@@ -1,25 +1,23 @@
+import { HateoasLink, HttpRequest, ReadingListEnvelope } from '../../../api';
 import { Fragment, useState } from 'react';
-import { FullscreenDialog } from '../../../common/components/dialogs';
-import { StoryForm } from '../forms';
+import { useJwtStore } from '../../../store';
 import { useMutation } from 'react-query';
-import { CreateStoryDto } from '../../dto';
-import { HateoasLink, HttpRequest, StoryEnvelope } from '../../../api';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useJwtStore } from '../../../store';
-import { merge as _merge } from 'lodash';
+import { FullscreenDialog } from '../../../common/components/dialogs';
+import { CreateReadingListDto } from '../../dto';
+import { ReadingListForm } from '../forms';
 
-export type StoryCreateDialogState = {
+export type CreateDialogState = {
   open: boolean,
   actionEnabled: boolean,
-  dto: CreateStoryDto
+  dto: CreateReadingListDto
 }
 
-export const StoryCreateDialog = (props: { createLink: HateoasLink, refetch: any }) => {
+export const CreateDialog = (props: { createLink: HateoasLink, refetch: any }) => {
 
   const { createLink, refetch } = props;
-
   const user = useJwtStore(state => state.user);
   if (!user) {
     return null;
@@ -27,18 +25,17 @@ export const StoryCreateDialog = (props: { createLink: HateoasLink, refetch: any
 
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(false);
-  const [dto, setDto] = useState<CreateStoryDto>(
-    {
-      title: '',
-      description: '',
-      content: '',
-      authorId: user.sub,
-    });
+  const [dto, setDto] = useState<CreateReadingListDto>({
+    title: '',
+    authorId: user.sub,
+  });
 
   const mutation = useMutation(
-    (dto: CreateStoryDto) => HttpRequest<StoryEnvelope, CreateStoryDto>(createLink.href, createLink.method, dto),
+    (dto: CreateReadingListDto) =>
+      HttpRequest<ReadingListEnvelope, CreateReadingListDto>(`${createLink.href}/${dto.title}`, createLink.method, dto),
     {
       onSuccess: () => {
+        handleClose();
         refetch();
       },
     },
@@ -49,17 +46,17 @@ export const StoryCreateDialog = (props: { createLink: HateoasLink, refetch: any
   };
 
   const handleClose = () => {
-    setOpen( false);
+    setOpen(false);
   };
 
   const handleSave = () => {
     if (user) {
       mutation.mutate(dto);
-      handleClose();
+      // handleClose();
     }
   };
 
-  const update = (stateFragment: Partial<StoryCreateDialogState>) => {
+  const update = (stateFragment: Partial<CreateDialogState>) => {
     if (stateFragment.dto) {
       setDto({...dto, ...stateFragment.dto});
     }
@@ -76,12 +73,12 @@ export const StoryCreateDialog = (props: { createLink: HateoasLink, refetch: any
         </Fab>
       </Box>
       <FullscreenDialog
-        title={'Create Story'}
+        title={'Create Reading List'}
         isOpened={open}
         actionEnabled={actionEnabled}
         handleClose={handleClose}
         handleAction={handleSave}
-        containedElement={<StoryForm updateParent={update} />}
+        containedElement={<ReadingListForm updateParent={update} />}
       />
     </Fragment>
   );
