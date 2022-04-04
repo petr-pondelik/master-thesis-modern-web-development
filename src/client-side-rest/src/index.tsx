@@ -12,7 +12,12 @@ import {
 import UserViewPage from './user/pages/UserViewPage';
 import Homepage from './home/Homepage';
 import { SignInPage } from './sign-in';
-import { ReadingListCollectionPage, StoryCollectionPage, StoryViewPage as UserStoryViewPage } from './user';
+import {
+  ReadingListCollectionPage,
+  ReadingListViewPage as UserReadingListViewPage,
+  StoryCollectionPage,
+  StoryViewPage as UserStoryViewPage,
+} from './user';
 import { StoryListPage, StoryViewPage } from './story';
 
 const rootElement = document.getElementById('root');
@@ -28,6 +33,7 @@ render(
         <Route path={'/users/:userId/stories'} element={<StoryCollectionPage />} />
         <Route path={'/users/:userId/stories/:storyId'} element={<UserStoryViewPage />} />
         <Route path={'/users/:userId/reading-lists'} element={<ReadingListCollectionPage />} />
+        <Route path={'/users/:userId/reading-lists/:readingListId'} element={<UserReadingListViewPage />} />
         {/*  <Route path="*" element={<NotFound />} />*/}
       </Route>
     </Routes>

@@ -18,7 +18,7 @@ export const StoryUpdateDialog = (props: { story: StoryEnvelope, refetch: any })
   const updateLink = findLink(story._links, 'update');
 
   const [open, setOpen] = useState<boolean>(false);
-  const [actionEnabled, setActionEnabled] = useState<boolean>(false);
+  const [actionEnabled, setActionEnabled] = useState<boolean>(true);
   const [dto, setDto] = useState<UpdateStoryDto>({
     title: story ? story.title : '',
     description: story ? story.description : '',

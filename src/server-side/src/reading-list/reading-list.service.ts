@@ -16,6 +16,14 @@ export class ReadingListService {
   async findUnique(_where: Prisma.ReadingListWhereUniqueInput): Promise<ReadingListEntity> {
     const readingList = await this.prisma.readingList.findUnique({
       where: _where,
+      include: {
+        author: {
+          select: {
+            givenName: true,
+            familyName: true,
+          },
+        },
+      },
     });
     if (readingList === null) {
       throw new NotFoundException(Messages.NOT_FOUND);

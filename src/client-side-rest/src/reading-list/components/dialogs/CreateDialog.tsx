@@ -52,7 +52,6 @@ export const CreateDialog = (props: { createLink: HateoasLink, refetch: any }) =
   const handleSave = () => {
     if (user) {
       mutation.mutate(dto);
-      // handleClose();
     }
   };
 

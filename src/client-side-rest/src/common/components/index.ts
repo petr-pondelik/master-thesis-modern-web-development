@@ -5,4 +5,5 @@ export * from './PageContainer';
 export * from './entity-list';
 export * from './inputs';
 export * from './MessageBox';
-export * from './buttons/FloatingAdd';
+export * from './buttons';
+export * from './entity-card';

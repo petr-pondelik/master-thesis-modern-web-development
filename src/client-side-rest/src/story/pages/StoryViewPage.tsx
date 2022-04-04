@@ -1,8 +1,18 @@
-import { PageContainer } from '../../common';
+import { ErrorPlaceholder, PageContainer } from '../../common';
 import { StoryView } from '../component';
+import { useQuery } from 'react-query';
+import { getRequest, StoryEnvelope } from '../../api';
 
 export const StoryViewPage = () => {
-    return <PageContainer>
-      <StoryView />
-    </PageContainer>;
+  const { data, isLoading, isError, refetch } = useQuery<StoryEnvelope>(
+    window.location.pathname, () => getRequest<StoryEnvelope>(window.location.pathname),
+  );
+
+  if (isError) {
+    return <ErrorPlaceholder />;
+  }
+
+  return <PageContainer>
+    <StoryView story={data} isLoading={isLoading} refetch={refetch} />
+  </PageContainer>;
 };

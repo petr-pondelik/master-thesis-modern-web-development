@@ -1,12 +1,13 @@
 import { findLink, HttpRequest, ReadingListEnvelope } from '../../../api';
 import { Fragment, useState } from 'react';
-import { useJwtStore } from '../../../store';
 import { useMutation } from 'react-query';
-import Box from '@mui/material/Box';
-import { Fab } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { FullscreenDialog } from '../../../common/components/dialogs';
 import { UpdateReadingListDto } from '../../dto';
+import EditIcon from '@mui/icons-material/Edit';
+import { ReadingListForm } from '../forms';
+import { CreateDialogState } from './CreateDialog';
+import { useNavigate } from 'react-router-dom';
+import { useJwtStore } from '../../../store';
 
 export type UpdateDialogState = {
   open: boolean,
@@ -14,60 +15,68 @@ export type UpdateDialogState = {
   dto: UpdateReadingListDto
 }
 
-export const UpdateDialog = (props: { readingLIst: ReadingListEnvelope, refetch: any }) => {
+export const UpdateDialog = (props: { readingList: ReadingListEnvelope, refetch: any }) => {
 
-  const { readingLIst, refetch } = props;
-  const updateLink = findLink(readingLIst._links, 'update');
+  const { readingList, refetch } = props;
+  const updateLink = findLink(readingList._links, 'update');
 
-  const [state, setState] = useState<UpdateDialogState>({
-    open: false,
-    actionEnabled: false,
-    dto: {  title: '' },
+  const [open, setOpen] = useState<boolean>(false);
+  const [actionEnabled, setActionEnabled] = useState<boolean>(true);
+  const [dto, setDto] = useState<UpdateReadingListDto>({
+    title: '',
   });
+
+  const user = useJwtStore(state => state.user);
+  if (!user) {
+    return null;
+  }
+
+  const navigate = useNavigate();
 
   const mutation = useMutation(
     (dto: UpdateReadingListDto) =>
       HttpRequest<ReadingListEnvelope, UpdateReadingListDto>(updateLink.href, updateLink.method, dto),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        navigate(`${findLink(user._links, 'reading-lists').href}/${data.title}`);
         refetch();
       },
     },
   );
 
   const handleOpen = () => {
-    setState({ ...state, ['open']: true });
+    setOpen(true);
   };
 
   const handleClose = () => {
-    setState({ ...state, ['open']: false });
+    setOpen(false);
   };
 
   const handleSave = () => {
-    mutation.mutate(state.dto);
+    mutation.mutate(dto);
     handleClose();
   };
 
-  const update = (stateFragment: Partial<UpdateDialogState>) => {
-    setState({ ...state, ...stateFragment });
+  const update = (stateFragment: Partial<CreateDialogState>) => {
+    if (stateFragment.dto) {
+      setDto({ ...dto, ...stateFragment.dto });
+    }
+    if (stateFragment.actionEnabled) {
+      setActionEnabled(stateFragment.actionEnabled);
+    }
   };
 
   const containedForm = () => {
-    return <p>TEST</p>
-    // return <StoryForm updateParent={update} />;
+    return <ReadingListForm readingList={readingList} updateParent={update} />;
   };
 
   return (
     <Fragment>
-      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'fixed', bottom: '2%', right: '2%' }} onClick={handleOpen}>
-        <Fab color='primary' aria-label='add'>
-          <AddIcon />
-        </Fab>
-      </Box>
+      <EditIcon onClick={handleOpen} />
       <FullscreenDialog
-        title={readingLIst.title}
-        isOpened={state.open}
-        actionEnabled={state.actionEnabled}
+        title={readingList.title}
+        isOpened={open}
+        actionEnabled={actionEnabled}
         handleClose={handleClose}
         handleAction={handleSave}
         containedElement={containedForm()}

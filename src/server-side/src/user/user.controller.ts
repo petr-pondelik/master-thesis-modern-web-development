@@ -235,6 +235,8 @@ export class UserController {
     envelope = { ...envelope, ...readingList };
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
+      createLink('parent', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
+      createLink('author', apiPath(UserPath, `${id}`), 'GET'),
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
       createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
