@@ -4,17 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export const EntityDelete = (props: { deleteLink: HateoasLink, parentLink: HateoasLink }) => {
+export const EntityDelete = (props: { deleteLink: HateoasLink, parentLink?: HateoasLink, refetch?: any }) => {
+  const { deleteLink, parentLink, refetch } = props;
   const navigate = useNavigate();
   const mutation = useMutation(
-    () => HttpRequest<boolean>(props.deleteLink.href, props.deleteLink.method),
+    () => HttpRequest<boolean>(deleteLink.href, deleteLink.method),
     {
       onSuccess: () => {
-        navigate(props.parentLink.href);
-      }
-    }
+        if (parentLink) {
+          navigate(parentLink.href);
+        }
+        if (refetch) {
+          refetch();
+        }
+      },
+    },
   );
   return <IconButton aria-label='settings' onClick={() => mutation.mutate()}>
     <DeleteIcon />
   </IconButton>;
-}
+};

@@ -9,10 +9,11 @@ export function EntityList<TEntity>(
     items: ResponseEnvelope<Array<TEntity>> | undefined,
     isLoading: boolean,
     error: unknown,
-    showHeader?: boolean
+    showHeader?: boolean,
+    refetch?: any
   }) {
 
-  const { items, isLoading, error, showHeader } = props;
+  const { items, isLoading, error, showHeader, refetch } = props;
 
   if (isLoading) {
     return <Shell_EntityList showHeader={showHeader} />;
@@ -20,7 +21,7 @@ export function EntityList<TEntity>(
 
   if (items) {
     const rows = items.data.map((item, _key) => {
-      return <EntityListItem entity={item} showHeader={showHeader ?? true} key={_key} />;
+      return <EntityListItem entity={item} showHeader={showHeader ?? true} key={_key} refetch={refetch} />;
     });
 
     return <List sx={{ width: '100%', bgcolor: 'background.paper' }}>

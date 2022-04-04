@@ -239,6 +239,7 @@ export class UserController {
       createLink('author', apiPath(UserPath, `${id}`), 'GET'),
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
+      createLink('stories', apiPath(UserPath, `${id}/reading-lists/${title}/stories`), 'GET'),
       createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
       createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
     ]);
@@ -271,8 +272,9 @@ export class UserController {
     for (const a of envelope.data) {
       addLinks(a, [
         createLink('self', apiPath(StoryPath, `${a.id}`), 'GET'),
-        createLink('create', apiPath(UserPath, `${id}/reading-lists/${title}/${a.id}`), 'PUT'),
-        createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/${a.id}`), 'DELETE'),
+        createLink('author', apiPath(UserPath, `${a.authorId}`), 'GET'),
+        // createLink('create', apiPath(UserPath, `${id}/reading-lists/${title}/stories/${a.id}`), 'PUT'),
+        createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/stories/${a.id}`), 'DELETE'),
       ]);
     }
     return envelope;
@@ -335,7 +337,9 @@ export class UserController {
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'DELETE'),
       createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'PUT'),
-      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'DELETE'),
+      createLink(
+        'removeStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'DELETE'
+      ),
     ]);
     return envelope;
   }
