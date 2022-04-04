@@ -107,7 +107,7 @@ export class UserController {
     const stories = await this.userService.findStories({ id: _id });
     const envelope = new StoryCollectionEnvelope(stories);
     const links = [createLink('self', apiPath(UserPath, `${_id}/stories`), 'GET')];
-    if (jwt.sub === _id) {
+    if (jwt && jwt.sub === _id) {
       links.push(createLink('create', apiPath(StoryPath), 'POST'));
     }
     addLinks(envelope, links);
@@ -331,11 +331,11 @@ export class UserController {
     const readingList = await this.readingListService.update(id, title, dto);
     const envelope = { ...new ReadingListEnvelope(), ...readingList };
     addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
-      createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
-      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
-      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
-      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
+      createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
+      createLink('update', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'PATCH'),
+      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'DELETE'),
+      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'PUT'),
+      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'DELETE'),
     ]);
     return envelope;
   }

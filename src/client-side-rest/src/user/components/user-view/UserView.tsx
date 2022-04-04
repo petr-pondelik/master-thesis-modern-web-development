@@ -1,15 +1,12 @@
-import { getRequest, HttpRequest, StoryCollectionEnvelope, UserEnvelope } from '../../../api';
-import { useQuery } from 'react-query';
+import { UserEnvelope } from '../../../api';
 import { Fragment } from 'react';
-import { UserCard } from '../user-card/UserCard';
-import { UserStories } from '../user-stories/UserStories';
-import { Shell_UserCard } from '../user-card/Shell_UserCard';
+import { UserCard } from '../user-card';
+import { UserStories } from '../user-stories';
 import Shell_UserView from './Shell_UserView';
 
-export const UserView = () => {
-  const { data: user, isLoading } = useQuery<UserEnvelope>(
-    window.location.pathname, () => getRequest<UserEnvelope>(window.location.pathname),
-  );
+export const UserView = (props: { user: UserEnvelope | undefined, isLoading: boolean, refetch: unknown }) => {
+
+  const {user, isLoading} = props;
 
   if (isLoading) {
     return <Shell_UserView/>

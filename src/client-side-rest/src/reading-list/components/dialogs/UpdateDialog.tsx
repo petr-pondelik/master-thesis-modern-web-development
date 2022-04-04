@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { ReadingListForm } from '../forms';
 import { CreateDialogState } from './CreateDialog';
 import { useNavigate } from 'react-router-dom';
-import { useJwtStore } from '../../../store';
+import { useJwtStore, useLinksStore } from '../../../store';
 
 export type UpdateDialogState = {
   open: boolean,
@@ -19,6 +19,8 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope, refetch:
 
   const { readingList, refetch } = props;
   const updateLink = findLink(readingList._links, 'update');
+
+  const addLink = useLinksStore(state => state.add);
 
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(true);
@@ -38,7 +40,10 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope, refetch:
       HttpRequest<ReadingListEnvelope, UpdateReadingListDto>(updateLink.href, updateLink.method, dto),
     {
       onSuccess: (data) => {
-        navigate(`${findLink(user._links, 'reading-lists').href}/${data.title}`);
+        const link = findLink(data._links, 'self');
+        const url = `${findLink(user._links, 'reading-lists').href}/${data.title}`;
+        addLink(url, link);
+        navigate(url, { state: { resource: link } });
         refetch();
       },
     },

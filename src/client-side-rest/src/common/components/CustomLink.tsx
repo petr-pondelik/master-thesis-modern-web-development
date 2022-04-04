@@ -4,7 +4,8 @@ import { CSSProperties } from 'react';
 type CustomLinkProps = {
   children: any,
   to?: string,
-  customStyles?: CSSProperties
+  customStyles?: CSSProperties,
+  state?: any
 };
 
 const DefaultStyles: CSSProperties = {
@@ -13,9 +14,10 @@ const DefaultStyles: CSSProperties = {
 };
 
 export const CustomLink = (props: CustomLinkProps) => {
-  return <Link style={{...DefaultStyles, ...props.customStyles}} to={props.to ?? '#'} >
-    {props.children}
-  </Link>
-}
+  const { children, to, customStyles, state } = props;
+  return <Link style={{ ...DefaultStyles, ...customStyles }} to={to ?? '#'} state={state}>
+    {children}
+  </Link>;
+};
 
 export default CustomLink;

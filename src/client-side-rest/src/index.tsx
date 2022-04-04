@@ -10,7 +10,6 @@ import {
   Route,
 } from 'react-router-dom';
 import UserViewPage from './user/pages/UserViewPage';
-import Homepage from './home/Homepage';
 import { SignInPage } from './sign-in';
 import {
   ReadingListCollectionPage,
@@ -25,7 +24,7 @@ render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App />}>
-        <Route index element={<Homepage />} />
+        <Route index element={<StoryListPage />} />
         <Route path={'/sign-in'} element={<SignInPage />} />
         <Route path={'/stories'} element={<StoryListPage />} />
         <Route path={'/stories/:storyId'} element={<StoryViewPage />} />

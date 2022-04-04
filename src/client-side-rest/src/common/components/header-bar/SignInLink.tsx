@@ -3,7 +3,6 @@ import CustomLink from '../CustomLink';
 import { Button } from '@mui/material';
 import * as React from 'react';
 
-
 export const SignInLink = () => {
   const location = useLocation();
   if (location.pathname === '/sign-in') {

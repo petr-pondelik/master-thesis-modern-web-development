@@ -1,12 +1,12 @@
 import { SignInDto } from '../sign-in';
 import { useEffect, useState } from 'react';
-import { JwtEnvelope } from '../api';
+import { HttpRequest, JwtEnvelope } from '../api';
 import { ErrorMessage } from '../api';
 import { isError } from '../api/api.helpers';
 import { StatusCodes } from '../common';
 import { useJwtStore } from '../store';
 import { useNavigate } from 'react-router-dom';
-import { postRequest } from '../api';
+import { useResource } from './useResource';
 
 export const useSignIn = (call: boolean, dto: SignInDto) => {
 
@@ -16,6 +16,7 @@ export const useSignIn = (call: boolean, dto: SignInDto) => {
 
   const setUser = useJwtStore(state => state.setUser);
   const navigate = useNavigate();
+  const link = useResource('signIn');
 
   const jwtSignIn = (res: JwtEnvelope) => {
     setUser(res.access_token);
@@ -25,7 +26,7 @@ export const useSignIn = (call: boolean, dto: SignInDto) => {
   useEffect(() => {
     if (call) {
       setLoading(true);
-      postRequest<JwtEnvelope|ErrorMessage, SignInDto>('/auth/sign-in', dto)
+      HttpRequest<JwtEnvelope|ErrorMessage, SignInDto>(link.href, link.method, dto)
         .then(res => {
           const error = isError(res);
           if (error) {

@@ -1,11 +1,10 @@
-import { findLink, HateoasLink, HttpRequest, StoryCollectionEnvelope } from '../../../api';
+import { HateoasLink } from '../../../../api';
 import { Fragment, ReactNode } from 'react';
 import { Avatar, CardHeader, IconButton } from '@mui/material';
-import { EntityDelete } from './EntityDelete';
+import { EntityDelete } from '../EntityDelete';
 import { red } from '@mui/material/colors';
-import { UserEntity } from '../../../entity';
-import CustomLink from '../CustomLink';
-import { useQuery } from 'react-query';
+import { UserEntity } from '../../../../entity';
+import CustomLink from '../../CustomLink';
 
 type EntityCardHeaderProps = {
   title: string,
@@ -42,7 +41,7 @@ export const EntityCardHeader = (props: EntityCardHeaderProps) => {
     if (!authorLink.href || !author) {
       return null;
     }
-    return <CustomLink to={authorLink.href}>
+    return <CustomLink to={authorLink.href} state={{ resource: authorLink }}>
       <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
         {author.givenName?.charAt(0) ?? '...'}
       </Avatar>

@@ -2,10 +2,12 @@ import { ErrorPlaceholder, PageContainer } from '../../common';
 import { StoryView } from '../component';
 import { useQuery } from 'react-query';
 import { getRequest, StoryEnvelope } from '../../api';
+import { useResource } from '../../hooks';
 
 export const StoryViewPage = () => {
+  const resource = useResource(window.location.pathname);
   const { data, isLoading, isError, refetch } = useQuery<StoryEnvelope>(
-    window.location.pathname, () => getRequest<StoryEnvelope>(window.location.pathname),
+    resource.href, () => getRequest<StoryEnvelope>(resource.href),
   );
 
   if (isError) {

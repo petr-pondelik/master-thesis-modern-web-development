@@ -12,7 +12,8 @@ export type LinkRel =
   | 'delete'
   | 'addStory'
   | 'removeStory'
-  | 'search';
+  | 'search'
+  | 'signIn';
 
 export type LinkMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

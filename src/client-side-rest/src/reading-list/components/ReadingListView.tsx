@@ -1,6 +1,8 @@
 import { findLink, ReadingListEnvelope } from '../../api';
 import { EntityCard, EntityCardHeader } from '../../common';
 import { UpdateDialog } from './dialogs';
+import { CardContent, Typography } from '@mui/material';
+import { Shell_ReadingListCard } from './Shell_ReadingListCard';
 
 export const ReadingListView = (
   props: { readingList: ReadingListEnvelope | undefined, isLoading: boolean, refetch: unknown },
@@ -8,7 +10,7 @@ export const ReadingListView = (
   const { readingList, isLoading, refetch } = props;
 
   if (isLoading || !readingList) {
-    return <p>Loading...</p>
+    return <Shell_ReadingListCard/>
   }
 
   return <EntityCard>
@@ -22,5 +24,10 @@ export const ReadingListView = (
       parentLink={findLink(readingList._links, 'parent')}
       authorLink={findLink(readingList._links, 'author')}
     />
+    <CardContent>
+      <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
+        {readingList.title}
+      </Typography>
+    </CardContent>
   </EntityCard>;
 };
