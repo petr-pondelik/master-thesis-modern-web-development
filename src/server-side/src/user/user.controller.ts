@@ -147,32 +147,12 @@ export class UserController {
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
     ];
     if (jwt && jwt.sub === story.authorId) {
-      links.push(createLink('update', apiPath(StoryPath, story.id), 'PATCH'))
-      links.push(createLink('delete', apiPath(StoryPath, story.id), 'DELETE'))
+      links.push(createLink('update', apiPath(StoryPath, story.id), 'PATCH'));
+      links.push(createLink('delete', apiPath(StoryPath, story.id), 'DELETE'));
     }
-    console.log(jwt);
     addLinks(envelope, links);
     return envelope;
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get(':id/subscriptions')
-  // @ApiOperation({
-  //   summary: "Find user's subscriptions.",
-  // })
-  // async findSubscriptions(@Param('id', ParseIntPipe) _id: number, @User() user) {
-  //   const data = await this.userService.findSubscriptions({ id: _id });
-  //   const envelope = new ResponseEnvelope<Array<Subscription>>(data.subscribing);
-  //   addLinks(envelope, [createLink('self', apiPath(UserPath, `${_id}/subscriptions`), 'GET')]);
-  //   for (const s of envelope.data) {
-  //     const links =
-  //       user.id === s.subscriberId
-  //         ? [createLink('delete', apiPath(UserPath, `${_id}/subscriptions/${s.id}`), 'DELETE')]
-  //         : [];
-  //     addLinks(s, links);
-  //   }
-  //   return envelope;
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/reading-lists')
@@ -197,13 +177,7 @@ export class UserController {
       createLink('create', apiPath(UserPath, `${_id}/reading-lists`), 'PUT'),
     ]);
     for (const rl of envelope.data) {
-      addLinks(rl, [
-        createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET'),
-        createLink('update', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'PATCH'),
-        createLink('delete', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'DELETE'),
-        createLink('addStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'PUT'),
-        createLink('removeStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'DELETE'),
-      ]);
+      addLinks(rl, [createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET')]);
     }
     return envelope;
   }
@@ -240,8 +214,6 @@ export class UserController {
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
       createLink('stories', apiPath(UserPath, `${id}/reading-lists/${title}/stories`), 'GET'),
-      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
-      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
     ]);
     return envelope;
   }
@@ -269,12 +241,11 @@ export class UserController {
       createLink('self', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
       createLink('create', apiPath(UserPath, `${id}/reading-lists`), 'PUT'),
     ]);
-    for (const a of envelope.data) {
-      addLinks(a, [
-        createLink('self', apiPath(StoryPath, `${a.id}`), 'GET'),
-        createLink('author', apiPath(UserPath, `${a.authorId}`), 'GET'),
-        // createLink('create', apiPath(UserPath, `${id}/reading-lists/${title}/stories/${a.id}`), 'PUT'),
-        createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/stories/${a.id}`), 'DELETE'),
+    for (const s of envelope.data) {
+      addLinks(s, [
+        createLink('self', apiPath(StoryPath, `${s.id}`), 'GET'),
+        createLink('author', apiPath(UserPath, `${s.authorId}`), 'GET'),
+        createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/stories/${s.id}`), 'DELETE'),
       ]);
     }
     return envelope;
@@ -303,13 +274,14 @@ export class UserController {
     const readingList = await this.readingListService.create(dto);
     const envelope = { ...new ReadingListEnvelope(), ...readingList };
     addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
-      createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
-      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
-      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'PUT'),
-      createLink('removeStory', apiPath(UserPath, `${id}/reading-lists/${title}/stories/:storyId`), 'DELETE'),
+      createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
+      createLink('parent', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
+      createLink('author', apiPath(UserPath, `${id}`), 'GET'),
+      createLink('update', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'PATCH'),
+      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'DELETE'),
+      createLink('stories', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories`), 'GET'),
     ]);
-    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}`)).json(envelope);
+    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`)).json(envelope);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -334,12 +306,11 @@ export class UserController {
     const envelope = { ...new ReadingListEnvelope(), ...readingList };
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
+      createLink('parent', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
+      createLink('author', apiPath(UserPath, `${id}`), 'GET'),
       createLink('update', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'PATCH'),
       createLink('delete', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'DELETE'),
-      createLink('addStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'PUT'),
-      createLink(
-        'removeStory', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories/:storyId`), 'DELETE'
-      ),
+      createLink('stories', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories`), 'GET'),
     ]);
     return envelope;
   }

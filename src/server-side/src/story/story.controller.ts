@@ -23,6 +23,8 @@ import { LocationResponseHeaderInterceptor } from '../common/interceptor';
 import { ErrorMessage } from '../common/message';
 import { StoryCollectionEnvelope, StoryEnvelope } from './envelopes';
 import { JwtAuthGuard } from '../auth/guard';
+import { ReadingListCollectionEnvelope } from '../reading-list/envelopes';
+import { Jwt } from '../common/decorator/jwt.decorator';
 
 export const StoryPath = 'stories';
 export const StoryVersion = '1';
@@ -94,7 +96,7 @@ export class StoryController {
     description: 'Story not found.',
     type: ErrorMessage,
   })
-  async findOne(@Param('id', ParseIntPipe) _id: number): Promise<StoryEnvelope> {
+  async findOne(@Param('id', ParseIntPipe) _id: number, @Jwt() jwt): Promise<StoryEnvelope> {
     const story = await this.storyService.findUnique({ id: _id });
     let envelope = new StoryEnvelope();
     envelope = { ...envelope, ...story };
@@ -103,6 +105,39 @@ export class StoryController {
       createLink('parent', apiPath(StoryPath), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
     ];
+    if (jwt && jwt.sub) {
+      links.push(createLink('reading-lists', apiPath(StoryPath, `${story.id}/reading-lists`), 'GET'));
+    }
+    addLinks(envelope, links);
+    return envelope;
+  }
+
+  @Get(':id/reading-lists')
+  @ApiOperation({
+    summary: "Find story's reading lists.",
+  })
+  @ApiOkResponse({
+    description: 'Reading lists successfully retrieved.',
+    type: StoryEnvelope,
+  })
+  @ApiNotFoundResponse({
+    description: 'Story not found.',
+    type: ErrorMessage,
+  })
+  async findReadingLists(@Param('id', ParseIntPipe) _id: number): Promise<ReadingListCollectionEnvelope> {
+    const readingLists = await this.storyService.findReadingLists({ id: _id });
+    const envelope = new ReadingListCollectionEnvelope(readingLists);
+    const links = [
+      createLink('self', apiPath(StoryPath, `${_id}/reading-lists`), 'GET'),
+      createLink('parent', apiPath(StoryPath, _id), 'GET'),
+    ];
+    for (const rl of envelope.data) {
+      addLinks(rl, [
+        createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET'),
+        createLink('addStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'PUT'),
+        createLink('removeStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'DELETE'),
+      ]);
+    }
     addLinks(envelope, links);
     return envelope;
   }

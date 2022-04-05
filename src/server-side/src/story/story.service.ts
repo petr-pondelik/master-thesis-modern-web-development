@@ -7,6 +7,7 @@ import { Messages } from './messages';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
 import { StoryEntity } from './entities';
+import { ReadingListEntity } from '../reading-list/entities';
 
 @Injectable()
 export class StoryService {
@@ -62,6 +63,17 @@ export class StoryService {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
     return story;
+  }
+
+  async findReadingLists(where: Prisma.StoryWhereUniqueInput): Promise<ReadingListEntity[]> {
+    const story = await this.prisma.story.findUnique({
+      where: where,
+      include: { readingLists: true }
+    });
+    if (story === null) {
+      throw new NotFoundException();
+    }
+    return story.readingLists;
   }
 
   async search(dto: SearchStoryDto): Promise<Array<StoryEntity>> {
