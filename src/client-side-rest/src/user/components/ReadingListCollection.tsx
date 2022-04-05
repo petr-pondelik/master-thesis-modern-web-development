@@ -7,7 +7,7 @@ import { CreateDialog } from '../../reading-list/components';
 export const ReadingListCollection = (props: { link: HateoasLink }) => {
   const { link } = props;
   const { data: readingLists, isLoading, error, refetch } = useQuery<ReadingListCollectionEnvelope>(
-    ['myReadingLists'], () => HttpRequest<ReadingListCollectionEnvelope>(link.href, link.method),
+    ['my-reading-lists'], () => HttpRequest<ReadingListCollectionEnvelope>(link.href, link.method),
   );
   return <Fragment>
     <EntityList items={readingLists} isLoading={isLoading} error={error} showHeader={false} />

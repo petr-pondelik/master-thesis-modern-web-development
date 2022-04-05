@@ -21,7 +21,7 @@ export async function HttpRequest<TResponse, TDto = undefined>(
   }
 
   let customInit = {};
-  if (['POST', 'PATCH', 'PUT'].includes(method)) {
+  if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(method)) {
     customInit = {
       body: JSON.stringify(dto),
     };

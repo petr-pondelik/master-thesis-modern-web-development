@@ -1,14 +1,19 @@
-import { findLink, HttpRequest, StoryCollectionEnvelope, StoryEnvelope } from '../../api';
-import { CardContent, Typography } from '@mui/material';
+import { findLink, JwtPayload, StoryEnvelope } from '../../api';
+import { CardContent, Grid, Typography } from '@mui/material';
 import { Shell_StoryCard } from './story-card';
 import { EntityCard, EntityCardHeader } from '../../common';
-import { StoryUpdateDialog } from './dialogs';
+import { ReadingListsRelations, StoryUpdateDialog } from './dialogs';
+import { useJwtStore } from '../../store';
 
+const AssignToReadingLists = (user: JwtPayload | null, story: StoryEnvelope) => {
+  return user ? <ReadingListsRelations user={user} story={story} /> : null;
+};
 
 export const StoryView = (props: { story: StoryEnvelope | undefined, isLoading: boolean, refetch: unknown }) => {
   const { story, isLoading, refetch } = props;
+  const user = useJwtStore(state => state.user);
   if (isLoading || !story) {
-    return <Shell_StoryCard/>
+    return <Shell_StoryCard />;
   }
   return <EntityCard>
     <EntityCardHeader
@@ -22,9 +27,16 @@ export const StoryView = (props: { story: StoryEnvelope | undefined, isLoading: 
       authorLink={findLink(story._links, 'author')}
     />
     <CardContent>
-      <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
-        {story?.title ?? '...'}
-      </Typography>
+      <Grid container style={{ marginBottom: '2rem' }}>
+        <Grid item xs={12}>
+          <Typography variant={'h4'} sx={{ marginBottom: '1rem' }}>
+            {story?.title ?? '...'}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          {AssignToReadingLists(user, story)}
+        </Grid>
+      </Grid>
       <Typography variant={'body1'} style={{ marginBottom: '2rem' }}>
         {story?.description ?? '...'}
       </Typography>
@@ -32,7 +44,7 @@ export const StoryView = (props: { story: StoryEnvelope | undefined, isLoading: 
         {story?.content ?? '...'}
       </Typography>
     </CardContent>
-  </EntityCard>
+  </EntityCard>;
 };
 
 export default StoryView;

@@ -92,7 +92,6 @@ export class UserController {
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, user.id), 'GET'),
       createLink('stories', apiPath(UserPath, `${user.id}/stories`), 'GET'),
-      // createLink('reading-lists', apiPath(UserPath, `${user.id}/reading-lists`), 'GET'),
     ]);
     return envelope;
   }
@@ -177,7 +176,12 @@ export class UserController {
       createLink('create', apiPath(UserPath, `${_id}/reading-lists`), 'PUT'),
     ]);
     for (const rl of envelope.data) {
-      addLinks(rl, [createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET')]);
+      addLinks(rl, [
+        createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET'),
+        createLink('stories', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories`), 'GET'),
+        createLink('addStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'PUT'),
+        createLink('removeStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'DELETE'),
+      ]);
     }
     return envelope;
   }
@@ -354,8 +358,12 @@ export class UserController {
       throw new UnauthorizedException();
     }
     await this.storyService.findUnique({ id: storyId });
-    await this.readingListService.connectStory(id, title, storyId);
-    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}/${storyId}`)).json();
+    const readingList = await this.readingListService.connectStory(id, title, storyId);
+    const envelope = { ...new ReadingListEnvelope(), ...readingList };
+    addLinks(envelope, [
+      createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
+    ]);
+    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}/${storyId}`)).json(envelope);
   }
 
   @UseGuards(JwtAuthGuard)
