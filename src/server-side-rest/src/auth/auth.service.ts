@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtEnvelope } from './envelopes';
 import { JwtPayload } from './strategy';
 import { createLink } from '../common/hateoas';
-import { apiPath } from '../common/helper';
+import { apiPath } from '../common/helpers';
 import { UserPath } from '../user/user.controller';
 
 @Injectable()

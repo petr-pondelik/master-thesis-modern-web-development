@@ -1,14 +1,14 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { SignUpDto } from './dto';
-import * as argon from 'argon2';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { Constants } from '../prisma/constants';
-import { Messages } from './messages';
-import { Prisma, User as UserModel } from '@prisma/client';
-import { UserEntity } from './entities';
-import { StoryEntity } from '../story/entities';
-import { ReadingListEntity } from '../reading-list/entities';
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { SignUpDto } from "./dto";
+import * as argon from "argon2";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { Constants } from "../prisma/constants";
+import { Messages } from "./messages";
+import { Prisma } from "@prisma/client";
+import { UserEntity } from "./entities";
+import { StoryEntity } from "../story/entities";
+import { ReadingListEntity } from "../reading-list/entities";
 
 @Injectable()
 export class UserService {
@@ -18,14 +18,15 @@ export class UserService {
     email: true,
     givenName: true,
     familyName: true,
-    profileDescription: true,
+    profileDescription: true
   };
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+  }
 
   private getFindUniqueArgs(where: Prisma.UserWhereUniqueInput): Prisma.UserFindUniqueArgs {
     const args: Prisma.UserFindUniqueArgs = {
-      where: where,
+      where: where
     };
     if (this.allowedFields !== null) {
       args.select = this.allowedFields;
@@ -45,8 +46,8 @@ export class UserService {
     const user = await this.prisma.user.findFirst({
       where: where,
       orderBy: {
-        id: 'desc',
-      },
+        id: "desc"
+      }
     });
     if (user === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
@@ -54,12 +55,17 @@ export class UserService {
     return user;
   }
 
-  async findStories(_where: Prisma.UserWhereUniqueInput): Promise<Array<StoryEntity>> {
+  async findStories(_where: Prisma.UserWhereUniqueInput = {}, _take: number): Promise<Array<StoryEntity>> {
     const data = await this.prisma.user.findUnique({
       where: _where,
       select: {
-        stories: true,
-      },
+        stories: {
+          take: _take,
+          orderBy: {
+            id: "desc"
+          }
+        }
+      }
     });
     if (data === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
@@ -70,15 +76,15 @@ export class UserService {
   async findStory(userId: number, storyId: number): Promise<StoryEntity> {
     const data = await this.prisma.user.findUnique({
       where: {
-        id: userId,
+        id: userId
       },
       select: {
         stories: {
           where: {
-            id: storyId,
-          },
-        },
-      },
+            id: storyId
+          }
+        }
+      }
     });
     if (!data || !data.stories[0]) {
       throw new NotFoundException();
@@ -86,31 +92,23 @@ export class UserService {
     return data.stories[0];
   }
 
-  async findReadingLists(_where: Prisma.UserWhereUniqueInput): Promise<Array<ReadingListEntity>> {
+  async findReadingLists(_where: Prisma.UserWhereUniqueInput = {}, _take: number): Promise<Array<ReadingListEntity>> {
     const data = await this.prisma.user.findUnique({
       where: _where,
       select: {
-        readingLists: true,
-      },
+        readingLists: {
+          take: _take,
+          orderBy: {
+            id: "desc"
+          }
+        }
+      }
     });
     if (data === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
     }
     return data.readingLists;
   }
-
-  // async findSubscriptions(_where: Prisma.UserWhereUniqueInput) {
-  //   const user = await this.prisma.user.findUnique({
-  //     where: _where,
-  //     select: {
-  //       subscribing: true,
-  //     },
-  //   });
-  //   if (user === null) {
-  //     throw new NotFoundException(Messages.NOT_FOUND);
-  //   }
-  //   return user;
-  // }
 
   async signUp(dto: SignUpDto): Promise<UserEntity> {
     const passwordHash = await argon.hash(dto.password);
@@ -120,8 +118,8 @@ export class UserService {
           email: dto.email,
           password: passwordHash,
           givenName: dto.givenName,
-          familyName: dto.familyName,
-        },
+          familyName: dto.familyName
+        }
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {

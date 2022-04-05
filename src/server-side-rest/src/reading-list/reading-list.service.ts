@@ -31,11 +31,14 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findAllStories(_where: Prisma.ReadingListWhereUniqueInput): Promise<Array<StoryEntity>> {
+  async findStories(_where: Prisma.ReadingListWhereUniqueInput = {}, _take: number): Promise<Array<StoryEntity>> {
     const data = await this.prisma.readingList.findUnique({
       where: _where,
       select: {
-        stories: true,
+        stories: {
+          take: _take,
+          orderBy: { id: 'desc' }
+        },
       },
     });
     if (data === null) {

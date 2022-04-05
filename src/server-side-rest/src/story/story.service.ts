@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
-import { CreateStoryDto, SearchStoryDto, UpdateStoryDto } from './dto';
-import { searchConditionHelper } from './helper';
-import { Messages } from './messages';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { Constants } from '../prisma/constants';
-import { StoryEntity } from './entities';
-import { ReadingListEntity } from '../reading-list/entities';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { Prisma } from "@prisma/client";
+import { CreateStoryDto, SearchStoryDto, UpdateStoryDto } from "./dto";
+import { searchConditionHelper } from "./helper";
+import { Messages } from "./messages";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { Constants } from "../prisma/constants";
+import { StoryEntity } from "./entities";
+import { ReadingListEntity } from "../reading-list/entities";
 
 @Injectable()
 export class StoryService {
@@ -17,15 +17,15 @@ export class StoryService {
     return this.prisma.story.findMany({
       take: _take,
       where: _where,
-      orderBy: { id: 'desc' },
+      orderBy: { id: "desc" },
       include: {
         author: {
           select: {
             givenName: true,
-            familyName: true,
-          },
-        },
-      },
+            familyName: true
+          }
+        }
+      }
     });
   }
 
@@ -36,10 +36,10 @@ export class StoryService {
         author: {
           select: {
             givenName: true,
-            familyName: true,
-          },
-        },
-      },
+            familyName: true
+          }
+        }
+      }
     });
     if (story === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
@@ -54,10 +54,10 @@ export class StoryService {
         author: {
           select: {
             givenName: true,
-            familyName: true,
-          },
-        },
-      },
+            familyName: true
+          }
+        }
+      }
     });
     if (story === null) {
       throw new NotFoundException(Messages.NOT_FOUND);
@@ -65,10 +65,14 @@ export class StoryService {
     return story;
   }
 
-  async findReadingLists(where: Prisma.StoryWhereUniqueInput): Promise<ReadingListEntity[]> {
+  async findReadingLists(where: Prisma.StoryWhereUniqueInput = {}, _take = 10): Promise<ReadingListEntity[]> {
     const story = await this.prisma.story.findUnique({
       where: where,
-      include: { readingLists: true }
+      include: {
+        readingLists: {
+          take: _take
+        }
+      }
     });
     if (story === null) {
       throw new NotFoundException();
@@ -76,26 +80,26 @@ export class StoryService {
     return story.readingLists;
   }
 
-  async search(dto: SearchStoryDto): Promise<Array<StoryEntity>> {
+  async search(dto: SearchStoryDto, _take = 10): Promise<Array<StoryEntity>> {
     const _where = searchConditionHelper(dto);
     return this.prisma.story.findMany({
       where: _where,
-      orderBy: { id: 'desc' },
-      take: 10,
+      orderBy: { id: "desc" },
+      take: _take,
       include: {
         author: {
           select: {
             givenName: true,
-            familyName: true,
-          },
-        },
-      },
+            familyName: true
+          }
+        }
+      }
     });
   }
 
   async create(dto: CreateStoryDto): Promise<StoryEntity> {
     return this.prisma.story.create({
-      data: dto,
+      data: dto
     });
   }
 
@@ -103,9 +107,9 @@ export class StoryService {
     try {
       return await this.prisma.story.update({
         where: {
-          id: _id,
+          id: _id
         },
-        data: dto,
+        data: dto
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
@@ -119,8 +123,8 @@ export class StoryService {
     try {
       return await this.prisma.story.delete({
         where: {
-          id: _id,
-        },
+          id: _id
+        }
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
