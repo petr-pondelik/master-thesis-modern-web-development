@@ -4,7 +4,7 @@ import { Messages } from './messages';
 import { CreateReadingListDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
-import { UpdateReadingListDto } from './dto/update-reading-list.dto';
+import { UpdateReadingListDto } from './dto';
 import { ReadingListEntity } from './entities';
 import { StoryEntity } from '../story/entities';
 
@@ -30,7 +30,7 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findStories(_title_authorId: { authorId: number, title: string }, _limit: number = 10): Promise<StoryEntity[]> {
+  async findStories(_title_authorId: { authorId: number, title: string }, _limit = 10): Promise<StoryEntity[]> {
     const data = await this.prisma.readingList.findUnique({
       where: { title_authorId: _title_authorId },
       select: {
@@ -119,7 +119,10 @@ export class ReadingListService {
         },
       });
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        (Constants.RECORD_NOT_FOUND === error.code || Constants.QUERY_INTERPRETATION_ERROR === error.code)
+      ) {
         throw new NotFoundException();
       }
       throw error;
@@ -144,7 +147,10 @@ export class ReadingListService {
         },
       });
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        (Constants.RECORD_NOT_FOUND === error.code || Constants.QUERY_INTERPRETATION_ERROR === error.code)
+      ) {
         throw new NotFoundException();
       }
       throw error;
