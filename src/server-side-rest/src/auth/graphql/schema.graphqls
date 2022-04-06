@@ -1,0 +1,8 @@
+type Jwt {
+    access_token: String!
+}
+
+input SignInInput {
+    email: String!
+    password: String!
+}

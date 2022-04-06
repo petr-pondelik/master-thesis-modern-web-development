@@ -8,12 +8,23 @@ import { StoryModule } from './story/story.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { ReadingListModule } from './reading-list/reading-list.module';
 import { getConfigPath } from "./common/helpers";
+import { join } from "path";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
 const envFilePath = getConfigPath(`${__dirname}/../config`);
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      typePaths: ['./src/**/*.graphqls'],
+      definitions: {
+        path: join(process.cwd(), 'src', 'graphql', 'graphql.ts'),
+        outputAs: 'class',
+      },
+    }),
     AuthModule,
     UserModule,
     StoryModule,

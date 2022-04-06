@@ -1,22 +1,19 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
-import { Prisma } from "@prisma/client";
 import { CreateStoryDto, SearchStoryDto, UpdateStoryDto } from "./dto";
 import { searchConditionHelper } from "./helper";
 import { Messages } from "./messages";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { Constants } from "../prisma/constants";
 import { StoryEntity } from "./entities";
-import { ReadingListEntity } from "../reading-list/entities";
 
 @Injectable()
 export class StoryService {
   constructor(private prisma: PrismaService) {}
 
-  async findMany(_where: Prisma.StoryWhereInput = {}, _take = 10): Promise<Array<StoryEntity>> {
+  async findMany(_limit = 10): Promise<StoryEntity[]> {
     return this.prisma.story.findMany({
-      take: _take,
-      where: _where,
+      take: _limit,
       orderBy: { id: "desc" },
       include: {
         author: {
@@ -29,9 +26,9 @@ export class StoryService {
     });
   }
 
-  async findUnique(where: Prisma.StoryWhereUniqueInput): Promise<StoryEntity> {
+  async findOneById(_id: number): Promise<StoryEntity> {
     const story = await this.prisma.story.findUnique({
-      where: where,
+      where: { id: _id },
       include: {
         author: {
           select: {
@@ -47,9 +44,9 @@ export class StoryService {
     return story;
   }
 
-  async findFirst(where: Prisma.StoryWhereInput): Promise<StoryEntity> {
+  async findOneUnderAuthor(_id: number, _authorId: number): Promise<StoryEntity> {
     const story = await this.prisma.story.findFirst({
-      where: where,
+      where: { id: _id, authorId: _authorId },
       include: {
         author: {
           select: {
@@ -65,27 +62,12 @@ export class StoryService {
     return story;
   }
 
-  async findReadingLists(where: Prisma.StoryWhereUniqueInput = {}, _take = 10): Promise<ReadingListEntity[]> {
-    const story = await this.prisma.story.findUnique({
-      where: where,
-      include: {
-        readingLists: {
-          take: _take
-        }
-      }
-    });
-    if (story === null) {
-      throw new NotFoundException();
-    }
-    return story.readingLists;
-  }
-
-  async search(dto: SearchStoryDto, _take = 10): Promise<Array<StoryEntity>> {
+  async search(dto: SearchStoryDto, _limit = 10): Promise<StoryEntity[]> {
     const _where = searchConditionHelper(dto);
     return this.prisma.story.findMany({
       where: _where,
       orderBy: { id: "desc" },
-      take: _take,
+      take: _limit,
       include: {
         author: {
           select: {

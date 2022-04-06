@@ -31,7 +31,7 @@ import { LocationResponseHeaderInterceptor } from "../common/interceptor";
 import { ErrorMessage } from "../common/message";
 import { StoryCollectionEnvelope, StoryEnvelope } from "./envelopes";
 import { JwtAuthGuard } from "../auth/guard";
-import { Take } from "../common/decorator/take.decorator";
+import { Limit } from '../common/decorator';
 
 export const StoryPath = "stories";
 export const StoryVersion = "1";
@@ -54,8 +54,8 @@ export class StoryController {
   })
   @Get()
   @HttpCode(200)
-  async findNewest(@Take(ParseIntPipe) take: number): Promise<StoryCollectionEnvelope> {
-    const stories = await this.storyService.findMany({}, take);
+  async findNewest(@Limit(ParseIntPipe) limit: number): Promise<StoryCollectionEnvelope> {
+    const stories = await this.storyService.findMany(limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [
       createLink("self", apiPath(StoryPath), "GET"),
@@ -81,9 +81,9 @@ export class StoryController {
   @HttpCode(200)
   async search(
     @Body() dto: SearchStoryDto,
-    @Take(ParseIntPipe) take: number
+    @Limit(ParseIntPipe) limit: number
   ): Promise<StoryCollectionEnvelope> {
-    const stories = await this.storyService.search(dto, take);
+    const stories = await this.storyService.search(dto, limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [createLink("self", apiPath(StoryPath, "search"), "POST")]);
     for (const a of envelope.data) {
@@ -108,7 +108,7 @@ export class StoryController {
     type: ErrorMessage
   })
   async findOne(@Param("id", ParseIntPipe) _id: number): Promise<StoryEnvelope> {
-    const story = await this.storyService.findUnique({ id: _id });
+    const story = await this.storyService.findOneById(_id);
     let envelope = new StoryEnvelope();
     envelope = { ...envelope, ...story };
     const links = [
@@ -168,7 +168,7 @@ export class StoryController {
   ) {
     console.log(dto);
     /** Owner-level access restriction */
-    const story = await this.storyService.findUnique({ id: _id });
+    const story = await this.storyService.findOneById(_id);
     if (user.id !== story.authorId) {
       throw new ForbiddenException();
     }
@@ -194,7 +194,7 @@ export class StoryController {
   })
   async delete(@Param("id", ParseIntPipe) _id: number, @User() user) {
     /** Owner-level access restriction */
-    const story = await this.storyService.findUnique({ id: _id });
+    const story = await this.storyService.findOneById(_id);
     if (user.id !== story.authorId) {
       throw new ForbiddenException();
     }

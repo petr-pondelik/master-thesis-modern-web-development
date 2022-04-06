@@ -1,0 +1,7 @@
+type ReadingList implements NamedEntity {
+    id: ID!
+    createdAt: String!
+    title: String!
+    author: User!
+    stories(last: Int): [Story!]!
+}

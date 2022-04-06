@@ -1,0 +1,27 @@
+scalar ID
+scalar String
+scalar Int
+
+interface Entity {
+    id: ID!
+    createdAt: String!
+}
+
+interface NamedEntity {
+    id: ID!
+    createdAt: String!
+    title: String!
+}
+
+type Query {
+    user(id: ID!): User
+    story(id: ID!): Story
+    stories(searchString: String, last: Int): [Story]!
+}
+
+type Mutation {
+    signIn(signInInput: SignInInput): Jwt
+    createStory(input: CreateStoryInput): Story
+}
+
+

@@ -1,6 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
 import { Messages } from './messages';
 import { CreateReadingListDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -13,9 +12,9 @@ import { StoryEntity } from '../story/entities';
 export class ReadingListService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findUnique(_where: Prisma.ReadingListWhereUniqueInput): Promise<ReadingListEntity> {
+  async findUnique(_title_authorId: { authorId: number, title: string }): Promise<ReadingListEntity> {
     const readingList = await this.prisma.readingList.findUnique({
-      where: _where,
+      where: { title_authorId: _title_authorId },
       include: {
         author: {
           select: {
@@ -31,12 +30,12 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findStories(_where: Prisma.ReadingListWhereUniqueInput = {}, _take: number): Promise<Array<StoryEntity>> {
+  async findStories(_title_authorId: { authorId: number, title: string }, _limit: number = 10): Promise<StoryEntity[]> {
     const data = await this.prisma.readingList.findUnique({
-      where: _where,
+      where: { title_authorId: _title_authorId },
       select: {
         stories: {
-          take: _take,
+          take: _limit,
           orderBy: { id: 'desc' }
         },
       },

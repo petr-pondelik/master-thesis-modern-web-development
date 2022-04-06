@@ -1,0 +1,81 @@
+
+/*
+ * -------------------------------------------------------
+ * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+ * -------------------------------------------------------
+ */
+
+/* tslint:disable */
+/* eslint-disable */
+export class SignInInput {
+    email: string;
+    password: string;
+}
+
+export class CreateStoryInput {
+    title: string;
+    description?: Nullable<string>;
+    content: string;
+    authorId: number;
+}
+
+export interface Entity {
+    id: string;
+    createdAt: string;
+}
+
+export interface NamedEntity {
+    id: string;
+    createdAt: string;
+    title: string;
+}
+
+export class Jwt {
+    access_token: string;
+}
+
+export abstract class IMutation {
+    abstract signIn(signInInput?: Nullable<SignInInput>): Nullable<Jwt> | Promise<Nullable<Jwt>>;
+
+    abstract createStory(input?: Nullable<CreateStoryInput>): Nullable<Story> | Promise<Nullable<Story>>;
+}
+
+export class User implements Entity {
+    id: string;
+    createdAt: string;
+    email: string;
+    givenName?: Nullable<string>;
+    familyName?: Nullable<string>;
+    profileDescription?: Nullable<string>;
+    stories: Story[];
+    story?: Nullable<Story>;
+    readingLists: ReadingList[];
+    readingList?: Nullable<ReadingList>;
+}
+
+export class Story implements NamedEntity {
+    id: string;
+    createdAt: string;
+    title: string;
+    description?: Nullable<string>;
+    content: string;
+    author: User;
+}
+
+export class ReadingList implements NamedEntity {
+    id: string;
+    createdAt: string;
+    title: string;
+    author: User;
+    stories: Story[];
+}
+
+export abstract class IQuery {
+    abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
+
+    abstract story(id: string): Nullable<Story> | Promise<Nullable<Story>>;
+
+    abstract stories(searchString?: Nullable<string>, last?: Nullable<number>): Nullable<Story>[] | Promise<Nullable<Story>[]>;
+}
+
+type Nullable<T> = T | null;

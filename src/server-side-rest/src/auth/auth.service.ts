@@ -1,14 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { User } from '@prisma/client';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtEnvelope } from './envelopes';
 import { JwtPayload } from './strategy';
-import { createLink } from '../common/hateoas';
-import { apiPath } from '../common/helpers';
-import { UserPath } from '../user/user.controller';
+import { UserEntity } from '../user/entities';
 
 @Injectable()
 export class AuthService {
@@ -18,12 +14,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<User | null> {
+  async validateUser(email: string, pass: string): Promise<UserEntity | null> {
     let user;
     try {
-      user = await this.userService.findOne({
-        email: email,
-      });
+      user = await this.userService.findOneByEmail(email, true);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new UnauthorizedException();
@@ -37,19 +31,14 @@ export class AuthService {
     return null;
   }
 
-  async signToken(user: User): Promise<JwtEnvelope> {
+  async signToken(user: UserEntity): Promise<string> {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
-      _links: [
-        createLink('stories', apiPath(UserPath, `${user.id}/stories`), 'GET'),
-        createLink('reading-lists', apiPath(UserPath, `${user.id}/reading-lists`), 'GET'),
-      ],
     };
-    const token = await this.jwtService.signAsync(payload, {
+    return await this.jwtService.signAsync(payload, {
       expiresIn: '12h',
       secret: this.configService.get('JWT_SECRET'),
     });
-    return new JwtEnvelope(token);
   }
 }
