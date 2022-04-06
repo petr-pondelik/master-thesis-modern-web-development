@@ -16,9 +16,9 @@ export class UserResolver {
   }
 
   @ResolveField('stories')
-  async getStories(@Parent() user, @Args('last') last: number) {
+  async getStories(@Parent() user, @Args('limit') limit: number) {
     const { id } = user;
-    return this.userService.findStories(id, last);
+    return this.userService.findStories(id, limit);
   }
 
   @ResolveField('story')
@@ -29,10 +29,10 @@ export class UserResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @ResolveField('readingLists')
-  async getReadingLists(@GraphQLUser() authUser, @Parent() user, @Args('last') last: number) {
+  async getReadingLists(@GraphQLUser() authUser, @Parent() user, @Args('limit') limit: number) {
     console.log(authUser);
     const { id } = user;
-    return this.userService.findReadingLists(id, last);
+    return this.userService.findReadingLists(id, limit);
   }
 
   @ResolveField('readingList')

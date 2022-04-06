@@ -7,9 +7,15 @@ type Story implements NamedEntity {
     author: User!
 }
 
-input CreateStoryInput {
+input CreateStoryContent {
     title: String!
     description: String
     content: String!
     authorId: Int!
+}
+
+input UpdateStoryContent {
+    title: String!
+    description: String
+    content: String!
 }

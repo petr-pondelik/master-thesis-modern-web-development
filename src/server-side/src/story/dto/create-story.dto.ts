@@ -1,7 +1,8 @@
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { CreateStoryContent } from '../../graphql';
 
-export class CreateStoryDto {
+export class CreateStoryDto extends CreateStoryContent {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -10,7 +11,7 @@ export class CreateStoryDto {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string | null;
 
   @ApiProperty()
   @IsString()

@@ -5,8 +5,8 @@ type User implements Entity {
     givenName: String
     familyName: String
     profileDescription: String
-    stories(last: Int): [Story!]!
+    stories(limit: Int): [Story!]!
     story(id: Int): Story
-    readingLists(last: Int): [ReadingList!]!
+    readingLists(limit: Int): [ReadingList!]!
     readingList(title: String): ReadingList
 }

@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { SignInInput } from '../../graphql/graphql';
+import { SignInContent } from '../../graphql';
 
-export class SignInInputDto extends SignInInput {
+export class SignInDto extends SignInContent {
   @IsEmail()
   @IsNotEmpty()
   email: string;

@@ -2,7 +2,7 @@ type Jwt {
     access_token: String!
 }
 
-input SignInInput {
+input SignInContent {
     email: String!
     password: String!
 }

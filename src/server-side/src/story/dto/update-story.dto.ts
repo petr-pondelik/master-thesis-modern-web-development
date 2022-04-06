@@ -1,7 +1,8 @@
 import { IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { UpdateStoryContent } from '../../graphql';
 
-export class UpdateStoryDto {
+export class UpdateStoryDto extends UpdateStoryContent {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()

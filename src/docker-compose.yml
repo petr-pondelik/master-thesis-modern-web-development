@@ -36,16 +36,16 @@ services:
       - '5555:5555'
     command: yarn prisma studio
 
-  mthesis-server-side-rest:
-    container_name: mthesis-server-side-rest
+  mthesis-server-side:
+    container_name: mthesis-server-side
     build:
-      context: ./server-side-rest
+      context: ./server-side
       dockerfile: Dockerfile
     # Mount our host directory to the docker container
     # Mount api directory (./server-side) to (:) docker container (/usr/src/app)
     # Reflect host file changes within the container
     volumes:
-      - ./server-side-rest:/usr/mthesis/app
+      - ./server-side:/usr/mthesis/app
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
     depends_on:
@@ -57,9 +57,9 @@ services:
       - '8080:3000'
     command: >
       sh -c "yarn &&
+             yarn graphql:generate &&
              yarn prisma:generate-client &&
              yarn start:dev"
-
 
 # Commands to build and run the composition
 #   docker-compose build

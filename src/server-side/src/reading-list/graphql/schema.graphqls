@@ -3,5 +3,14 @@ type ReadingList implements NamedEntity {
     createdAt: String!
     title: String!
     author: User!
-    stories(last: Int): [Story!]!
+    stories(limit: Int): [Story!]!
+}
+
+input CreateReadingListContent {
+    title: String!
+    authorId: Int!
+}
+
+input UpdateReadingListContent {
+    title: String!
 }

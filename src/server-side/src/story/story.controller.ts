@@ -166,7 +166,6 @@ export class StoryController {
     @Body() dto: UpdateStoryDto,
     @User() user
   ) {
-    console.log(dto);
     /** Owner-level access restriction */
     const story = await this.storyService.findOneById(_id);
     if (user.id !== story.authorId) {

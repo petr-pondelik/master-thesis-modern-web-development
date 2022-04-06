@@ -16,12 +16,17 @@ interface NamedEntity {
 type Query {
     user(id: ID!): User
     story(id: ID!): Story
-    stories(searchString: String, last: Int): [Story]!
+    stories(searchString: String!, limit: Int): [Story]!
 }
 
 type Mutation {
-    signIn(signInInput: SignInInput): Jwt
-    createStory(input: CreateStoryInput): Story
+    signIn(content: SignInContent!): Jwt
+    createStory(content: CreateStoryContent!): Story
+    updateStory(id: ID! content: UpdateStoryContent!): Story
+    deleteStory(id: ID!): Story
+    createReadingList(content: CreateReadingListContent!): ReadingList
+    updateReadingList(title: String!, userId: Int!, content: UpdateReadingListContent!): ReadingList
+    deleteReadingList(title: String!, userId: Int!): ReadingList
+    addStoryIntoReadingList(title: String!, userId: Int!, storyId: Int!): ReadingList
+    removeStoryFromReadingList(title: String!, userId: Int!, storyId: Int!): ReadingList
 }
-
-
