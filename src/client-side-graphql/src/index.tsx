@@ -29,10 +29,10 @@ render(
         <Route path={'/stories'} element={<StoryListPage />} />
         <Route path={'/stories/:id'} element={<StoryViewPage />} />
         <Route path={'/users/:id'} element={<UserViewPage />} />
-        <Route path={'/users/:userId/stories'} element={<StoryCollectionPage />} />
+        <Route path={'/users/:id/stories'} element={<StoryCollectionPage />} />
         <Route path={'/users/:userId/stories/:storyId'} element={<UserStoryViewPage />} />
-        <Route path={'/users/:userId/reading-lists'} element={<ReadingListCollectionPage />} />
-        <Route path={'/users/:userId/reading-lists/:readingListId'} element={<UserReadingListViewPage />} />
+        <Route path={'/users/:id/reading-lists'} element={<ReadingListCollectionPage />} />
+        <Route path={'/users/:userId/reading-lists/:readingListTitle'} element={<UserReadingListViewPage />} />
         {/*  <Route path="*" element={<NotFound />} />*/}
       </Route>
     </Routes>

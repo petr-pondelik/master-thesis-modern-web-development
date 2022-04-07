@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react';
 import { SearchStoryDto } from '../dto';
 import debounce from 'lodash.debounce';
-import { EntityList, PageContainer } from '../../common';
+import { EntityList, PageContainer, Paths } from '../../common';
 import { SearchBar } from '../component';
 import { useStoriesQuery } from '../../graphql/queries';
+import ErrorPlaceholder from '../../common/components/ErrorPlaceholder';
 
 type SearchPageState = {
   dto: SearchStoryDto
@@ -15,6 +16,10 @@ export const StoryListPage = () => {
   });
 
   const { data, loading, error } = useStoriesQuery( { searchString: state.dto.searchString });
+
+  if (error) {
+    return <ErrorPlaceholder />;
+  }
 
   const setSearchQuery = (query: string) => {
     debouncedFilter(state, query);
@@ -33,6 +38,6 @@ export const StoryListPage = () => {
       query={state.dto.searchString}
       setSearchQuery={setSearchQuery}
     />
-    <EntityList items={data?.stories} itemPath={'/stories'} isLoading={loading} error={error} />
+    <EntityList items={data?.stories} itemPath={Paths.stories()} isLoading={loading} />
   </PageContainer>;
 };

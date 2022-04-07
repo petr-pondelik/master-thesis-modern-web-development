@@ -1,11 +1,10 @@
 import { Card, CardContent, Typography } from '@mui/material';
-import { EntityList } from '../../../common';
+import { EntityList, Paths } from '../../../common';
 import { Shell_UserStories } from './Shell_UserStories';
 import { User } from '../../../graphql';
-import { ApolloError } from '@apollo/client';
 
-export const UserStories = (props: { user: User | undefined; isLoading: boolean; error: ApolloError | undefined }) => {
-  const { user, isLoading, error } = props;
+export const UserStories = (props: { user: User | undefined; isLoading: boolean }) => {
+  const { user, isLoading } = props;
 
   if (isLoading || !user) {
     return <Shell_UserStories />;
@@ -15,7 +14,12 @@ export const UserStories = (props: { user: User | undefined; isLoading: boolean;
     <Card elevation={0}>
       <CardContent>
         <Typography variant={'h5'}>Stories</Typography>
-        <EntityList items={user.stories} itemPath={'/stories'} isLoading={isLoading} error={error} showHeader={false} />
+        <EntityList
+          items={user.stories}
+          itemPath={Paths.stories()}
+          isLoading={isLoading}
+          showHeader={false}
+        />
       </CardContent>
     </Card>
   );

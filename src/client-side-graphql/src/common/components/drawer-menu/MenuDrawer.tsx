@@ -10,6 +10,7 @@ import { IconButton, Typography } from '@mui/material';
 import { useJwtStore } from '../../../store';
 import CustomLink from '../CustomLink';
 import { CSSProperties } from 'react';
+import { Paths } from '../../helpers';
 
 const ItemLinkStyle: CSSProperties = {
   color: 'rgba(0, 0, 0, 0.87)',
@@ -48,12 +49,12 @@ export default function MenuDrawer() {
           </Typography>
         </ListItem>
         <Divider />
-        <CustomLink to={''} customStyles={ItemLinkStyle}>
+        <CustomLink to={Paths.userStories(user.sub)} customStyles={ItemLinkStyle}>
           <ListItem button>
             <ListItemText primary={'My Stories'} />
           </ListItem>
         </CustomLink>
-        <CustomLink to={''} customStyles={ItemLinkStyle}>
+        <CustomLink to={Paths.userReadingLists(user.sub)} customStyles={ItemLinkStyle}>
           <ListItem button>
             <ListItemText primary={'My Reading Lists'} />
           </ListItem>

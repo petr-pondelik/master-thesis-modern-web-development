@@ -3,12 +3,12 @@ scalar String
 scalar Int
 
 interface Entity {
-    id: ID!
+    id: Int!
     createdAt: String!
 }
 
 interface NamedEntity {
-    id: ID!
+    id: Int!
     createdAt: String!
     title: String!
 }
@@ -23,7 +23,7 @@ input SignInContent {
 }
 
 type User implements Entity {
-    id: ID!
+    id: Int!
     createdAt: String!
     email: String!
     givenName: String
@@ -36,7 +36,7 @@ type User implements Entity {
 }
 
 type Story implements NamedEntity {
-    id: ID!
+    id: Int!
     createdAt: String!
     title: String!
     description: String
@@ -58,7 +58,7 @@ input UpdateStoryContent {
 }
 
 type ReadingList implements NamedEntity {
-    id: ID!
+    id: Int!
     createdAt: String!
     title: String!
     author: User!
@@ -75,16 +75,16 @@ input UpdateReadingListContent {
 }
 
 type Query {
-    user(id: ID!): User
-    story(id: ID!): Story
+    user(id: Int!): User
+    story(id: Int!): Story
     stories(searchString: String!, limit: Int): [Story]!
 }
 
 type Mutation {
     signIn(content: SignInContent!): AuthPayload
     createStory(content: CreateStoryContent!): Story
-    updateStory(id: ID! content: UpdateStoryContent!): Story
-    deleteStory(id: ID!): Story
+    updateStory(id: Int! content: UpdateStoryContent!): Story
+    deleteStory(id: Int!): Story
     createReadingList(content: CreateReadingListContent!): ReadingList
     updateReadingList(title: String!, userId: Int!, content: UpdateReadingListContent!): ReadingList
     deleteReadingList(title: String!, userId: Int!): ReadingList

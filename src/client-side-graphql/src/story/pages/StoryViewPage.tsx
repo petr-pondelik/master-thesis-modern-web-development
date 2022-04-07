@@ -5,11 +5,10 @@ import { useParams } from 'react-router-dom';
 
 export const StoryViewPage = () => {
   const params = useParams();
-  console.log(params);
   if (!params.id) {
     return <ErrorPlaceholder />;
   }
-  const { data, loading, error, refetch } = useStoryQuery({ id: params.id })
+  const { data, loading, error, refetch } = useStoryQuery({ id: parseInt(params.id) })
   if (error) {
     return <ErrorPlaceholder />;
   }

@@ -1,17 +1,29 @@
 import { ErrorPlaceholder, PageContainer } from '../../common';
 import StoryView from '../../story/component/StoryView';
+import { useParams } from 'react-router-dom';
+import { useJwtStore } from '../../store';
+import { useUserStoryQuery } from '../../graphql/queries';
 
 export const StoryViewPage = () => {
-  // const resource = useResource(window.location.pathname);
-  // const { data, isLoading, isError, refetch } = useQuery<StoryEnvelope>(
-  //   resource.href, () => getRequest<StoryEnvelope>(resource.href),
-  // );
+  const params = useParams();
+  const user = useJwtStore((state) => state.user);
+  if (!user) {
+    return null;
+  }
+  let userId, storyId;
+  if (params.userId && params.storyId) {
+    userId = parseInt(params.userId);
+    storyId = parseInt(params.storyId);
+  } else {
+    return <ErrorPlaceholder />;
+  }
 
-  // if (isError) {
-  //   return <ErrorPlaceholder />;
-  // }
+  const { data, loading, error, refetch } = useUserStoryQuery({ id: userId, storyId: storyId });
+  if (error) {
+    return <ErrorPlaceholder />;
+  }
 
   return <PageContainer>
-    {/*<StoryView story={data} isLoading={isLoading} refetch={refetch} />*/}
+    <StoryView story={data?.user.story} isLoading={loading} refetch={refetch} />
   </PageContainer>;
 };

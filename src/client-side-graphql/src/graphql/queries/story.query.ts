@@ -1,8 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 import { Story } from '../graphql-typings';
 
-const QUERY = gql`
-  query Story($id: ID!) {
+const STORY_QUERY = gql`
+  query Story($id: Int!) {
     story(id: $id) {
       id
       createdAt
@@ -23,11 +23,11 @@ interface IStoryData {
 }
 
 interface IStoryVars {
-  id: string;
+  id: number;
 }
 
 export function useStoryQuery(_variables: IStoryVars) {
-  return useQuery<IStoryData, IStoryVars>(QUERY, {
+  return useQuery<IStoryData, IStoryVars>(STORY_QUERY, {
     variables: _variables,
   });
 }

@@ -4,6 +4,7 @@ import { EntityDelete } from '../EntityDelete';
 import { red } from '@mui/material/colors';
 import CustomLink from '../../CustomLink';
 import { User } from '../../../../graphql';
+import { Paths } from '../../../helpers';
 
 type EntityCardHeaderProps = {
   title: string,
@@ -27,7 +28,7 @@ export const EntityCardHeader = (props: EntityCardHeaderProps) => {
   };
 
   const renderAuthor = () => {
-    return <CustomLink to={`/users/${author.id}`}>
+    return <CustomLink to={Paths.users(author.id)}>
       <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
         {author.givenName?.charAt(0) ?? '...'}
       </Avatar>

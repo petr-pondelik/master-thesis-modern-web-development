@@ -1,14 +1,25 @@
-import { EntityList } from '../../common';
+import { EntityList, Paths } from '../../common';
 import { Fragment } from 'react';
-import { StoryCreateDialog } from '../../story/component/dialogs/StoryCreateDialog';
+// import { StoryCreateDialog } from '../../story/component/dialogs/StoryCreateDialog';
+import { Story } from '../../graphql';
 
-export const StoryCollection = () => {
-  // const { link } = props;
-  // const { data: stories, isLoading, error, refetch } = useQuery<StoryCollectionEnvelope>(
-  //   ['myStories'], () => HttpRequest<StoryCollectionEnvelope>(link.href, link.method),
-  // );
-  return <Fragment>
-    {/*<EntityList items={stories} isLoading={isLoading} error={error} showHeader={false} />*/}
-    {/*<StoryCreateDialog createLink={findLink(stories?._links ?? [], 'create')} refetch={refetch} />*/}
-  </Fragment>;
+interface IStoryCollectionProps {
+  stories: Story[] | undefined;
+  userId: number;
+  isLoading: boolean;
+}
+
+export const StoryCollection = (props: IStoryCollectionProps) => {
+  const { stories, userId, isLoading } = props;
+  return (
+    <Fragment>
+      <EntityList
+        items={stories}
+        itemPath={Paths.userStories(userId)}
+        isLoading={isLoading}
+        showHeader={false}
+      />
+      {/*<StoryCreateDialog createLink={findLink(stories?._links ?? [], 'create')} refetch={refetch} />*/}
+    </Fragment>
+  );
 };

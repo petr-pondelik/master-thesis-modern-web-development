@@ -35,12 +35,12 @@ export class UpdateReadingListContent {
 }
 
 export interface Entity {
-    id: string;
+    id: number;
     createdAt: string;
 }
 
 export interface NamedEntity {
-    id: string;
+    id: number;
     createdAt: string;
     title: string;
 }
@@ -50,7 +50,7 @@ export class AuthPayload {
 }
 
 export class User implements Entity {
-    id: string;
+    id: number;
     createdAt: string;
     email: string;
     givenName?: Nullable<string>;
@@ -63,7 +63,7 @@ export class User implements Entity {
 }
 
 export class Story implements NamedEntity {
-    id: string;
+    id: number;
     createdAt: string;
     title: string;
     description?: Nullable<string>;
@@ -72,7 +72,7 @@ export class Story implements NamedEntity {
 }
 
 export class ReadingList implements NamedEntity {
-    id: string;
+    id: number;
     createdAt: string;
     title: string;
     author: User;
@@ -80,9 +80,9 @@ export class ReadingList implements NamedEntity {
 }
 
 export abstract class IQuery {
-    abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
+    abstract user(id: number): Nullable<User> | Promise<Nullable<User>>;
 
-    abstract story(id: string): Nullable<Story> | Promise<Nullable<Story>>;
+    abstract story(id: number): Nullable<Story> | Promise<Nullable<Story>>;
 
     abstract stories(searchString: string, limit?: Nullable<number>): Nullable<Story>[] | Promise<Nullable<Story>[]>;
 }
@@ -92,9 +92,9 @@ export abstract class IMutation {
 
     abstract createStory(content: CreateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
 
-    abstract updateStory(id: string, content: UpdateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
+    abstract updateStory(id: number, content: UpdateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
 
-    abstract deleteStory(id: string): Nullable<Story> | Promise<Nullable<Story>>;
+    abstract deleteStory(id: number): Nullable<Story> | Promise<Nullable<Story>>;
 
     abstract createReadingList(content: CreateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 

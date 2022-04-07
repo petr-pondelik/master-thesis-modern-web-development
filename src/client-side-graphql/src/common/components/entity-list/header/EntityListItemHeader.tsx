@@ -1,7 +1,7 @@
 import { Avatar, CardActionArea, CardHeader } from '@mui/material';
 import CustomLink from '../../CustomLink';
 import { red } from '@mui/material/colors';
-import { formatAuthor } from '../../../helpers';
+import { formatAuthor, Paths } from '../../../helpers';
 import { EntityDelete } from '../../entity-card';
 import { Fragment } from 'react';
 import { useJwtStore } from '../../../../store';
@@ -21,7 +21,7 @@ export const EntityListItemHeader = (props: { entity: any, refetch?: any }) => {
   return <CardHeader
     avatar={
       <CardActionArea>
-        <CustomLink to={`/users/${author.id}`}>
+        <CustomLink to={Paths.users(author.id)}>
           <Avatar sx={{ bgcolor: red[500] }} aria-label='recipe'>
             {author.familyName.charAt(0) ?? '...'}
           </Avatar>

@@ -8,9 +8,12 @@ const UserViewPage = () => {
   if (!params.id) {
     return <ErrorPlaceholder />;
   }
-  const {data, loading, error} = useUserWithStoriesQuery({ id: params.id });
+  const {data, loading, error} = useUserWithStoriesQuery({ id: parseInt(params.id) });
+  if (error) {
+    return <ErrorPlaceholder />;
+  }
   return <PageContainer>
-    <UserView user={data?.user} isLoading={loading} error={error}/>
+    <UserView user={data?.user} isLoading={loading}/>
   </PageContainer>;
 };
 

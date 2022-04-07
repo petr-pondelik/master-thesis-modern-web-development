@@ -35,12 +35,12 @@ export interface UpdateReadingListContent {
 }
 
 export interface Entity {
-    id: string;
+    id: number;
     createdAt: string;
 }
 
 export interface NamedEntity {
-    id: string;
+    id: number;
     createdAt: string;
     title: string;
 }
@@ -50,7 +50,7 @@ export interface AuthPayload {
 }
 
 export interface User extends Entity {
-    id: string;
+    id: number;
     createdAt: string;
     email: string;
     givenName?: Nullable<string>;
@@ -63,7 +63,7 @@ export interface User extends Entity {
 }
 
 export interface Story extends NamedEntity {
-    id: string;
+    id: number;
     createdAt: string;
     title: string;
     description?: Nullable<string>;
@@ -72,7 +72,7 @@ export interface Story extends NamedEntity {
 }
 
 export interface ReadingList extends NamedEntity {
-    id: string;
+    id: number;
     createdAt: string;
     title: string;
     author: User;
@@ -80,16 +80,16 @@ export interface ReadingList extends NamedEntity {
 }
 
 export interface IQuery {
-    user(id: string): Nullable<User> | Promise<Nullable<User>>;
-    story(id: string): Nullable<Story> | Promise<Nullable<Story>>;
+    user(id: number): Nullable<User> | Promise<Nullable<User>>;
+    story(id: number): Nullable<Story> | Promise<Nullable<Story>>;
     stories(searchString: string, limit?: Nullable<number>): Nullable<Story>[] | Promise<Nullable<Story>[]>;
 }
 
 export interface IMutation {
     signIn(content: SignInContent): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
     createStory(content: CreateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
-    updateStory(id: string, content: UpdateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
-    deleteStory(id: string): Nullable<Story> | Promise<Nullable<Story>>;
+    updateStory(id: number, content: UpdateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
+    deleteStory(id: number): Nullable<Story> | Promise<Nullable<Story>>;
     createReadingList(content: CreateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
     updateReadingList(title: string, userId: number, content: UpdateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
     deleteReadingList(title: string, userId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
