@@ -24,7 +24,7 @@ import { StoryPath } from '../story/story.controller';
 import { User } from '../common/decorator';
 import { ReadingListService } from '../reading-list/reading-list.service';
 import { CreateReadingListDto } from '../reading-list/dto';
-import { UpdateReadingListDto } from '../reading-list/dto/update-reading-list.dto';
+import { UpdateReadingListDto } from '../reading-list/dto';
 import { StoryService } from '../story/story.service';
 import { Response } from 'express';
 import {
@@ -106,7 +106,7 @@ export class UserController {
   async findStories(
     @Param('id', ParseIntPipe) _id: number,
     @Jwt() jwt,
-    @Limit(ParseIntPipe) limit: number,
+    @Limit() limit: number | undefined,
   ): Promise<StoryCollectionEnvelope> {
     const stories = await this.userService.findStories(_id, limit);
     const envelope = new StoryCollectionEnvelope(stories);
@@ -166,7 +166,7 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   async findUsersReadingLists(
     @Param('id', ParseIntPipe) _id: number,
-    @Limit(ParseIntPipe) limit: number
+    @Limit() limit: number | undefined
   ): Promise<ReadingListCollectionEnvelope> {
     const readingLists = await this.userService.findReadingLists(_id, limit);
     const envelope = new ReadingListCollectionEnvelope(readingLists);
@@ -194,7 +194,6 @@ export class UserController {
   async findReadingList(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
-    @User() user,
   ): Promise<ReadingListEnvelope> {
     const readingList = await this.readingListService.findUnique({ authorId: id, title: title });
     let envelope = new ReadingListEnvelope();
@@ -216,12 +215,10 @@ export class UserController {
   })
   @ApiOkResponse({ description: 'Stories successfully retrieved.', type: StoryCollectionEnvelope })
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
   async findReadingListStories(
     @Param('id', ParseIntPipe) id: number,
     @Param('title') title: string,
-    @Limit(ParseIntPipe) limit: number,
-    @User() user,
+    @Limit() limit: number | undefined
   ): Promise<StoryCollectionEnvelope> {
     const stories = await this.readingListService.findStories({ authorId: id, title: title }, limit);
     const envelope = new StoryCollectionEnvelope(stories);

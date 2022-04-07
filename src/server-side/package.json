@@ -7,7 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "prisma:generate-client": "prisma generate",
-    "graphql:generate": "ts-node graphql/generate-typings.ts",
+    "graphql:generate-classes": "ts-node graphql/generate-typings-classes.ts",
+    "graphql:generate-interfaces": "ts-node graphql/generate-typings-interfaces.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

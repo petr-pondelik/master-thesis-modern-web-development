@@ -30,7 +30,7 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findStories(_title_authorId: { authorId: number, title: string }, _limit = 10): Promise<StoryEntity[]> {
+  async findStories(_title_authorId: { authorId: number, title: string }, _limit: number | undefined): Promise<StoryEntity[]> {
     const data = await this.prisma.readingList.findUnique({
       where: { title_authorId: _title_authorId },
       select: {

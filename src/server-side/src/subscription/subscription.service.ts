@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client';
 export class SubscriptionService {
   constructor(private prisma: PrismaService) {}
 
-  async findMany(_where: Prisma.SubscriptionWhereInput = {}, _limit = 100) {
+  async findMany(_where: Prisma.SubscriptionWhereInput = {}, _limit: number | undefined) {
     return this.prisma.subscription.findMany({
       where: _where,
       take: _limit,

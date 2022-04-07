@@ -57,7 +57,7 @@ services:
       - '8080:3000'
     command: >
       sh -c "yarn &&
-             yarn graphql:generate &&
+             yarn graphql:generate-classes &&
              yarn prisma:generate-client &&
              yarn start:dev"
 

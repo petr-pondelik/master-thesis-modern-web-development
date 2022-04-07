@@ -1,8 +1,0 @@
-type Jwt {
-    access_token: String!
-}
-
-input SignInContent {
-    email: String!
-    password: String!
-}

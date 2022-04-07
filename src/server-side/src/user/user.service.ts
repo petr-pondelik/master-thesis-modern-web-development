@@ -11,8 +11,7 @@ import { ReadingListEntity } from '../reading-list/entities';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
   async findOneByEmail(_email: string, withPassword = false): Promise<UserEntity> {
     const user = await this.prisma.user.findFirst({
@@ -41,7 +40,7 @@ export class UserService {
     return userEntity;
   }
 
-  async findStories(_id: number, _limit = 10): Promise<StoryEntity[]> {
+  async findStories(_id: number, _limit: number | undefined): Promise<StoryEntity[]> {
     const data = await this.prisma.user.findUnique({
       where: { id: _id },
       select: {
@@ -78,7 +77,7 @@ export class UserService {
     return data.stories[0];
   }
 
-  async findReadingLists(_id: number, _limit = 10): Promise<ReadingListEntity[]> {
+  async findReadingLists(_id: number, _limit: number | undefined): Promise<ReadingListEntity[]> {
     const data = await this.prisma.user.findUnique({
       where: { id: _id },
       select: {

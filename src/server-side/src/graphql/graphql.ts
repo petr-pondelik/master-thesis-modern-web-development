@@ -12,15 +12,6 @@ export class SignInContent {
     password: string;
 }
 
-export class CreateReadingListContent {
-    title: string;
-    authorId: number;
-}
-
-export class UpdateReadingListContent {
-    title: string;
-}
-
 export class CreateStoryContent {
     title: string;
     description?: Nullable<string>;
@@ -34,6 +25,15 @@ export class UpdateStoryContent {
     content: string;
 }
 
+export class CreateReadingListContent {
+    title: string;
+    authorId: number;
+}
+
+export class UpdateReadingListContent {
+    title: string;
+}
+
 export interface Entity {
     id: string;
     createdAt: string;
@@ -45,8 +45,38 @@ export interface NamedEntity {
     title: string;
 }
 
-export class Jwt {
+export class AuthPayload {
     access_token: string;
+}
+
+export class User implements Entity {
+    id: string;
+    createdAt: string;
+    email: string;
+    givenName?: Nullable<string>;
+    familyName?: Nullable<string>;
+    profileDescription?: Nullable<string>;
+    stories: Story[];
+    story?: Nullable<Story>;
+    readingLists: ReadingList[];
+    readingList?: Nullable<ReadingList>;
+}
+
+export class Story implements NamedEntity {
+    id: string;
+    createdAt: string;
+    title: string;
+    description?: Nullable<string>;
+    content: string;
+    author: User;
+}
+
+export class ReadingList implements NamedEntity {
+    id: string;
+    createdAt: string;
+    title: string;
+    author: User;
+    stories: Story[];
 }
 
 export abstract class IQuery {
@@ -58,7 +88,7 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract signIn(content: SignInContent): Nullable<Jwt> | Promise<Nullable<Jwt>>;
+    abstract signIn(content: SignInContent): Nullable<AuthPayload> | Promise<Nullable<AuthPayload>>;
 
     abstract createStory(content: CreateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
 
@@ -75,36 +105,6 @@ export abstract class IMutation {
     abstract addStoryIntoReadingList(title: string, userId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 
     abstract removeStoryFromReadingList(title: string, userId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
-}
-
-export class ReadingList implements NamedEntity {
-    id: string;
-    createdAt: string;
-    title: string;
-    author: User;
-    stories: Story[];
-}
-
-export class Story implements NamedEntity {
-    id: string;
-    createdAt: string;
-    title: string;
-    description?: Nullable<string>;
-    content: string;
-    author: User;
-}
-
-export class User implements Entity {
-    id: string;
-    createdAt: string;
-    email: string;
-    givenName?: Nullable<string>;
-    familyName?: Nullable<string>;
-    profileDescription?: Nullable<string>;
-    stories: Story[];
-    story?: Nullable<Story>;
-    readingLists: ReadingList[];
-    readingList?: Nullable<ReadingList>;
 }
 
 type Nullable<T> = T | null;

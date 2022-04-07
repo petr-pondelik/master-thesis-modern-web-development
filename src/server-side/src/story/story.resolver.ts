@@ -14,7 +14,7 @@ export class StoryResolver {
   @Query('stories')
   async searchStories(
     @Args('searchString') searchString: string,
-    @Args('limit', ParseIntPipe) limit: number
+    @Args('limit') limit: number
   ) {
     return this.storyService.search({searchString: searchString, author: ''}, limit);
   }
