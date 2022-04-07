@@ -19,7 +19,7 @@ export const useSignIn = (call: boolean, dto: SignInDto) => {
   const link = useResource('signIn');
 
   const jwtSignIn = (res: JwtEnvelope) => {
-    setUser(res.access_token);
+    setUser(res);
     navigate('/');
   }
 

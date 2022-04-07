@@ -18,7 +18,7 @@ export const ReadingListView = (
   const fetchMethod = () => HttpRequest<StoryCollectionEnvelope>(storiesLink.href, storiesLink.method);
   const { data: stories, isLoading: storiesLoading, error: storiesError, refetch: storiesRefetch }
     = useQuery<StoryCollectionEnvelope>(
-    window.location.pathname + '_stories', fetchMethod,
+    storiesLink.href, fetchMethod,
   );
 
   return <EntityCard>

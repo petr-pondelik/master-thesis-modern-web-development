@@ -18,6 +18,7 @@ type SearchPageState = {
 export const StoryListPage = () => {
   const addMore = useLinksStore(state => state.addMore);
   const findLink = useLinksStore(state => state.find);
+
   let searchLink = findLink('stories_search');
 
   const [state, setState] = useState<SearchPageState>({
@@ -71,5 +72,3 @@ export const StoryListPage = () => {
     <EntityList items={storiesResponse.data} isLoading={storiesResponse.isLoading} error={storiesResponse.error} />
   </PageContainer>;
 };
-
-export default StoryListPage;

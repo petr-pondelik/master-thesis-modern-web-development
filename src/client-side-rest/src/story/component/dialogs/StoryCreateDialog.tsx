@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useJwtStore } from '../../../store';
-import { merge as _merge } from 'lodash';
 
 export type StoryCreateDialogState = {
   open: boolean,
@@ -32,7 +31,7 @@ export const StoryCreateDialog = (props: { createLink: HateoasLink, refetch: any
       title: '',
       description: '',
       content: '',
-      authorId: user.sub,
+      authorId: user.data.sub,
     });
 
   const mutation = useMutation(

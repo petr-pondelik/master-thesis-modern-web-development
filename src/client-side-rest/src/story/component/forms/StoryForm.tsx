@@ -52,7 +52,6 @@ export const StoryForm = (props: StoryFormProps) => {
     const newDto = { ...state.dto, ...dtoFragment };
     const newValidation = { ...state.validation, ...validationFragment };
     const valid = isValid(newValidation);
-    console.log(valid);
     setState({
       ...state,
       ...{

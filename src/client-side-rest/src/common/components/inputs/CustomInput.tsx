@@ -31,7 +31,7 @@ export const CustomInput = (props: CustomInputProps) => {
 
   const defaultErrorMsg = 'Please enter text.';
 
-  const defaultValidationFunction: ValidationFunction = (value: string): boolean => {
+  const defaultValidationFunction: ValidationFunction = (value: any): boolean => {
     return true;
   };
 

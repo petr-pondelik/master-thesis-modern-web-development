@@ -12,7 +12,7 @@ export const EntityListItemHeader = (props: { entity: any, refetch?: any }) => {
   const authorLink = findLink(entity._links, 'author');
 
   const fetchMethod = () => HttpRequest<UserEnvelope>(authorLink.href, authorLink.method);
-  const { data: author, isLoading: authorLoading, error: authorError } = useQuery<UserEnvelope>(
+  const { data: author } = useQuery<UserEnvelope>(
     authorLink.href, fetchMethod, {
       enabled: entity.author === undefined,
     },

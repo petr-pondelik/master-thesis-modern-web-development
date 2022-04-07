@@ -1,33 +1,41 @@
 import create from 'zustand';
-import { JwtPayload } from '../api';
+import { HateoasLink, JwtEnvelope, JwtPayload } from '../api';
 import jwtDecode from 'jwt-decode';
 
-type JwtState = {
-  jwt: string | null,
-  user: JwtPayload | null,
-  setUser: (jwt: string) => void,
-  removeUser: () => void
-}
+export type AppUser = {
+  data: JwtPayload,
+  _links: HateoasLink[]
+};
 
-export const getJwtFromStorage = () => {
+type JwtState = {
+  jwt: string | null;
+  user: AppUser | null;
+  setUser: (jwt: JwtEnvelope) => void;
+  removeUser: () => void;
+};
+
+export const getJwtFromStorage = (): string | null => {
   return localStorage.getItem('mthesis-jwt');
 };
 
-export const getUserFromStorage = () => {
+export const getUserFromStorage = (): AppUser | null => {
   const userStr = localStorage.getItem('mthesis-user');
   return userStr ? JSON.parse(userStr) : null;
 };
 
-export const useJwtStore = create<JwtState>(set => ({
+export const useJwtStore = create<JwtState>((set) => ({
   jwt: getJwtFromStorage(),
   user: getUserFromStorage(),
-  setUser: _jwt => {
-    localStorage.setItem('mthesis-jwt', _jwt);
-    const _user: JwtPayload = jwtDecode(_jwt);
+  setUser: (envelope: JwtEnvelope) => {
+    localStorage.setItem('mthesis-jwt', envelope.access_token);
+    const _user: AppUser = {
+      data: jwtDecode<JwtPayload>(envelope.access_token),
+      _links: envelope._links
+    };
     localStorage.setItem('mthesis-user', JSON.stringify(_user));
     set({
-      jwt: _jwt,
-      user: _user,
+      jwt: envelope.access_token,
+      user: _user
     });
   },
   removeUser: () => {

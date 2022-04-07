@@ -25,8 +25,6 @@ export const FullscreenDialog = (props: FullscreenDialogProps) => {
 
   const {title, isOpened, actionEnabled, handleClose, handleAction, containedElement} = props;
 
-  console.log(actionEnabled);
-
   return <Dialog
     fullScreen
     open={isOpened}

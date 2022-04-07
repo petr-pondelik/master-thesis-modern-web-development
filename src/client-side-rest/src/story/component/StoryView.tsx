@@ -1,11 +1,11 @@
-import { findLink, JwtPayload, StoryEnvelope } from '../../api';
+import { findLink, StoryEnvelope } from '../../api';
 import { CardContent, Grid, Typography } from '@mui/material';
 import { Shell_StoryCard } from './story-card';
 import { EntityCard, EntityCardHeader } from '../../common';
 import { ReadingListsRelations, StoryUpdateDialog } from './dialogs';
-import { useJwtStore } from '../../store';
+import { AppUser, useJwtStore } from '../../store';
 
-const AssignToReadingLists = (user: JwtPayload | null, story: StoryEnvelope) => {
+const AssignToReadingLists = (user: AppUser | null, story: StoryEnvelope) => {
   return user ? <ReadingListsRelations user={user} story={story} /> : null;
 };
 

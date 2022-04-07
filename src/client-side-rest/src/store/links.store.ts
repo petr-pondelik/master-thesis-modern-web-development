@@ -25,7 +25,6 @@ export const useLinksStore = create<LinksState>((set, get) => ({
     for (const p of pairs) {
       linksNew[p.key] = p.link;
     }
-    console.log(linksNew);
     localStorage.setItem('mthesis-links', JSON.stringify(linksNew));
     set({
       links: linksNew,

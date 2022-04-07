@@ -10,17 +10,17 @@ import {
 import {
   findLink,
   HttpRequest,
-  JwtPayload,
   ReadingListCollectionEnvelope,
   ReadingListEnvelope,
   StoryCollectionEnvelope, StoryEnvelope,
 } from '../../../api';
 import { useMutation, useQuery } from 'react-query';
+import { AppUser } from '../../../store';
 
 export interface SimpleDialogProps {
   open: boolean;
   onClose: () => void;
-  user: JwtPayload;
+  user: AppUser;
   story: StoryEnvelope;
 }
 
@@ -30,14 +30,12 @@ const ReadingListItem = (props: { readingList: ReadingListEnvelope, story: Story
   const addStoryLink = findLink(readingList._links, 'addStory');
   const removeStoryLink = findLink(readingList._links, 'removeStory');
 
-  const { data: storiesRes, isLoading, error, refetch: refetchStories } = useQuery<StoryCollectionEnvelope>(
-    [`reading-list-${readingList.id}-stories`],
+  const { data: storiesRes, refetch: refetchStories } = useQuery<StoryCollectionEnvelope>(
+    [`reading-list-stories`, readingList.id],
     () => HttpRequest<StoryCollectionEnvelope>(storiesLink.href, storiesLink.method),
   );
 
   const stories: StoryEnvelope[] = storiesRes?.data ?? [];
-  console.log(stories);
-
   const containsStory = !!stories.find((item) => item.id === story.id);
 
   const addStory = useMutation(
@@ -45,7 +43,6 @@ const ReadingListItem = (props: { readingList: ReadingListEnvelope, story: Story
       HttpRequest<boolean>(addStoryLink.href.replace(':storyId', storyId.toString()), addStoryLink.method),
     {
       onSuccess: () => {
-        console.log('ADDED');
         refetchStories();
       },
     },
@@ -56,7 +53,6 @@ const ReadingListItem = (props: { readingList: ReadingListEnvelope, story: Story
       HttpRequest<boolean>(removeStoryLink.href.replace(':storyId', storyId.toString()), removeStoryLink.method),
     {
       onSuccess: () => {
-        console.log('REMOVED');
         refetchStories();
       },
     },
@@ -86,12 +82,11 @@ function RelationsDialog(props: SimpleDialogProps) {
   };
 
   const fetchLink = findLink(user._links, 'reading-lists');
-  const { data, isLoading, error, refetch } = useQuery<ReadingListCollectionEnvelope>(
+  const { data } = useQuery<ReadingListCollectionEnvelope>(
     ['my-reading-lists'], () => HttpRequest<ReadingListCollectionEnvelope>(fetchLink.href, fetchLink.method),
   );
 
   const readingLists = data?.data ?? [];
-  console.log(readingLists);
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -105,7 +100,7 @@ function RelationsDialog(props: SimpleDialogProps) {
   );
 }
 
-export const ReadingListsRelations = (props: { user: JwtPayload, story: StoryEnvelope }) => {
+export const ReadingListsRelations = (props: { user: AppUser, story: StoryEnvelope }) => {
   const { user, story } = props;
   const [open, setOpen] = useState(false);
 

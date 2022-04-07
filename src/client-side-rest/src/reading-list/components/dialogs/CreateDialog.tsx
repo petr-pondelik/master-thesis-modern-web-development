@@ -27,7 +27,7 @@ export const CreateDialog = (props: { createLink: HateoasLink, refetch: any }) =
   const [actionEnabled, setActionEnabled] = useState<boolean>(false);
   const [dto, setDto] = useState<CreateReadingListDto>({
     title: '',
-    authorId: user.sub,
+    authorId: user.data.sub,
   });
 
   const mutation = useMutation(
