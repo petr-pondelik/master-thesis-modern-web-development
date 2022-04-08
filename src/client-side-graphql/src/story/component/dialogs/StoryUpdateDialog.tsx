@@ -1,36 +1,35 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Fragment, useState } from 'react';
 import { StoryForm } from '../forms';
-import { UpdateStoryDto } from '../../dto';
 import { FullscreenDialog } from '../../../common/components/dialogs';
+import { StoryQueryStory } from '../../../graphql/queries';
+import { client, UpdateStoryContent } from '../../../graphql';
+import { useUpdateStoryMutation } from '../../../graphql/mutations';
 
 export type StoryUpdateDialogState = {
-  open: boolean,
-  actionEnabled: boolean,
-  dto: UpdateStoryDto
-}
+  open: boolean;
+  actionEnabled: boolean;
+  dto: UpdateStoryContent;
+};
 
-export const StoryUpdateDialog = (props: { story: any, refetch: any }) => {
-
-  const { story, refetch } = props;
-
+export const StoryUpdateDialog = (props: { story: StoryQueryStory }) => {
+  const { story } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(true);
-  const [dto, setDto] = useState<UpdateStoryDto>({
+  const [dto, setDto] = useState<UpdateStoryContent>({
     title: story ? story.title : '',
     description: story ? story.description : '',
     content: story ? story.content : '',
   });
 
-  // const mutation = useMutation(
-  //   (dto: UpdateStoryDto) => HttpRequest<StoryEnvelope, UpdateStoryDto>(updateLink.href, updateLink.method, dto),
-  //   {
-  //     onSuccess: () => {
-  //       refetch();
-  //       handleClose();
-  //     },
-  //   },
-  // );
+  const actionCallback = () => {
+    client.refetchQueries({
+      include: ['Story']
+    })
+    handleClose();
+  }
+
+  const [updateStory] = useUpdateStoryMutation({ id: story.id, content: dto }, () => actionCallback());
 
   const handleOpen = () => {
     setOpen(true);
@@ -41,8 +40,7 @@ export const StoryUpdateDialog = (props: { story: any, refetch: any }) => {
   };
 
   const handleSave = () => {
-    // mutation.mutate(dto);
-    // handleClose();
+    updateStory();
   };
 
   const update = (stateFragment: Partial<StoryUpdateDialogState>) => {

@@ -1,47 +1,80 @@
-import { CardContent, Grid, Typography } from '@mui/material';
+import { CardContent, Grid, IconButton, Typography } from '@mui/material';
 import { Shell_StoryCard } from './story-card';
 import { EntityCard, EntityCardHeader, formatAuthor } from '../../common';
 import { ReadingListsRelations, StoryUpdateDialog } from './dialogs';
 import { AppUser, useJwtStore } from '../../store';
-import { Story } from '../../graphql';
+import { StoryQueryStory, UserStoryQueryStory } from '../../graphql/queries';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useDeleteStoryMutation } from '../../graphql/mutations';
+import { useNavigate } from 'react-router-dom';
+import { client } from '../../graphql';
 
 const AssignToReadingLists = (user: AppUser | null, story: any) => {
   return user ? <ReadingListsRelations user={user} story={story} /> : null;
 };
 
-export const StoryView = (props: { story: Story | undefined, isLoading: boolean, refetch: unknown }) => {
-  const { story, isLoading, refetch } = props;
-  const user = useJwtStore(state => state.user);
+type StoryViewProps = {
+  story: StoryQueryStory | UserStoryQueryStory | undefined;
+  isLoading: boolean;
+  deleteBacklink?: string;
+};
+
+export const StoryView = (props: StoryViewProps) => {
+  const { story, isLoading, deleteBacklink } = props;
+
   if (isLoading || !story || !story.author) {
     return <Shell_StoryCard />;
   }
-  console.log(story);
-  return <EntityCard>
-    <EntityCardHeader
-      title={formatAuthor(story.author)}
-      subheader={story.createdAt}
-      author={story.author}
-      updateNode={<StoryUpdateDialog story={story} refetch={refetch} />}
-    />
-    <CardContent>
-      <Grid container style={{ marginBottom: '2rem' }}>
-        <Grid item xs={12}>
-          <Typography variant={'h4'} sx={{ marginBottom: '1rem' }}>
-            {story.title ?? '...'}
-          </Typography>
+
+  const deleteCallback = () => {
+    navigate(deleteBacklink ?? '');
+    client.refetchQueries({
+      include: ['UserStories'],
+    });
+  };
+
+  const user = useJwtStore((state) => state.user);
+  const navigate = useNavigate();
+  const [deleteStory] = useDeleteStoryMutation({ id: story.id }, deleteCallback);
+
+  const deleteNode = () => {
+    if (!deleteBacklink) {
+      return null;
+    }
+    return (
+      <IconButton aria-label="settings" onClick={() => deleteStory()}>
+        <DeleteIcon />
+      </IconButton>
+    );
+  };
+
+  return (
+    <EntityCard>
+      <EntityCardHeader
+        title={formatAuthor(story.author)}
+        subheader={story.createdAt}
+        author={story.author}
+        updateNode={<StoryUpdateDialog story={story} />}
+        deleteNode={deleteNode()}
+      />
+      <CardContent>
+        <Grid container style={{ marginBottom: '2rem' }}>
+          <Grid item xs={12}>
+            <Typography variant={'h4'} sx={{ marginBottom: '1rem' }}>
+              {story.title ?? '...'}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {AssignToReadingLists(user, story)}
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          {AssignToReadingLists(user, story)}
-        </Grid>
-      </Grid>
-      <Typography variant={'body1'} style={{ marginBottom: '2rem' }}>
-        {story.description ?? '...'}
-      </Typography>
-      <Typography variant={'body1'}>
-        {story.content ?? '...'}
-      </Typography>
-    </CardContent>
-  </EntityCard>;
+        <Typography variant={'body1'} style={{ marginBottom: '2rem' }}>
+          {story.description ?? '...'}
+        </Typography>
+        <Typography variant={'body1'}>{story.content ?? '...'}</Typography>
+      </CardContent>
+    </EntityCard>
+  );
 };
 
 export default StoryView;

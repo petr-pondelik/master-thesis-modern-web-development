@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client';
-import { Story } from '../graphql-typings';
 
 const USER_STORIES_QUERY = gql`
   query UserStories($id: Int!, $limit: Int) {
@@ -14,19 +13,27 @@ const USER_STORIES_QUERY = gql`
   }
 `;
 
-interface IUserStoriesData {
+export type UserStoriesQueryStory = {
+  id: number;
+  createdAt: string;
+  title: string;
+  description?: string | null;
+}
+
+export type UserStoriesData = {
   user: {
-    stories: Story[];
+    id: number,
+    stories: UserStoriesQueryStory[];
   };
 }
 
-interface IUserStoriesVars {
+export type UserStoriesVars = {
   id: number;
   limit?: number;
 }
 
-export function useUserStoriesQuery(_variables: IUserStoriesVars) {
-  return useQuery<IUserStoriesData, IUserStoriesVars>(USER_STORIES_QUERY, {
+export function useUserStoriesQuery(_variables: UserStoriesVars) {
+  return useQuery<UserStoriesData, UserStoriesVars>(USER_STORIES_QUERY, {
     variables: _variables,
   });
 }

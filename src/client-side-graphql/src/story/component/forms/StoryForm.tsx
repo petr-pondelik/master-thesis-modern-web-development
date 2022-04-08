@@ -84,7 +84,7 @@ export const StoryForm = (props: StoryFormProps) => {
         <Grid item xs={11} md={8} lg={6}>
           <CustomInput
             name={'description'}
-            label={'Description*'}
+            label={'Description'}
             defaultValue={story?.description}
             updateParent={(dtoFragment, validationFragment) => update(dtoFragment, validationFragment)}
           />

@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client';
-import { ReadingList } from '../graphql-typings';
 
 const USER_READING_LISTS_QUERY = gql`
   query UserReadingLists($id: Int!, $limit: Int) {
@@ -7,28 +6,29 @@ const USER_READING_LISTS_QUERY = gql`
       id
       readingLists(limit: $limit) {
         title
-        stories {
-          id
-          title
-        }
       }
     }
   }
 `;
 
-interface IUserReadingListsData {
+export type UserReadingListsQueryReadingList = {
+  title: string,
+}
+
+export type UserReadingListsData = {
   user: {
-    readingLists: ReadingList[];
+    id: number,
+    readingLists: UserReadingListsQueryReadingList[];
   };
 }
 
-interface IUserReadingListsVars {
+type UserReadingListsVars = {
   id: number;
   limit?: number;
 }
 
-export function useUserReadingListsQuery(_variables: IUserReadingListsVars) {
-  return useQuery<IUserReadingListsData, IUserReadingListsVars>(USER_READING_LISTS_QUERY, {
+export function useUserReadingListsQuery(_variables: UserReadingListsVars) {
+  return useQuery<UserReadingListsData, UserReadingListsVars>(USER_READING_LISTS_QUERY, {
     variables: _variables,
   });
 }

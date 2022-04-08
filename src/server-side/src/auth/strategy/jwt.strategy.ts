@@ -20,6 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
+    console.log(payload);
     try {
       return await this.userService.findOneByEmail(payload.email);
     } catch (error) {

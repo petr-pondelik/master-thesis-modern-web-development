@@ -1,30 +1,25 @@
 import { Fragment, ReactNode } from 'react';
 import { Avatar, CardHeader, IconButton } from '@mui/material';
-import { EntityDelete } from '../EntityDelete';
 import { red } from '@mui/material/colors';
 import CustomLink from '../../CustomLink';
-import { User } from '../../../../graphql';
 import { Paths } from '../../../helpers';
 
 type EntityCardHeaderProps = {
   title: string,
   subheader: string,
   updateNode: ReactNode,
-  author: User
+  deleteNode: ReactNode,
+  author: any,
 }
 
 export const EntityCardHeader = (props: EntityCardHeaderProps) => {
 
-  const { title, subheader, updateNode, author } = props;
+  const { title, subheader, updateNode, deleteNode, author } = props;
 
   const renderUpdate = () => {
     return <IconButton aria-label='settings'>
       {updateNode}
     </IconButton>;
-  };
-
-  const renderDelete = () => {
-    return <EntityDelete />
   };
 
   const renderAuthor = () => {
@@ -42,7 +37,7 @@ export const EntityCardHeader = (props: EntityCardHeaderProps) => {
     action={
       <Fragment>
         {renderUpdate()}
-        {renderDelete()}
+        {deleteNode}
       </Fragment>
     }
   />;

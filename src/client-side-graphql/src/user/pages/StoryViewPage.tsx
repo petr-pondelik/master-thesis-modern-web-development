@@ -1,4 +1,4 @@
-import { ErrorPlaceholder, PageContainer } from '../../common';
+import { ErrorPlaceholder, PageContainer, Paths } from '../../common';
 import StoryView from '../../story/component/StoryView';
 import { useParams } from 'react-router-dom';
 import { useJwtStore } from '../../store';
@@ -18,12 +18,18 @@ export const StoryViewPage = () => {
     return <ErrorPlaceholder />;
   }
 
-  const { data, loading, error, refetch } = useUserStoryQuery({ id: userId, storyId: storyId });
+  const { data, loading, error } = useUserStoryQuery({ id: userId, storyId: storyId });
   if (error) {
     return <ErrorPlaceholder />;
   }
 
-  return <PageContainer>
-    <StoryView story={data?.user.story} isLoading={loading} refetch={refetch} />
-  </PageContainer>;
+  return (
+    <PageContainer>
+      <StoryView
+        story={data?.user.story}
+        deleteBacklink={Paths.userStories(userId)}
+        isLoading={loading}
+      />
+    </PageContainer>
+  );
 };

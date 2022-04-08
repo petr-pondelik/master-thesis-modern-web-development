@@ -1,15 +1,15 @@
 import { EntityList, Paths } from '../../common';
 import { Fragment } from 'react';
-// import { StoryCreateDialog } from '../../story/component/dialogs/StoryCreateDialog';
-import { Story } from '../../graphql';
+import { StoryCreateDialog } from '../../story/component/dialogs/StoryCreateDialog';
+import { UserStoriesQueryStory } from '../../graphql/queries';
 
-interface IStoryCollectionProps {
-  stories: Story[] | undefined;
+type StoryCollectionProps = {
+  stories: UserStoriesQueryStory[] | undefined;
   userId: number;
   isLoading: boolean;
 }
 
-export const StoryCollection = (props: IStoryCollectionProps) => {
+export const StoryCollection = (props: StoryCollectionProps) => {
   const { stories, userId, isLoading } = props;
   return (
     <Fragment>
@@ -19,7 +19,7 @@ export const StoryCollection = (props: IStoryCollectionProps) => {
         isLoading={isLoading}
         showHeader={false}
       />
-      {/*<StoryCreateDialog createLink={findLink(stories?._links ?? [], 'create')} refetch={refetch} />*/}
+      <StoryCreateDialog />
     </Fragment>
   );
 };

@@ -1,15 +1,15 @@
 import { Fragment } from 'react';
 import { CreateDialog } from '../../reading-list/components';
-import { ReadingList } from '../../graphql';
 import { EntityList, Paths } from '../../common';
+import { UserReadingListsQueryReadingList } from '../../graphql/queries';
 
-interface IReadingListCollectionProps {
-  readingLists: ReadingList[] | undefined;
+type ReadingListCollectionProps = {
+  readingLists: UserReadingListsQueryReadingList[] | undefined;
   userId: number;
   isLoading: boolean;
 }
 
-export const ReadingListCollection = (props: IReadingListCollectionProps) => {
+export const ReadingListCollection = (props: ReadingListCollectionProps) => {
   const { readingLists, userId, isLoading } = props;
   return (
     <Fragment>
@@ -19,7 +19,7 @@ export const ReadingListCollection = (props: IReadingListCollectionProps) => {
         isLoading={isLoading}
         showHeader={false}
       />
-      {/*<CreateDialog createLink={findLink(readingLists?._links ?? [], 'create')} refetch={refetch}/>*/}
+      <CreateDialog/>
     </Fragment>
   );
 };

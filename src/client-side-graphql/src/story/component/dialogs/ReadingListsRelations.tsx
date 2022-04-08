@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { AppUser } from '../../../store';
 
-export interface SimpleDialogProps {
+export type SimpleDialogProps = {
   open: boolean;
   onClose: () => void;
   user: AppUser;

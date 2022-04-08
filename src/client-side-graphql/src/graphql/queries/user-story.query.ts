@@ -21,19 +21,34 @@ const USER_STORY_QUERY = gql`
   }
 `;
 
-export interface IUserStoryData {
+export type UserStoryQueryAuthor = {
+  id: number;
+  givenName?: string | null;
+  familyName?: string | null;
+}
+
+export type UserStoryQueryStory = {
+  id: number;
+  createdAt: string;
+  title: string;
+  description?: string | null;
+  content: string;
+  author: UserStoryQueryAuthor
+}
+
+export type UserStoryData = {
   user: {
-    story: Story;
+    story: UserStoryQueryStory;
   };
 }
 
-interface IUserStoryVars {
+export type UserStoryVars = {
   id: number;
   storyId: number;
 }
 
-export function useUserStoryQuery(_variables: IUserStoryVars) {
-  return useQuery<IUserStoryData, IUserStoryVars>(USER_STORY_QUERY, {
+export function useUserStoryQuery(_variables: UserStoryVars) {
+  return useQuery<UserStoryData, UserStoryVars>(USER_STORY_QUERY, {
     variables: _variables,
   });
 }

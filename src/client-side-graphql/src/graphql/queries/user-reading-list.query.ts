@@ -1,13 +1,12 @@
 import { gql, useQuery } from '@apollo/client';
-import { ReadingList } from '../graphql-typings';
 
 const USER_READING_LIST_QUERY = gql`
   query UserReadingList($userId: Int!, $title: String!) {
     user(id: $userId) {
       id
       readingList(title: $title) {
-        title
         createdAt
+        title
         author {
           id
           familyName
@@ -15,8 +14,9 @@ const USER_READING_LIST_QUERY = gql`
         }
         stories {
           id
-          title
           createdAt
+          title
+          description
           author {
             id
             givenName
@@ -28,19 +28,41 @@ const USER_READING_LIST_QUERY = gql`
   }
 `;
 
-interface IUserReadingListData {
-  user: {
-    readingList: ReadingList;
-  };
-}
+export type UserReadingListQueryAuthor = {
+  id: number;
+  givenName?: string | null;
+  familyName?: string | null;
+};
 
-interface IUserReadingListVars {
+export type UserReadingListQueryStory = {
+  id: number;
+  createdAt: string;
+  title: string;
+  description?: string | null;
+  author: UserReadingListQueryAuthor;
+};
+
+export type UserReadingListQueryReadingList = {
+  createdAt: string;
+  title: string;
+  author: UserReadingListQueryAuthor;
+  stories: UserReadingListQueryStory[];
+};
+
+export type UserReadingListData = {
+  user: {
+    id: number;
+    readingList: UserReadingListQueryReadingList;
+  };
+};
+
+export type UserReadingListVars = {
   userId: number;
   title: string;
-}
+};
 
-export function useUserReadingListQuery(_variables: IUserReadingListVars) {
-  return useQuery<IUserReadingListData, IUserReadingListVars>(USER_READING_LIST_QUERY, {
+export function useUserReadingListQuery(_variables: UserReadingListVars) {
+  return useQuery<UserReadingListData, UserReadingListVars>(USER_READING_LIST_QUERY, {
     variables: _variables,
   });
 }

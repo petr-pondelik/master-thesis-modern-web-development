@@ -2,9 +2,15 @@ import { Fragment } from 'react';
 import { UserCard } from '../user-card';
 import { UserStories } from '../user-stories';
 import Shell_UserView from './Shell_UserView';
-import { User } from '../../../graphql';
+import { UserWithStoriesQueryUser } from '../../../graphql/queries';
 
-export const UserView = (props: { user: User | undefined; isLoading: boolean; refetch?: unknown }) => {
+type UserViewProps = {
+  user: UserWithStoriesQueryUser | undefined;
+  isLoading: boolean;
+  refetch?: any;
+};
+
+export const UserView = (props: UserViewProps) => {
   const { user, isLoading } = props;
   if (isLoading) {
     return <Shell_UserView />;

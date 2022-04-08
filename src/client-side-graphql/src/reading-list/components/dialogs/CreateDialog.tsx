@@ -6,17 +6,17 @@ import AddIcon from '@mui/icons-material/Add';
 import { FullscreenDialog } from '../../../common/components/dialogs';
 import { CreateReadingListDto } from '../../dto';
 import { ReadingListForm } from '../forms';
+import { useCreateReadingListMutation } from '../../../graphql/mutations';
+import { client } from '../../../graphql';
 
 export type CreateDialogState = {
-  open: boolean,
-  actionEnabled: boolean,
-  dto: CreateReadingListDto
-}
+  open: boolean;
+  actionEnabled: boolean;
+  dto: CreateReadingListDto;
+};
 
-export const CreateDialog = (props: { refetch: any }) => {
-
-  const { refetch } = props;
-  const user = useJwtStore(state => state.user);
+export const CreateDialog = () => {
+  const user = useJwtStore((state) => state.user);
   if (!user) {
     return null;
   }
@@ -28,18 +28,14 @@ export const CreateDialog = (props: { refetch: any }) => {
     authorId: user.sub,
   });
 
-  // const mutation = useMutation(
-  //   (dto: CreateReadingListDto) =>
-  //     HttpRequest<ReadingListEnvelope, CreateReadingListDto>(
-  //     `${createLink.href}/${dto.title}`, createLink.method, dto
-  //     ),
-  //   {
-  //     onSuccess: () => {
-  //       handleClose();
-  //       refetch();
-  //     },
-  //   },
-  // );
+  const createCallback = () => {
+    handleClose();
+    client.refetchQueries({
+      include: ['UserReadingLists'],
+    });
+  };
+
+  const [createReadingList] = useCreateReadingListMutation({ content: dto }, () => createCallback());
 
   const handleOpen = () => {
     setOpen(true);
@@ -50,14 +46,14 @@ export const CreateDialog = (props: { refetch: any }) => {
   };
 
   const handleSave = () => {
-    // if (user) {
-    //   mutation.mutate(dto);
-    // }
+    if (user) {
+      createReadingList();
+    }
   };
 
   const update = (stateFragment: Partial<CreateDialogState>) => {
     if (stateFragment.dto) {
-      setDto({...dto, ...stateFragment.dto});
+      setDto({ ...dto, ...stateFragment.dto });
     }
     if (stateFragment.actionEnabled) {
       setActionEnabled(stateFragment.actionEnabled);
@@ -67,7 +63,7 @@ export const CreateDialog = (props: { refetch: any }) => {
   return (
     <Fragment>
       <Box sx={{ '& > :not(style)': { m: 1 }, position: 'fixed', bottom: '2%', right: '2%' }} onClick={handleOpen}>
-        <Fab color='primary' aria-label='add'>
+        <Fab color="primary" aria-label="add">
           <AddIcon />
         </Fab>
       </Box>

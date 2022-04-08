@@ -1,9 +1,9 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import { EntityList, Paths } from '../../../common';
 import { Shell_UserStories } from './Shell_UserStories';
-import { User } from '../../../graphql';
+import { UserWithStoriesQueryUser } from '../../../graphql/queries';
 
-export const UserStories = (props: { user: User | undefined; isLoading: boolean }) => {
+export const UserStories = (props: { user: UserWithStoriesQueryUser | undefined; isLoading: boolean }) => {
   const { user, isLoading } = props;
 
   if (isLoading || !user) {

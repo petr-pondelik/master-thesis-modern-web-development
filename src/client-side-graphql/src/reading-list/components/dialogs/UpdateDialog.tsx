@@ -6,16 +6,19 @@ import { ReadingListForm } from '../forms';
 import { CreateDialogState } from './CreateDialog';
 import { useNavigate } from 'react-router-dom';
 import { useJwtStore } from '../../../store';
+import { client } from '../../../graphql';
+import { UpdateReadingListData, useUpdateReadingListMutation } from '../../../graphql/mutations';
+import { UserReadingListQueryReadingList } from '../../../graphql/queries';
+import { Paths } from '../../../common';
 
 export type UpdateDialogState = {
-  open: boolean,
-  actionEnabled: boolean,
-  dto: UpdateReadingListDto
-}
+  open: boolean;
+  actionEnabled: boolean;
+  dto: UpdateReadingListDto;
+};
 
-export const UpdateDialog = (props: { readingList: any, refetch: any }) => {
-
-  const { readingList, refetch } = props;
+export const UpdateDialog = (props: { readingList: UserReadingListQueryReadingList }) => {
+  const { readingList } = props;
 
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(true);
@@ -23,26 +26,25 @@ export const UpdateDialog = (props: { readingList: any, refetch: any }) => {
     title: '',
   });
 
-  const user = useJwtStore(state => state.user);
+  const navigate = useNavigate();
+
+  const user = useJwtStore((state) => state.user);
   if (!user) {
     return null;
   }
 
-  // const navigate = useNavigate();
+  const actionCallback = (data: UpdateReadingListData) => {
+    const updated = data.updateReadingList;
+    client.refetchQueries({
+      include: ['UserReadingList'],
+    });
+    navigate(Paths.userReadingLists(updated.author.id, updated.title));
+  };
 
-  // const mutation = useMutation(
-  //   (dto: UpdateReadingListDto) =>
-  //     HttpRequest<ReadingListEnvelope, UpdateReadingListDto>(updateLink.href, updateLink.method, dto),
-  //   {
-  //     onSuccess: (data) => {
-  //       const link = findLink(data._links, 'self');
-  //       const url = `${findLink(user._links, 'reading-lists').href}/${data.title}`;
-  //       addLink(url, link);
-  //       navigate(url, { state: { resource: link } });
-  //       refetch();
-  //     },
-  //   },
-  // );
+  const [updateReadingList] = useUpdateReadingListMutation(
+    { title: readingList.title, userId: readingList.author.id, content: dto },
+    (data: UpdateReadingListData) => actionCallback(data),
+  );
 
   const handleOpen = () => {
     setOpen(true);
@@ -53,8 +55,7 @@ export const UpdateDialog = (props: { readingList: any, refetch: any }) => {
   };
 
   const handleSave = () => {
-    // mutation.mutate(dto);
-    handleClose();
+    updateReadingList()
   };
 
   const update = (stateFragment: Partial<CreateDialogState>) => {

@@ -9,16 +9,16 @@ const SIGN_IN_MUTATION = gql`
   }
 `;
 
-interface ISignInData {
+type SignInData = {
   signIn: AuthPayload;
 }
 
-interface ISignInVars {
+type SignInVars = {
   content: SignInContent;
 }
 
-export function useSignInMutation(_variables: ISignInVars) {
-  return useMutation<ISignInData, ISignInVars>(SIGN_IN_MUTATION, {
+export function useSignInMutation(_variables: SignInVars) {
+  return useMutation<SignInData, SignInVars>(SIGN_IN_MUTATION, {
     variables: _variables,
   });
 }

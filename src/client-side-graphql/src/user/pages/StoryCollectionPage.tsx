@@ -24,7 +24,7 @@ export const StoryCollectionPage = () => {
   return (
     <PageContainer>
       <Typography variant={'h4'}>My Stories</Typography>
-      <StoryCollection userId={userId} stories={data?.user.stories} isLoading={loading} />
+      <StoryCollection stories={data?.user.stories} userId={userId} isLoading={loading} />
     </PageContainer>
   );
 };

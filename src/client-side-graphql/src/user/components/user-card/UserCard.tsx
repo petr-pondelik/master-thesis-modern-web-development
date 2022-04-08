@@ -1,8 +1,8 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import { Shell_UserCard } from './Shell_UserCard';
-import { User } from '../../../graphql';
+import { UserWithStoriesQueryUser } from '../../../graphql/queries';
 
-export const UserCard = (props: { user: User | undefined, isLoading: boolean }) => {
+export const UserCard = (props: { user: UserWithStoriesQueryUser | undefined, isLoading: boolean }) => {
   const { user, isLoading } = props;
 
   if (isLoading) {

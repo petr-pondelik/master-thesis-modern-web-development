@@ -1,19 +1,51 @@
 import { EntityCard, EntityCardHeader, EntityList, formatAuthor, Paths } from '../../common';
 import { UpdateDialog } from './dialogs';
-import { CardContent, Typography } from '@mui/material';
+import { CardContent, IconButton, Typography } from '@mui/material';
 import { Shell_ReadingListCard } from './Shell_ReadingListCard';
-import { ReadingList } from '../../graphql';
+import { UserReadingListQueryReadingList } from '../../graphql/queries';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useDeleteReadingListMutation } from '../../graphql/mutations';
+import { client } from '../../graphql';
+import { useNavigate } from 'react-router-dom';
 
 export const ReadingListView = (props: {
-  readingList: ReadingList | undefined;
+  readingList: UserReadingListQueryReadingList | undefined;
+  deleteBacklink?: string;
   isLoading: boolean;
-  refetch: unknown;
 }) => {
-  const { readingList, isLoading, refetch } = props;
+  const { readingList, deleteBacklink, isLoading } = props;
 
-  if (isLoading || !readingList || !readingList.author) {
+  if (isLoading || !readingList) {
     return <Shell_ReadingListCard />;
   }
+
+  const navigate = useNavigate();
+
+  const deleteCallback = () => {
+    navigate(deleteBacklink ?? '');
+    client.refetchQueries({
+      include: ['UserReadingLists'],
+    });
+  };
+
+  const [deleteReadingList] = useDeleteReadingListMutation(
+    {
+      userId: readingList.author.id,
+      title: readingList.title,
+    },
+    deleteCallback,
+  );
+
+  const deleteNode = () => {
+    if (!deleteBacklink) {
+      return null;
+    }
+    return (
+      <IconButton aria-label="settings" onClick={() => deleteReadingList()}>
+        <DeleteIcon />
+      </IconButton>
+    );
+  };
 
   return (
     <EntityCard>
@@ -21,18 +53,14 @@ export const ReadingListView = (props: {
         title={formatAuthor(readingList.author)}
         subheader={readingList.createdAt}
         author={readingList.author}
-        updateNode={<UpdateDialog readingList={readingList} refetch={refetch} />}
+        updateNode={<UpdateDialog readingList={readingList} />}
+        deleteNode={deleteNode()}
       />
       <CardContent>
         <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
           {readingList.title}
         </Typography>
-        <EntityList
-          items={readingList.stories}
-          itemPath={Paths.stories()}
-          isLoading={isLoading}
-          refetch={refetch}
-        />
+        <EntityList items={readingList.stories} itemPath={Paths.stories()} isLoading={isLoading} />
       </CardContent>
     </EntityCard>
   );

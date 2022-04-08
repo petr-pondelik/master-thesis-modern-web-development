@@ -1,22 +1,20 @@
 import { Fragment, useState } from 'react';
 import { FullscreenDialog } from '../../../common/components/dialogs';
 import { StoryForm } from '../forms';
-import { CreateStoryDto } from '../../dto';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useJwtStore } from '../../../store';
+import { useCreateStoryMutation } from '../../../graphql/mutations';
+import { client, CreateStoryContent } from '../../../graphql';
 
 export type StoryCreateDialogState = {
   open: boolean,
   actionEnabled: boolean,
-  dto: CreateStoryDto
+  dto: CreateStoryContent
 }
 
-export const StoryCreateDialog = (props: { refetch: any }) => {
-
-  const { refetch } = props;
-
+export const StoryCreateDialog = ( ) => {
   const user = useJwtStore(state => state.user);
   if (!user) {
     return null;
@@ -24,7 +22,7 @@ export const StoryCreateDialog = (props: { refetch: any }) => {
 
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(false);
-  const [dto, setDto] = useState<CreateStoryDto>(
+  const [dto, setDto] = useState<CreateStoryContent>(
     {
       title: '',
       description: '',
@@ -32,14 +30,14 @@ export const StoryCreateDialog = (props: { refetch: any }) => {
       authorId: user.sub,
     });
 
-  // const mutation = useMutation(
-  //   (dto: CreateStoryDto) => HttpRequest<StoryEnvelope, CreateStoryDto>(createLink.href, createLink.method, dto),
-  //   {
-  //     onSuccess: () => {
-  //       refetch();
-  //     },
-  //   },
-  // );
+  const createCallback = () => {
+    handleClose();
+    client.refetchQueries({
+      include: ['UserStories']
+    })
+  }
+
+  const [createStory] = useCreateStoryMutation({ content: dto }, () => createCallback());
 
   const handleOpen = () => {
     setOpen(true);
@@ -51,8 +49,7 @@ export const StoryCreateDialog = (props: { refetch: any }) => {
 
   const handleSave = () => {
     if (user) {
-      // mutation.mutate(dto);
-      handleClose();
+      createStory();
     }
   };
 

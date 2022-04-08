@@ -8,11 +8,11 @@ export const StoryViewPage = () => {
   if (!params.id) {
     return <ErrorPlaceholder />;
   }
-  const { data, loading, error, refetch } = useStoryQuery({ id: parseInt(params.id) })
+  const { data, loading, error } = useStoryQuery({ id: parseInt(params.id) })
   if (error) {
     return <ErrorPlaceholder />;
   }
   return <PageContainer>
-    <StoryView story={data?.story} isLoading={loading} refetch={refetch} />
+    <StoryView story={data?.story} isLoading={loading} />
   </PageContainer>;
 };

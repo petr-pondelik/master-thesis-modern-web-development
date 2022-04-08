@@ -1,4 +1,4 @@
-import { ErrorPlaceholder, PageContainer } from '../../common';
+import { ErrorPlaceholder, PageContainer, Paths } from '../../common';
 import { ReadingListView } from '../../reading-list/components';
 import { useParams } from 'react-router-dom';
 import { useJwtStore } from '../../store';
@@ -18,12 +18,18 @@ export const ReadingListViewPage = () => {
     return <ErrorPlaceholder />;
   }
 
-  const { data, loading, error, refetch } = useUserReadingListQuery({ userId: userId, title: title });
+  const { data, loading, error } = useUserReadingListQuery({ userId: userId, title: title });
   if (error) {
     return <ErrorPlaceholder />;
   }
 
-  return <PageContainer>
-    <ReadingListView readingList={data?.user.readingList} isLoading={loading} refetch={refetch} />
-  </PageContainer>;
+  return (
+    <PageContainer>
+      <ReadingListView
+        readingList={data?.user.readingList}
+        deleteBacklink={Paths.userReadingLists(userId)}
+        isLoading={loading}
+      />
+    </PageContainer>
+  );
 };

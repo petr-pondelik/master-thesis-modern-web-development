@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { SignInContent } from '../graphql';
-import { useSignInMutation } from '../graphql/mutations/sign-in.mutation';
+import { useSignInMutation } from '../graphql/mutations';
 
 export const useSignIn = (call: boolean, dto: SignInContent) => {
   const [signIn, { data, error }] = useSignInMutation({ content: dto });

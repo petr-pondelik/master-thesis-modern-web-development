@@ -7,14 +7,14 @@ const DetailLinkStyle = {
   color: 'rgba(0, 0, 0, 0.87)',
 };
 
-interface IEntityListProps {
+type EntityListProps = {
   entity: any;
   path: string;
   showHeader?: boolean;
   refetch?: any;
 }
 
-export function EntityListItem(props: IEntityListProps) {
+export function EntityListItem(props: EntityListProps) {
   const { entity, path, showHeader, refetch } = props;
   return (
     <ListItem sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>

@@ -15,7 +15,7 @@ export const EntityListItemHeader = (props: { entity: any, refetch?: any }) => {
     if (!user || user.sub !== author.id) {
       return null;
     }
-    return <EntityDelete refetch={refetch} />;
+    return <EntityDelete mutation={() => console.log('delete')} refetch={refetch} />;
   };
 
   return <CardHeader
