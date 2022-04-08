@@ -1,4 +1,4 @@
-import { findLink, HttpRequest, ReadingListEnvelope } from '../../../api';
+import { findLink, HttpRequest, queryClient, ReadingListEnvelope } from '../../../api';
 import { Fragment, useState } from 'react';
 import { useMutation } from 'react-query';
 import { FullscreenDialog } from '../../../common/components/dialogs';
@@ -7,28 +7,24 @@ import EditIcon from '@mui/icons-material/Edit';
 import { ReadingListForm } from '../forms';
 import { CreateDialogState } from './CreateDialog';
 import { useNavigate } from 'react-router-dom';
-import { useJwtStore, useLinksStore } from '../../../store';
+import { useJwtStore } from '../../../store';
 
 export type UpdateDialogState = {
-  open: boolean,
-  actionEnabled: boolean,
-  dto: UpdateReadingListDto
-}
+  open: boolean;
+  actionEnabled: boolean;
+  dto: UpdateReadingListDto;
+};
 
-export const UpdateDialog = (props: { readingList: ReadingListEnvelope, refetch: any }) => {
-
-  const { readingList, refetch } = props;
+export const UpdateDialog = (props: { readingList: ReadingListEnvelope }) => {
+  const { readingList } = props;
   const updateLink = findLink(readingList._links, 'update');
-
-  const addLink = useLinksStore(state => state.add);
-
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(true);
   const [dto, setDto] = useState<UpdateReadingListDto>({
     title: '',
   });
 
-  const user = useJwtStore(state => state.user);
+  const user = useJwtStore((state) => state.user);
   if (!user) {
     return null;
   }
@@ -42,9 +38,8 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope, refetch:
       onSuccess: (data) => {
         const link = findLink(data._links, 'self');
         const url = `${findLink(user._links, 'reading-lists').href}/${data.title}`;
-        addLink(url, link);
         navigate(url, { state: { resource: link } });
-        refetch();
+        queryClient.invalidateQueries(['readingList', user.data.sub, readingList.id]);
       },
     },
   );

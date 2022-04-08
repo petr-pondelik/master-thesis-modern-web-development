@@ -4,9 +4,9 @@ import ErrorPlaceholder from '../ErrorPlaceholder';
 import { Shell_EntityList } from './Shell_EntityList';
 import { ResponseEnvelope } from '../../../api';
 
-export function EntityList<TEntity>(
+export function EntityList(
   props: {
-    items: ResponseEnvelope<Array<TEntity>> | undefined,
+    items: ResponseEnvelope<Array<any>> | undefined,
     isLoading: boolean,
     error: unknown,
     showHeader?: boolean,

@@ -1,7 +1,7 @@
 import { ReadingListEnvelope } from './reading-list.envelope';
 import { HateoasLink } from '../hateoas';
 
-export type ReadingListCollectionEnvelope = {
+export interface ReadingListCollectionEnvelope {
   data: Array<ReadingListEnvelope>;
   _links: Array<HateoasLink>;
 }

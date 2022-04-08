@@ -9,8 +9,8 @@ const AssignToReadingLists = (user: AppUser | null, story: StoryEnvelope) => {
   return user ? <ReadingListsRelations user={user} story={story} /> : null;
 };
 
-export const StoryView = (props: { story: StoryEnvelope | undefined, isLoading: boolean, refetch: unknown }) => {
-  const { story, isLoading, refetch } = props;
+export const StoryView = (props: { story: StoryEnvelope | undefined, isLoading: boolean }) => {
+  const { story, isLoading } = props;
   const user = useJwtStore(state => state.user);
   if (isLoading || !story) {
     return <Shell_StoryCard />;
@@ -20,7 +20,7 @@ export const StoryView = (props: { story: StoryEnvelope | undefined, isLoading: 
       title={story.title}
       subheader={story.createdAt}
       author={story.author}
-      updateNode={<StoryUpdateDialog story={story} refetch={refetch} />}
+      updateNode={<StoryUpdateDialog story={story} />}
       deleteLink={findLink(story._links, 'delete')}
       updateLink={findLink(story._links, 'update')}
       parentLink={findLink(story._links, 'parent')}

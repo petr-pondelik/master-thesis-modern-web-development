@@ -1,41 +1,16 @@
 import { render } from 'react-dom';
 import React from 'react';
 import './index.css';
-import App from './app/App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from 'react-router-dom';
-import UserViewPage from './user/pages/UserViewPage';
-import { SignInPage } from './sign-in';
-import {
-  ReadingListCollectionPage,
-  ReadingListViewPage as UserReadingListViewPage,
-  StoryCollectionPage,
-  StoryViewPage as UserStoryViewPage,
-} from './user';
-import { StoryListPage, StoryViewPage } from './story';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRoutes } from './AppRoutes';
 
 const rootElement = document.getElementById('root');
+
 render(
   <BrowserRouter>
-    <Routes>
-      <Route path='/' element={<App />}>
-        <Route index element={<StoryListPage />} />
-        <Route path={'/sign-in'} element={<SignInPage />} />
-        <Route path={'/stories'} element={<StoryListPage />} />
-        <Route path={'/stories/:storyId'} element={<StoryViewPage />} />
-        <Route path={'/users/:userId'} element={<UserViewPage />} />
-        <Route path={'/users/:userId/stories'} element={<StoryCollectionPage />} />
-        <Route path={'/users/:userId/stories/:storyId'} element={<UserStoryViewPage />} />
-        <Route path={'/users/:userId/reading-lists'} element={<ReadingListCollectionPage />} />
-        <Route path={'/users/:userId/reading-lists/:readingListId'} element={<UserReadingListViewPage />} />
-        {/*  <Route path="*" element={<NotFound />} />*/}
-      </Route>
-    </Routes>
+    <AppRoutes />
   </BrowserRouter>,
   rootElement,
 );

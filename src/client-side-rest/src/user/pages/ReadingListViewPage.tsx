@@ -1,20 +1,28 @@
 import { ErrorPlaceholder, PageContainer } from '../../common';
 import { ReadingListView } from '../../reading-list/components';
-import { useQuery } from 'react-query';
-import { getRequest, ReadingListEnvelope } from '../../api';
-import { useResource } from '../../hooks';
+import { useParams } from 'react-router-dom';
+import { useUserReadingList } from '../../api/queries';
 
 export const ReadingListViewPage = () => {
-  const resource = useResource(window.location.pathname);
-  const { data, isLoading, isError, refetch } = useQuery<ReadingListEnvelope>(
-    resource.href, () => getRequest<ReadingListEnvelope>(resource.href),
-  );
+  const params = useParams();
+
+  let userId, title;
+  if (params.userId && params.readingListTitle) {
+    userId = parseInt(params.userId);
+    title = params.readingListTitle;
+  } else {
+    return <ErrorPlaceholder />;
+  }
+
+  const { data, isLoading, isError } = useUserReadingList(userId, title);
 
   if (isError) {
     return <ErrorPlaceholder />;
   }
 
-  return <PageContainer>
-    <ReadingListView readingList={data} isLoading={isLoading} refetch={refetch} />
-  </PageContainer>;
+  return (
+    <PageContainer>
+      <ReadingListView readingList={data} isLoading={isLoading} />
+    </PageContainer>
+  );
 };

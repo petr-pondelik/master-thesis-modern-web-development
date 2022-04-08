@@ -1,20 +1,25 @@
 import { ErrorPlaceholder, PageContainer } from '../../common';
 import StoryView from '../../story/component/StoryView';
-import { useQuery } from 'react-query';
-import { getRequest, StoryEnvelope } from '../../api';
-import { useResource } from '../../hooks';
+import { useParams } from 'react-router-dom';
+import { useUserStory } from '../../api/queries';
 
 export const StoryViewPage = () => {
-  const resource = useResource(window.location.pathname);
-  const { data, isLoading, isError, refetch } = useQuery<StoryEnvelope>(
-    resource.href, () => getRequest<StoryEnvelope>(resource.href),
-  );
+  const params = useParams();
+  let userId, storyId;
+  if (params.userId && params.storyId) {
+    userId = parseInt(params.userId);
+    storyId = parseInt(params.storyId);
+  } else {
+    return <ErrorPlaceholder />;
+  }
+
+  const { data, isLoading, isError } = useUserStory(userId, storyId);
 
   if (isError) {
     return <ErrorPlaceholder />;
   }
 
   return <PageContainer>
-    <StoryView story={data} isLoading={isLoading} refetch={refetch} />
+    <StoryView story={data} isLoading={isLoading} />
   </PageContainer>;
 };

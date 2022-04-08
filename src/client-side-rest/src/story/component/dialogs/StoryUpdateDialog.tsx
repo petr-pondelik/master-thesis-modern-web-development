@@ -1,4 +1,4 @@
-import { findLink, HttpRequest, StoryEnvelope } from '../../../api';
+import { findLink, HttpRequest, queryClient, StoryEnvelope } from '../../../api';
 import EditIcon from '@mui/icons-material/Edit';
 import { Fragment, useState } from 'react';
 import { StoryForm } from '../forms';
@@ -12,9 +12,9 @@ export type StoryUpdateDialogState = {
   dto: UpdateStoryDto
 }
 
-export const StoryUpdateDialog = (props: { story: StoryEnvelope, refetch: any }) => {
+export const StoryUpdateDialog = (props: { story: StoryEnvelope }) => {
 
-  const { story, refetch } = props;
+  const { story } = props;
   const updateLink = findLink(story._links, 'update');
 
   const [open, setOpen] = useState<boolean>(false);
@@ -29,7 +29,7 @@ export const StoryUpdateDialog = (props: { story: StoryEnvelope, refetch: any })
     (dto: UpdateStoryDto) => HttpRequest<StoryEnvelope, UpdateStoryDto>(updateLink.href, updateLink.method, dto),
     {
       onSuccess: () => {
-        refetch();
+        queryClient.invalidateQueries(['story', story.id]);
         handleClose();
       },
     },
@@ -45,7 +45,6 @@ export const StoryUpdateDialog = (props: { story: StoryEnvelope, refetch: any })
 
   const handleSave = () => {
     mutation.mutate(dto);
-    // handleClose();
   };
 
   const update = (stateFragment: Partial<StoryUpdateDialogState>) => {

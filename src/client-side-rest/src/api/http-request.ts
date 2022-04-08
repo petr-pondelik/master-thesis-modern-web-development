@@ -1,6 +1,6 @@
-import ApiConfig from '../api-config';
-import { HttpMethod } from '../../common';
-import { getJwtFromStorage } from '../../store';
+import ApiConfig from './api-config';
+import { HttpMethod } from '../common';
+import { getJwtFromStorage } from '../store';
 
 export async function HttpRequest<TResponse, TDto = undefined>(
   url: string, method: HttpMethod = 'GET', dto: TDto | undefined = undefined): Promise<TResponse> {

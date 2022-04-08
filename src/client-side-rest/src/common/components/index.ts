@@ -7,3 +7,4 @@ export * from './inputs';
 export * from './MessageBox';
 export * from './buttons';
 export * from './entity-card';
+export * from './NotFound';

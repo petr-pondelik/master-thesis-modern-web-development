@@ -1,18 +1,5 @@
 import { HateoasLink, LinkRel } from './hateoas.types';
 import { HttpMethod } from '../../common';
-import { getRequest } from '../requests';
-import { postRequest } from '../requests';
-
-export const linkToRequest = (link: HateoasLink) => {
-  switch (link.method) {
-    case 'GET':
-      return getRequest;
-    case 'POST':
-      return postRequest;
-    default:
-      return getRequest;
-  }
-};
 
 export const createLink = (_method: HttpMethod, _href: string, _rel: LinkRel): HateoasLink => {
   return {

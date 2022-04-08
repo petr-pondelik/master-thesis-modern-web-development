@@ -3,12 +3,12 @@ import { Fragment, ReactNode } from 'react';
 import { Avatar, CardHeader, IconButton } from '@mui/material';
 import { EntityDelete } from '../EntityDelete';
 import { red } from '@mui/material/colors';
-import { UserEntity } from '../../../../entity';
+import { UserEntity } from '../../../../api/entity';
 import CustomLink from '../../CustomLink';
 
 type EntityCardHeaderProps = {
   title: string,
-  subheader: string,
+  subheader: Date,
   parentLink: HateoasLink,
   updateLink: HateoasLink,
   deleteLink: HateoasLink,

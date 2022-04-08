@@ -1,17 +1,19 @@
 import UserView from '../components/user-view/UserView';
-import { PageContainer } from '../../common';
-import { useQuery } from 'react-query';
-import { getRequest, UserEnvelope } from '../../api';
-import { useResource } from '../../hooks';
+import { ErrorPlaceholder, PageContainer } from '../../common';
+import { userUser } from '../../api/queries';
+import { useParams } from 'react-router-dom';
 
 const UserViewPage = () => {
-  const resource = useResource(window.location.pathname);
-  const { data, isLoading, refetch } = useQuery<UserEnvelope>(
-    resource.href, () => getRequest<UserEnvelope>(resource.href),
+  const params = useParams();
+  if (!params.id) {
+    return <ErrorPlaceholder />;
+  }
+  const { data, isLoading } = userUser(parseInt(params.id));
+  return (
+    <PageContainer>
+      <UserView user={data} isLoading={isLoading} />
+    </PageContainer>
   );
-  return <PageContainer>
-    <UserView user={data} isLoading={isLoading} refetch={refetch}/>
-  </PageContainer>;
 };
 
 export default UserViewPage;

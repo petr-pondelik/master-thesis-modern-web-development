@@ -1,8 +1,8 @@
 import { Button, Grid } from '@mui/material';
 import { CustomInput, MessageBox } from '../../common';
 import { SignInDto } from '../dto';
-import { useEffect, useState } from 'react';
-import { useSignIn } from '../../hooks/useSignIn';
+import { useState } from 'react';
+import { useSignIn } from '../../api/mutations';
 import { validateEmail, validatePassword } from '../../common/validation';
 
 const Messages = {
@@ -15,17 +15,10 @@ export type SignInValidationState = {
 };
 
 export const SignInForm = () => {
-
   const [dto, setDto] = useState<SignInDto>({ email: '', password: '' });
   const [validation, setValidation] = useState<SignInValidationState>({ email: false, password: false });
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [performSignIn, setPerformSignIn] = useState<boolean>(false);
-
-  const { authorized } = useSignIn(performSignIn, dto);
-
-  useEffect(() => {
-    setPerformSignIn(false);
-  }, [authorized]);
+  const signIn = useSignIn(dto);
 
   const update = (dtoFragment: any, validationFragment: any) => {
     const newValidation: SignInValidationState = { ...validation, ...validationFragment };
@@ -36,7 +29,7 @@ export const SignInForm = () => {
   };
 
   const renderErrors = () => {
-    if (authorized === false) {
+    if (signIn.isError) {
       return <MessageBox
         msg={Messages.invalidCredentials}
         sx={{ color: 'error.main', marginTop: '1rem' }}
@@ -85,7 +78,7 @@ export const SignInForm = () => {
           justifyContent='center'>
       <Grid item xs={10} md={6} lg={4}>
         <Button variant='contained' sx={{ minWidth: '100%' }} disabled={!enabled}
-                onClick={() => setPerformSignIn(true)}>
+                onClick={() => signIn.mutate()}>
           Sign In
         </Button>
         {renderErrors()}

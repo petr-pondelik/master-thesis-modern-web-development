@@ -1,13 +1,6 @@
 import { HateoasLink } from '../hateoas';
-import { PartialUserEntity } from '../../entity';
+import { StoryEntity } from '../entity';
 
-export type StoryEnvelope = {
-  authorId: number;
-  content: string;
-  createdAt: string;
-  description: string;
-  id: number;
-  title: string;
-  author?: PartialUserEntity;
+export interface StoryEnvelope extends StoryEntity {
   _links: Array<HateoasLink>;
 }

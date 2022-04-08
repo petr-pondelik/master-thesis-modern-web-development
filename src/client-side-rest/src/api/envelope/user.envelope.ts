@@ -1,12 +1,6 @@
 import { HateoasLink } from '../hateoas';
+import { UserEntity } from '../entity';
 
-export type UserEnvelope = {
-  createdAt: Date;
-  email: string;
-  familyName: string;
-  givenName: string;
-  id: number;
-  password: string;
-  profileDescription: string;
+export interface UserEnvelope extends UserEntity {
   _links: Array<HateoasLink>;
 }

@@ -6,9 +6,9 @@ import { Shell_ReadingListCard } from './Shell_ReadingListCard';
 import { useQuery } from 'react-query';
 
 export const ReadingListView = (
-  props: { readingList: ReadingListEnvelope | undefined, isLoading: boolean, refetch: unknown },
+  props: { readingList: ReadingListEnvelope | undefined, isLoading: boolean },
 ) => {
-  const { readingList, isLoading, refetch } = props;
+  const { readingList, isLoading } = props;
 
   if (isLoading || !readingList) {
     return <Shell_ReadingListCard />;
@@ -26,7 +26,7 @@ export const ReadingListView = (
       title={readingList.title}
       subheader={readingList.createdAt}
       author={readingList.author}
-      updateNode={<UpdateDialog readingList={readingList} refetch={refetch} />}
+      updateNode={<UpdateDialog readingList={readingList} />}
       deleteLink={findLink(readingList._links, 'delete')}
       updateLink={findLink(readingList._links, 'update')}
       parentLink={findLink(readingList._links, 'parent')}
