@@ -29,6 +29,7 @@ export const StoryViewPage = () => {
         story={data?.user.story}
         deleteBacklink={Paths.userStories(userId)}
         isLoading={loading}
+        allowUpdate={true}
       />
     </PageContainer>
   );

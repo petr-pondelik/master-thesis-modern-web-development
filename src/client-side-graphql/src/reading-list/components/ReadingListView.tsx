@@ -4,8 +4,8 @@ import { CardContent, IconButton, Typography } from '@mui/material';
 import { Shell_ReadingListCard } from './Shell_ReadingListCard';
 import { UserReadingListQueryReadingList } from '../../graphql/queries';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDeleteReadingListMutation } from '../../graphql/mutations';
-import { client } from '../../graphql';
+import { useDeleteReadingListMutation, useRemoveStoryFromReadingListMutation } from '../../graphql/mutations';
+import { apolloClient } from '../../graphql';
 import { useNavigate } from 'react-router-dom';
 
 export const ReadingListView = (props: {
@@ -23,7 +23,7 @@ export const ReadingListView = (props: {
 
   const deleteCallback = () => {
     navigate(deleteBacklink ?? '');
-    client.refetchQueries({
+    apolloClient.refetchQueries({
       include: ['UserReadingLists'],
     });
   };
@@ -47,6 +47,22 @@ export const ReadingListView = (props: {
     );
   };
 
+  const removeStoryCallback = () => {
+    console.log('TEST');
+    apolloClient.refetchQueries({
+      include: ['UserReadingList'],
+    });
+  };
+
+  const [removeStory] = useRemoveStoryFromReadingListMutation(
+    {
+      userId: readingList.author.id,
+      title: readingList.title,
+      id: -1,
+    },
+    removeStoryCallback,
+  );
+
   return (
     <EntityCard>
       <EntityCardHeader
@@ -60,7 +76,12 @@ export const ReadingListView = (props: {
         <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
           {readingList.title}
         </Typography>
-        <EntityList items={readingList.stories} itemPath={Paths.stories()} isLoading={isLoading} />
+        <EntityList
+          items={readingList.stories}
+          itemPath={Paths.stories()}
+          deleteMutation={removeStory}
+          isLoading={isLoading}
+        />
       </CardContent>
     </EntityCard>
   );

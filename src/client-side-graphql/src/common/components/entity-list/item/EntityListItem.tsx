@@ -11,15 +11,15 @@ type EntityListProps = {
   entity: any;
   path: string;
   showHeader?: boolean;
-  refetch?: any;
+  deleteMutation?: any;
 }
 
 export function EntityListItem(props: EntityListProps) {
-  const { entity, path, showHeader, refetch } = props;
+  const { entity, path, showHeader, deleteMutation } = props;
   return (
     <ListItem sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
       <Card sx={{ minWidth: '100%', maxWidth: '100%' }} variant={'outlined'}>
-        {showHeader ? <EntityListItemHeader entity={entity} refetch={refetch} /> : null}
+        {showHeader ? <EntityListItemHeader entity={entity} deleteMutation={deleteMutation} /> : null}
         <CardActionArea>
           <CardContent>
             <Link style={DetailLinkStyle} to={path} state={{ id: entity.id }}>

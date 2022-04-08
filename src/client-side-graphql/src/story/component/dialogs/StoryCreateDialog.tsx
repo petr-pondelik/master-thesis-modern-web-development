@@ -6,7 +6,7 @@ import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useJwtStore } from '../../../store';
 import { useCreateStoryMutation } from '../../../graphql/mutations';
-import { client, CreateStoryContent } from '../../../graphql';
+import { apolloClient, CreateStoryContent } from '../../../graphql';
 
 export type StoryCreateDialogState = {
   open: boolean,
@@ -32,7 +32,7 @@ export const StoryCreateDialog = ( ) => {
 
   const createCallback = () => {
     handleClose();
-    client.refetchQueries({
+    apolloClient.refetchQueries({
       include: ['UserStories']
     })
   }

@@ -7,7 +7,7 @@ import { StoryQueryStory, UserStoryQueryStory } from '../../graphql/queries';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDeleteStoryMutation } from '../../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
-import { client } from '../../graphql';
+import { apolloClient } from '../../graphql';
 
 const AssignToReadingLists = (user: AppUser | null, story: any) => {
   return user ? <ReadingListsRelations user={user} story={story} /> : null;
@@ -17,24 +17,30 @@ type StoryViewProps = {
   story: StoryQueryStory | UserStoryQueryStory | undefined;
   isLoading: boolean;
   deleteBacklink?: string;
+  allowUpdate?: boolean
 };
 
 export const StoryView = (props: StoryViewProps) => {
-  const { story, isLoading, deleteBacklink } = props;
+  const { story, isLoading, deleteBacklink, allowUpdate } = props;
 
   if (isLoading || !story || !story.author) {
     return <Shell_StoryCard />;
   }
 
+  const user = useJwtStore((state) => state.user);
+  const navigate = useNavigate();
+
+  const updateNode = () => {
+    return allowUpdate ? <StoryUpdateDialog story={story} /> : null;
+  }
+
   const deleteCallback = () => {
     navigate(deleteBacklink ?? '');
-    client.refetchQueries({
+    apolloClient.refetchQueries({
       include: ['UserStories'],
     });
   };
 
-  const user = useJwtStore((state) => state.user);
-  const navigate = useNavigate();
   const [deleteStory] = useDeleteStoryMutation({ id: story.id }, deleteCallback);
 
   const deleteNode = () => {
@@ -54,7 +60,7 @@ export const StoryView = (props: StoryViewProps) => {
         title={formatAuthor(story.author)}
         subheader={story.createdAt}
         author={story.author}
-        updateNode={<StoryUpdateDialog story={story} />}
+        updateNode={updateNode()}
         deleteNode={deleteNode()}
       />
       <CardContent>

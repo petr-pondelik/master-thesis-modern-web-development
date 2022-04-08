@@ -27,7 +27,6 @@ export class UserResolver {
     return this.userService.findStory(userId, storyId);
   }
 
-  @UseGuards(GqlJwtAuthGuard)
   @ResolveField('readingLists')
   async getReadingLists(@GraphQLUser() authUser, @Parent() user, @Args('limit') limit: number) {
     console.log(authUser);

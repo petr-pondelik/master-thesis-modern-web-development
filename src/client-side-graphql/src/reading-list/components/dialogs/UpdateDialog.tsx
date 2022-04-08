@@ -6,7 +6,7 @@ import { ReadingListForm } from '../forms';
 import { CreateDialogState } from './CreateDialog';
 import { useNavigate } from 'react-router-dom';
 import { useJwtStore } from '../../../store';
-import { client } from '../../../graphql';
+import { apolloClient } from '../../../graphql';
 import { UpdateReadingListData, useUpdateReadingListMutation } from '../../../graphql/mutations';
 import { UserReadingListQueryReadingList } from '../../../graphql/queries';
 import { Paths } from '../../../common';
@@ -35,7 +35,7 @@ export const UpdateDialog = (props: { readingList: UserReadingListQueryReadingLi
 
   const actionCallback = (data: UpdateReadingListData) => {
     const updated = data.updateReadingList;
-    client.refetchQueries({
+    apolloClient.refetchQueries({
       include: ['UserReadingList'],
     });
     navigate(Paths.userReadingLists(updated.author.id, updated.title));

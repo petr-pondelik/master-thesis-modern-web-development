@@ -56,6 +56,11 @@ export default function MenuDrawer() {
           </Typography>
         </ListItem>
         <Divider />
+        <CustomLink to={'/'} customStyles={ItemLinkStyle}>
+          <ListItem button>
+            <ListItemText primary={'Home'} />
+          </ListItem>
+        </CustomLink>
         <CustomLink to={storiesLink.href} customStyles={ItemLinkStyle}>
           <ListItem button>
             <ListItemText primary={'My Stories'} />

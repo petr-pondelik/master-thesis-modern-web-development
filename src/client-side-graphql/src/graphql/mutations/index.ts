@@ -6,3 +6,5 @@ export * from './create-story.mutation';
 export * from './create-reading-list.mutation';
 export * from './update-reading-list.mutation';
 export * from './delete-reading-list.mutation';
+export * from './add-story-into-reading-list.mutation';
+export * from './remove-story-from-reading-list.mutation';

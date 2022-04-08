@@ -3,7 +3,7 @@ import { Fragment, useState } from 'react';
 import { StoryForm } from '../forms';
 import { FullscreenDialog } from '../../../common/components/dialogs';
 import { StoryQueryStory } from '../../../graphql/queries';
-import { client, UpdateStoryContent } from '../../../graphql';
+import { apolloClient, UpdateStoryContent } from '../../../graphql';
 import { useUpdateStoryMutation } from '../../../graphql/mutations';
 
 export type StoryUpdateDialogState = {
@@ -23,8 +23,8 @@ export const StoryUpdateDialog = (props: { story: StoryQueryStory }) => {
   });
 
   const actionCallback = () => {
-    client.refetchQueries({
-      include: ['Story']
+    apolloClient.refetchQueries({
+      include: ['UserStory']
     })
     handleClose();
   }

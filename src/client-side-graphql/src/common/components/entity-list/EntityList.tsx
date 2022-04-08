@@ -7,10 +7,11 @@ type EntityListProps = {
   itemPath: string;
   isLoading: boolean;
   showHeader?: boolean;
+  deleteMutation?: any;
 };
 
 export function EntityList(props: EntityListProps) {
-  const { items, itemPath, isLoading, showHeader } = props;
+  const { items, itemPath, isLoading, showHeader, deleteMutation } = props;
 
   if (isLoading) {
     return <Shell_EntityList showHeader={showHeader} />;
@@ -19,7 +20,15 @@ export function EntityList(props: EntityListProps) {
   if (items) {
     const rows = items.map((item, _key) => {
       const _path = `${itemPath}/${item.id ?? item.title}`;
-      return <EntityListItem entity={item} path={_path} showHeader={showHeader ?? true} key={_key} />;
+      return (
+        <EntityListItem
+          entity={item}
+          path={_path}
+          showHeader={showHeader ?? true}
+          deleteMutation={deleteMutation}
+          key={_key}
+        />
+      );
     });
 
     return <List sx={{ width: '100%', bgcolor: 'background.paper' }}>{rows}</List>;

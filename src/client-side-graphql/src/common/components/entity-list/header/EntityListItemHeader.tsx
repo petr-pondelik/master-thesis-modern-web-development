@@ -4,18 +4,21 @@ import { red } from '@mui/material/colors';
 import { formatAuthor, Paths } from '../../../helpers';
 import { EntityDelete } from '../../entity-card';
 import { Fragment } from 'react';
-import { useJwtStore } from '../../../../store';
 
-export const EntityListItemHeader = (props: { entity: any, refetch?: any }) => {
-  const { entity, refetch } = props;
+type EntityListItemHeaderProps = {
+  entity: any,
+  deleteMutation?: any;
+}
+
+export const EntityListItemHeader = (props: EntityListItemHeaderProps) => {
+  const { entity, deleteMutation } = props;
   const author = entity.author;
-  const user = useJwtStore(state => state.user);
 
   const getDeleteAction = () => {
-    if (!user || user.sub !== author.id) {
-      return null;
+    if (deleteMutation) {
+      return <EntityDelete entityId={entity.id} mutation={deleteMutation} />;
     }
-    return <EntityDelete mutation={() => console.log('delete')} refetch={refetch} />;
+    return null;
   };
 
   return <CardHeader
@@ -30,7 +33,7 @@ export const EntityListItemHeader = (props: { entity: any, refetch?: any }) => {
     }
     title={formatAuthor(author)}
     subheader={entity.createdAt}
-    action={<Fragment>{getDeleteAction()}</Fragment>}
+    action={getDeleteAction()}
   />;
 };
 

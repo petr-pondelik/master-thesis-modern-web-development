@@ -7,7 +7,7 @@ import { FullscreenDialog } from '../../../common/components/dialogs';
 import { CreateReadingListDto } from '../../dto';
 import { ReadingListForm } from '../forms';
 import { useCreateReadingListMutation } from '../../../graphql/mutations';
-import { client } from '../../../graphql';
+import { apolloClient } from '../../../graphql';
 
 export type CreateDialogState = {
   open: boolean;
@@ -30,7 +30,7 @@ export const CreateDialog = () => {
 
   const createCallback = () => {
     handleClose();
-    client.refetchQueries({
+    apolloClient.refetchQueries({
       include: ['UserReadingLists'],
     });
   };

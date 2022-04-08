@@ -1,11 +1,11 @@
 import { Button, Grid } from '@mui/material';
 import { CustomInput, MessageBox } from '../../common';
-import { useEffect, useState } from 'react';
-import { useSignIn } from '../../hooks/useSignIn';
+import { useState } from 'react';
 import { validateEmail, validatePassword } from '../../common/validation';
 import { SignInContent } from '../../graphql';
 import { useJwtStore } from '../../store';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { SignInData, useSignInMutation } from '../../graphql/mutations';
 
 const Messages = {
   invalidCredentials: 'Please enter valid credentials.',
@@ -19,23 +19,19 @@ export type SignInValidationState = {
 export const SignInForm = () => {
   const setUser = useJwtStore((state) => state.setUser);
   const user = useJwtStore((state) => state.user);
+  const navigate = useNavigate();
   const [dto, setDto] = useState<SignInContent>({ email: '', password: '' });
   const [validation, setValidation] = useState<SignInValidationState>({ email: false, password: false });
   const [enabled, setEnabled] = useState<boolean>(false);
-  const [performSignIn, setPerformSignIn] = useState<boolean>(false);
 
-  const { authorized, authPayload } = useSignIn(performSignIn, dto);
-
-  useEffect(() => {
-    setPerformSignIn(false);
-  }, [authorized]);
+  const signInCallback = (data: SignInData) => {
+    setUser(data.signIn);
+    navigate('/');
+  };
+  const [signIn, { error }] = useSignInMutation({ content: dto }, (data: SignInData) => signInCallback(data));
 
   if (user) {
-    return <Navigate to="/"/>
-  }
-
-  if (authorized && authPayload) {
-    setUser(authPayload);
+    return <Navigate to="/" />;
   }
 
   const update = (dtoFragment: any, validationFragment: any) => {
@@ -47,7 +43,7 @@ export const SignInForm = () => {
   };
 
   const renderErrors = () => {
-    if (authorized === false) {
+    if (error) {
       return <MessageBox msg={Messages.invalidCredentials} sx={{ color: 'error.main', marginTop: '1rem' }} />;
     }
   };
@@ -80,12 +76,7 @@ export const SignInForm = () => {
       </Grid>
       <Grid container justifyContent="center">
         <Grid item xs={10} md={6} lg={4}>
-          <Button
-            variant="contained"
-            sx={{ minWidth: '100%' }}
-            disabled={!enabled}
-            onClick={() => setPerformSignIn(true)}
-          >
+          <Button variant="contained" sx={{ minWidth: '100%' }} disabled={!enabled} onClick={() => signIn()}>
             Sign In
           </Button>
           {renderErrors()}
