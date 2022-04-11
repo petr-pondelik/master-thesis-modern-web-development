@@ -23,8 +23,8 @@ model User {
 
     stories Story[]
     readingLists ReadingList[]
-    subscribedBy Subscription[] @relation("subscriber")
-    subscribing Subscription[] @relation("subscribing")
+//    subscribedBy Subscription[] @relation("subscriber")
+//    subscribing Subscription[] @relation("subscribing")
 
     @@map("users")
 }
@@ -40,7 +40,7 @@ model Story {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    readingLists ReadingList[]
+    readingLists StoriesOnReadingLists[]
 
     @@map("stories")
 }
@@ -54,22 +54,19 @@ model ReadingList {
     author User @relation(fields: [authorId], references: [id])
     authorId Int
 
-    stories Story[]
-
-    @@unique([title,authorId])
+    stories StoriesOnReadingLists[]
 
     @@map("reading_lists")
 }
 
-model Subscription {
-    id Int @id @default(autoincrement())
-    createdAt DateTime @default(now())
+model StoriesOnReadingLists {
+    id              Int             @id @default(autoincrement())
+    assignedAt      DateTime        @default(now())
+    story           Story           @relation(fields: [storyId], references: [id])
+    storyId         Int
+    readingList     ReadingList     @relation(fields: [readingListId], references: [id])
+    readingListId   Int
 
-    subscriber User @relation("subscriber", fields: [subscriberId], references: [id])
-    subscriberId Int
-
-    subscribing User @relation("subscribing", fields: [subscribingId], references: [id])
-    subscribingId Int
-
-    @@map("subscriptions")
+    @@unique([storyId, readingListId])
+    @@map("stories_on_reading_lists")
 }

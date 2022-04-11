@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { StoryModule } from './story/story.module';
-import { SubscriptionModule } from './subscription/subscription.module';
 import { ReadingListModule } from './reading-list/reading-list.module';
 import { getConfigPath } from "./common/helpers";
 import { GraphQLModule } from "@nestjs/graphql";
@@ -28,7 +27,6 @@ const envFilePath = getConfigPath(`${__dirname}/../config`);
     AuthModule,
     UserModule,
     StoryModule,
-    SubscriptionModule,
     PrismaModule,
     ReadingListModule,
   ],

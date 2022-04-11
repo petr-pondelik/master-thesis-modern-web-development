@@ -90,7 +90,7 @@ export class UserService {
       },
     });
     if (data === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+      throw new NotFoundException();
     }
     return data.readingLists;
   }

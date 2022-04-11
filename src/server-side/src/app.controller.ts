@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { addLinks, createLink, ResponseEnvelope } from './common/hateoas';
+import { ResponseEnvelope } from './common/hateoas';
 
-type ClientConfig = {
+type RootData = {
   apiVersion: string;
 };
 
-const clientConfig: ClientConfig = {
+const rootData: RootData = {
   apiVersion: 'v1',
 };
 
@@ -18,14 +18,9 @@ const clientConfig: ClientConfig = {
 export class AppController {
   @Get()
   @ApiOperation({
-    summary: 'Return API Root definition.',
+    summary: 'Return API Root.',
   })
-  getApiRoot(): ResponseEnvelope<ClientConfig> {
-    const envelope = new ResponseEnvelope<ClientConfig>(clientConfig);
-    addLinks(envelope, [
-      createLink('signIn', '/auth/sign-in', 'POST'),
-      createLink('search', '/stories/search', 'POST'),
-    ]);
-    return envelope;
+  getApiRoot(): ResponseEnvelope<RootData> {
+    return new ResponseEnvelope<RootData>(rootData);
   }
 }

@@ -1,8 +1,7 @@
 import { UserService } from './user.service';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ParseIntPipe } from '@nestjs/common';
 import { ReadingListService } from '../reading-list/reading-list.service';
-import { GqlJwtAuthGuard } from '../auth/guard';
 import { GraphQLUser } from '../common/decorator';
 
 @Resolver('User')
@@ -35,8 +34,8 @@ export class UserResolver {
   }
 
   @ResolveField('readingList')
-  async getReadingList(@Parent() user, @Args('title') title: string) {
-    const { id: userId } = user;
-    return this.readingListService.findUnique({ authorId: userId, title: title });
+  async getReadingList(@Parent() user, @Args('id', ParseIntPipe) id: number) {
+    const { userId } = user;
+    return this.readingListService.findAuthorsReadingList(id, userId);
   }
 }

@@ -6,15 +6,15 @@ import { useUserReadingList } from '../../api/queries';
 export const ReadingListViewPage = () => {
   const params = useParams();
 
-  let userId, title;
-  if (params.userId && params.readingListTitle) {
+  let userId, readingListId;
+  if (params.userId && params.readingListId) {
     userId = parseInt(params.userId);
-    title = params.readingListTitle;
+    readingListId = parseInt(params.readingListId);
   } else {
     return <ErrorPlaceholder />;
   }
 
-  const { data, isLoading, isError } = useUserReadingList(userId, title);
+  const { data, isLoading, isError } = useUserReadingList(userId, readingListId);
 
   if (isError) {
     return <ErrorPlaceholder />;

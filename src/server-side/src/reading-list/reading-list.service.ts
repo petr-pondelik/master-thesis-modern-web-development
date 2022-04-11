@@ -1,6 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Messages } from './messages';
 import { CreateReadingListDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
@@ -12,9 +11,19 @@ import { StoryEntity } from '../story/entities';
 export class ReadingListService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findUnique(_title_authorId: { authorId: number, title: string }): Promise<ReadingListEntity> {
+  async findById(_id: number): Promise<ReadingListEntity> {
     const readingList = await this.prisma.readingList.findUnique({
-      where: { title_authorId: _title_authorId },
+      where: { id: _id }
+    });
+    if (readingList === null) {
+      throw new NotFoundException();
+    }
+    return readingList;
+  }
+
+  async findAuthorsReadingList(_id: number, _authorId: number): Promise<ReadingListEntity> {
+    const readingList = await this.prisma.readingList.findFirst({
+      where: { id: _id, authorId: _authorId },
       include: {
         author: {
           select: {
@@ -25,31 +34,34 @@ export class ReadingListService {
       },
     });
     if (readingList === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+      throw new NotFoundException();
     }
     return readingList;
   }
 
-  async findStories(_title_authorId: { authorId: number, title: string }, _limit: number | undefined): Promise<StoryEntity[]> {
-    const data = await this.prisma.readingList.findUnique({
-      where: { title_authorId: _title_authorId },
+  async findStories(_id: number, _limit: number | undefined): Promise<StoryEntity[]> {
+    const data = await this.prisma.readingList.findFirst({
+      where: { id: _id },
       select: {
         stories: {
+          select: {
+            story: true,
+          },
           take: _limit,
-          orderBy: { id: 'desc' }
+          orderBy: { id: 'desc' },
         },
       },
     });
     if (data === null) {
       throw new NotFoundException();
     }
-    return data.stories;
+    return data.stories.map((item) => item.story);
   }
 
   async create(dto: CreateReadingListDto): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.create({
-        data: dto
+        data: dto,
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {
@@ -59,15 +71,12 @@ export class ReadingListService {
     }
   }
 
-  async update(_authorId: number, _title: string, dto: UpdateReadingListDto): Promise<ReadingListEntity> {
+  async update(_id: number, dto: UpdateReadingListDto): Promise<ReadingListEntity> {
     try {
       return await this.prisma.readingList.update({
         data: dto,
         where: {
-          title_authorId: {
-            title: _title,
-            authorId: _authorId,
-          },
+          id: _id,
         },
       });
     } catch (error) {
@@ -76,76 +85,70 @@ export class ReadingListService {
           throw new ConflictException(`You already have reading list named '${dto.title}'.`);
         }
         if (error.code === Constants.RECORD_NOT_FOUND) {
-          throw new NotFoundException(Messages.NOT_FOUND);
+          throw new NotFoundException();
         }
       }
       throw error;
     }
   }
 
-  async delete(_authorId: number, _title: string): Promise<ReadingListEntity> {
+  async delete(_id: number): Promise<ReadingListEntity> {
     try {
+      await this.prisma.storiesOnReadingLists.deleteMany({
+        where: { readingListId: _id },
+      });
       return await this.prisma.readingList.delete({
         where: {
-          title_authorId: {
-            title: _title,
-            authorId: _authorId,
-          },
+          id: _id,
         },
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
-        throw new NotFoundException(`Reading list '${_title}' does not exist.`);
-      }
-      throw error;
-    }
-  }
-
-  async connectStory(_authorId: number, _title: string, _storyId: number): Promise<ReadingListEntity> {
-    try {
-      return await this.prisma.readingList.update({
-        where: {
-          title_authorId: {
-            title: _title,
-            authorId: _authorId,
-          },
-        },
-        data: {
-          stories: {
-            connect: {
-              id: _storyId,
-            },
-          },
-        },
-      });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        (Constants.RECORD_NOT_FOUND === error.code || Constants.QUERY_INTERPRETATION_ERROR === error.code)
-      ) {
         throw new NotFoundException();
       }
       throw error;
     }
   }
 
-  async disconnectStory(_authorId: number, _title: string, _storyId: number): Promise<ReadingListEntity> {
+  async connectStory(_id: number, _storyId: number): Promise<ReadingListEntity> {
     try {
-      return await this.prisma.readingList.update({
-        where: {
-          title_authorId: {
-            title: _title,
-            authorId: _authorId,
-          },
-        },
+      const result = await this.prisma.storiesOnReadingLists.create({
         data: {
-          stories: {
-            disconnect: {
-              id: _storyId,
-            },
-          },
+          readingListId: _id,
+          storyId: _storyId,
+        },
+        select: {
+          readingList: true,
         },
       });
+      return result.readingList;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        console.log(error);
+        if (Constants.RECORD_NOT_FOUND === error.code || Constants.QUERY_INTERPRETATION_ERROR === error.code) {
+          throw new NotFoundException();
+        } else if (error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {
+          throw new ConflictException();
+        }
+      }
+      throw error;
+    }
+  }
+
+  async disconnectStory(_id: number, _storyId: number): Promise<ReadingListEntity> {
+    try {
+      const result = await this.prisma.storiesOnReadingLists.delete({
+        where: {
+          storyId_readingListId: {
+            readingListId: _id,
+            storyId: _storyId,
+          },
+        },
+        select: {
+          readingList: true,
+        },
+      });
+      return result.readingList;
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&

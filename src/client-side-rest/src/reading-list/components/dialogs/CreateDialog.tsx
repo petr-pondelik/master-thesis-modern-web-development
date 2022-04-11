@@ -32,7 +32,7 @@ export const CreateDialog = (props: { createLink: HateoasLink, refetch: any }) =
 
   const mutation = useMutation(
     (dto: CreateReadingListDto) =>
-      HttpRequest<ReadingListEnvelope, CreateReadingListDto>(`${createLink.href}/${dto.title}`, createLink.method, dto),
+      HttpRequest<ReadingListEnvelope, CreateReadingListDto>(createLink.href, createLink.method, dto),
     {
       onSuccess: () => {
         handleClose();

@@ -6,7 +6,6 @@ import { UpdateReadingListDto } from '../../dto';
 import EditIcon from '@mui/icons-material/Edit';
 import { ReadingListForm } from '../forms';
 import { CreateDialogState } from './CreateDialog';
-import { useNavigate } from 'react-router-dom';
 import { useJwtStore } from '../../../store';
 
 export type UpdateDialogState = {
@@ -29,16 +28,11 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope }) => {
     return null;
   }
 
-  const navigate = useNavigate();
-
   const mutation = useMutation(
     (dto: UpdateReadingListDto) =>
       HttpRequest<ReadingListEnvelope, UpdateReadingListDto>(updateLink.href, updateLink.method, dto),
     {
-      onSuccess: (data) => {
-        const link = findLink(data._links, 'self');
-        const url = `${findLink(user._links, 'reading-lists').href}/${data.title}`;
-        navigate(url, { state: { resource: link } });
+      onSuccess: () => {
         queryClient.invalidateQueries(['readingList', user.data.sub, readingList.id]);
       },
     },

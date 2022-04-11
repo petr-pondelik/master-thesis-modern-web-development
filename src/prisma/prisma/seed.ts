@@ -11,10 +11,8 @@ users = users.map((user: any) => ({
 }));
 
 const stories = JSON.parse(fs.readFileSync('./prisma/data/stories.json', 'utf8'));
-
-const subscriptions = JSON.parse(fs.readFileSync('./prisma/data/subscriptions.json', 'utf8'));
-
 const readingLists = JSON.parse(fs.readFileSync('./prisma/data/reading-lists.json', 'utf8'));
+const storiesOnReadingLists = JSON.parse(fs.readFileSync('./prisma/data/stories-on-reading-lists.json', 'utf8'));
 
 const prisma = new PrismaClient();
 
@@ -30,8 +28,8 @@ async function insert() {
       data: rl
     })
   }
-  await prisma.subscription.createMany({
-    data: subscriptions,
+  await prisma.storiesOnReadingLists.createMany({
+    data: storiesOnReadingLists,
   });
 }
 

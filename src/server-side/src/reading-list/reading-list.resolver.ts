@@ -17,8 +17,8 @@ export class ReadingListResolver {
     @Parent() readingList,
     @Args('limit') limit: number,
   ) {
-    const { authorId, title } = readingList;
-    return this.readingListService.findStories({ authorId: authorId, title: title }, limit);
+    const { id } = readingList;
+    return this.readingListService.findStories(id , limit);
   }
 
   @ResolveField('author')
@@ -43,59 +43,59 @@ export class ReadingListResolver {
   @UseGuards(GqlJwtAuthGuard)
   @Mutation('updateReadingList')
   async doUpdateReadingList(
-    @Args('title') title: string,
-    @Args('userId', ParseIntPipe) userId: number,
+    @Args('readingListId', ParseIntPipe) readingListId: number,
     @Args('content') content: UpdateReadingListDto,
     @GraphQLUser() user
   ) {
-    /** Owner-level access restriction */
-    if (userId !== user.id) {
-      throw new ForbiddenException();
-    }
-    return await this.readingListService.update(userId, title, content);
+    //TODO
+    // /** Owner-level access restriction */
+    // if (userId !== user.id) {
+    //   throw new ForbiddenException();
+    // }
+    return await this.readingListService.update(readingListId, content);
   }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation('deleteReadingList')
   async doDeleteReadingList(
-    @Args('title') title: string,
-    @Args('userId') userId: number,
+    @Args('readingListId', ParseIntPipe) readingListId: number,
     @GraphQLUser() user
   ) {
-    /** Owner-level access restriction */
-    if (userId !== user.id) {
-      throw new ForbiddenException();
-    }
-    return await this.readingListService.delete(userId, title);
+    // // TODO
+    // /** Owner-level access restriction */
+    // if (userId !== user.id) {
+    //   throw new ForbiddenException();
+    // }
+    return await this.readingListService.delete(readingListId);
   }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation('addStoryIntoReadingList')
   async doAddStoryIntoReadingList(
-    @Args('title') title: string,
-    @Args('userId') userId: number,
-    @Args('storyId') storyId: number,
+    @Args('readingListId', ParseIntPipe) readingListId: number,
+    @Args('storyId', ParseIntPipe) storyId: number,
     @GraphQLUser() user
   ) {
-    /** Owner-level access restriction */
-    if (userId !== user.id) {
-      throw new ForbiddenException();
-    }
-    return await this.readingListService.connectStory(userId, title, storyId);
+    // TODO
+    // /** Owner-level access restriction */
+    // if (userId !== user.id) {
+    //   throw new ForbiddenException();
+    // }
+    return await this.readingListService.connectStory(readingListId, storyId);
   }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation('removeStoryFromReadingList')
   async doRemoveStoryFromReadingList(
-    @Args('title') title: string,
-    @Args('userId') userId: number,
-    @Args('storyId') storyId: number,
+    @Args('readingListId', ParseIntPipe) readingListId: number,
+    @Args('storyId', ParseIntPipe) storyId: number,
     @GraphQLUser() user
   ) {
-    /** Owner-level access restriction */
-    if (userId !== user.id) {
-      throw new ForbiddenException();
-    }
-    return await this.readingListService.disconnectStory(userId, title, storyId);
+    // TODO
+    // /** Owner-level access restriction */
+    // if (userId !== user.id) {
+    //   throw new ForbiddenException();
+    // }
+    return await this.readingListService.disconnectStory(readingListId, storyId);
   }
 }

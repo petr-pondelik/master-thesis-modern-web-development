@@ -1,37 +1,23 @@
 import {
   Body,
   Controller,
-  Delete,
-  ForbiddenException,
   Get,
   HttpCode,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
-  Put,
-  Res,
-  UnauthorizedException,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { SignUpDto } from './dto';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '../auth/guard';
 import { addLinks, createLink } from '../common/hateoas';
 import { apiPath } from '../common/helpers';
 import { StoryPath } from '../story/story.controller';
-import { User } from '../common/decorator';
 import { ReadingListService } from '../reading-list/reading-list.service';
-import { CreateReadingListDto } from '../reading-list/dto';
-import { UpdateReadingListDto } from '../reading-list/dto';
 import { StoryService } from '../story/story.service';
-import { Response } from 'express';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiHeader, ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -43,6 +29,7 @@ import { StoryCollectionEnvelope, StoryEnvelope } from '../story/envelopes';
 import { ReadingListCollectionEnvelope, ReadingListEnvelope } from '../reading-list/envelopes';
 import { ErrorMessage } from '../common/message';
 import { Jwt, Limit } from '../common/decorator';
+import { ReadingListPath } from '../reading-list/reading-list.controller';
 
 export const UserPath = 'users';
 export const UserVersion = '1';
@@ -172,201 +159,40 @@ export class UserController {
     const envelope = new ReadingListCollectionEnvelope(readingLists);
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, `${_id}/reading-lists`), 'GET'),
-      createLink('create', apiPath(UserPath, `${_id}/reading-lists`), 'PUT'),
+      createLink('create', apiPath(ReadingListPath), 'POST'),
     ]);
     for (const rl of envelope.data) {
       addLinks(rl, [
-        createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.title}`), 'GET'),
-        createLink('stories', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories`), 'GET'),
-        createLink('addStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'PUT'),
-        createLink('removeStory', apiPath(UserPath, `${_id}/reading-lists/${rl.title}/stories/:storyId`), 'DELETE'),
+        createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.id}`), 'GET'),
+        createLink('stories', apiPath(ReadingListPath, `${rl.id}/stories`), 'GET'),
+        createLink('addStory', apiPath(ReadingListPath, `${rl.id}/stories/:storyId`), 'PUT'),
+        createLink('removeStory', apiPath(ReadingListPath, `${rl.id}/stories/:storyId`), 'DELETE'),
       ]);
     }
     return envelope;
   }
 
-  @Get(':id/reading-lists/:title')
+  @Get(':userId/reading-lists/:readingListId')
   @ApiOperation({
     summary: 'Find user\'s reading list.',
   })
   @ApiOkResponse({ description: 'Reading list successfully retrieved.', type: ReadingListEnvelope })
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   async findReadingList(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('title') title: string,
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('readingListId', ParseIntPipe) readingListId: number,
   ): Promise<ReadingListEnvelope> {
-    const readingList = await this.readingListService.findUnique({ authorId: id, title: title });
+    const readingList = await this.readingListService.findAuthorsReadingList(readingListId, userId);
     let envelope = new ReadingListEnvelope();
     envelope = { ...envelope, ...readingList };
     addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists/${title}`), 'GET'),
-      createLink('parent', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
-      createLink('author', apiPath(UserPath, `${id}`), 'GET'),
-      createLink('update', apiPath(UserPath, `${id}/reading-lists/${title}`), 'PATCH'),
-      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}`), 'DELETE'),
-      createLink('stories', apiPath(UserPath, `${id}/reading-lists/${title}/stories`), 'GET'),
+      createLink('self', apiPath(UserPath, `${userId}/reading-lists/${readingListId}`), 'GET'),
+      createLink('parent', apiPath(UserPath, `${userId}/reading-lists`), 'GET'),
+      createLink('author', apiPath(UserPath, `${userId}`), 'GET'),
+      createLink('update', apiPath(ReadingListPath, readingListId), 'PATCH'),
+      createLink('delete', apiPath(ReadingListPath, readingListId), 'DELETE'),
+      createLink('stories', apiPath(ReadingListPath, `${readingListId}/stories`), 'GET'),
     ]);
     return envelope;
-  }
-
-  @Get(':id/reading-lists/:title/stories')
-  @ApiOperation({
-    summary: 'Find stories stored within the reading list.',
-  })
-  @ApiOkResponse({ description: 'Stories successfully retrieved.', type: StoryCollectionEnvelope })
-  @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  async findReadingListStories(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('title') title: string,
-    @Limit() limit: number | undefined
-  ): Promise<StoryCollectionEnvelope> {
-    const stories = await this.readingListService.findStories({ authorId: id, title: title }, limit);
-    const envelope = new StoryCollectionEnvelope(stories);
-    addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
-      createLink('create', apiPath(UserPath, `${id}/reading-lists`), 'PUT'),
-    ]);
-    for (const s of envelope.data) {
-      addLinks(s, [
-        createLink('self', apiPath(StoryPath, `${s.id}`), 'GET'),
-        createLink('author', apiPath(UserPath, `${s.authorId}`), 'GET'),
-        createLink('delete', apiPath(UserPath, `${id}/reading-lists/${title}/stories/${s.id}`), 'DELETE'),
-      ]);
-    }
-    return envelope;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Put(':id/reading-lists/:title')
-  @HttpCode(201)
-  @ApiOperation({
-    summary: 'Create a new reading list under a specific URL.',
-  })
-  @ApiCreatedResponse({ description: 'Reading list successfully created.', type: ReadingListEnvelope })
-  @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  async createReadingList(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('title') title: string,
-    @Body() dto: CreateReadingListDto,
-    @User() user,
-    @Res() res: Response,
-  ) {
-    /** Owner-level access restriction */
-    if (id !== user.id) {
-      throw new ForbiddenException();
-    }
-    const readingList = await this.readingListService.create(dto);
-    const envelope = { ...new ReadingListEnvelope(), ...readingList };
-    addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
-      createLink('parent', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
-      createLink('author', apiPath(UserPath, `${id}`), 'GET'),
-      createLink('update', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'PATCH'),
-      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'DELETE'),
-      createLink('stories', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories`), 'GET'),
-    ]);
-    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`)).json(envelope);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Patch(':id/reading-lists/:title')
-  @ApiOperation({
-    summary: 'Partially update reading list.',
-  })
-  @ApiOkResponse({ description: 'Reading list successfully updated.', type: ReadingListEnvelope })
-  @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  async updateReadingList(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('title') title: string,
-    @Body() dto: UpdateReadingListDto,
-    @User() user,
-  ): Promise<ReadingListEnvelope> {
-    /** Owner-level access restriction */
-    if (id !== user.id) {
-      throw new UnauthorizedException();
-    }
-    const readingList = await this.readingListService.update(id, title, dto);
-    const envelope = { ...new ReadingListEnvelope(), ...readingList };
-    addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
-      createLink('parent', apiPath(UserPath, `${id}/reading-lists`), 'GET'),
-      createLink('author', apiPath(UserPath, `${id}`), 'GET'),
-      createLink('update', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'PATCH'),
-      createLink('delete', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'DELETE'),
-      createLink('stories', apiPath(UserPath, `${id}/reading-lists/${readingList.title}/stories`), 'GET'),
-    ]);
-    return envelope;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id/reading-lists/:title')
-  @HttpCode(204)
-  @ApiOperation({
-    summary: 'Delete reading list.',
-  })
-  @ApiNoContentResponse({ description: 'Reading list successfully deleted.' })
-  @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  async deleteReadingList(@Param('id', ParseIntPipe) id: number, @Param('title') title: string, @User() user) {
-    /** Owner-level access restriction */
-    if (id !== user.id) {
-      throw new UnauthorizedException();
-    }
-    await this.readingListService.delete(id, title);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Put(':id/reading-lists/:title/stories/:storyId')
-  @HttpCode(201)
-  @ApiOperation({
-    summary: 'Add story into reading list.',
-  })
-  @ApiCreatedResponse({ description: 'Story successfully added into reading list.' })
-  @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  @ApiHeader({ name: 'Location', description: 'Location of the new resource.' })
-  async addStoryIntoReadingList(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('title') title: string,
-    @Param('storyId', ParseIntPipe) storyId: number,
-    @User() user,
-    @Res() res: Response,
-  ) {
-    /** Owner-level access restriction */
-    if (id !== user.id) {
-      throw new UnauthorizedException();
-    }
-    await this.storyService.findOneById(storyId);
-    const readingList = await this.readingListService.connectStory(id, title, storyId);
-    const envelope = { ...new ReadingListEnvelope(), ...readingList };
-    addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${id}/reading-lists/${readingList.title}`), 'GET'),
-    ]);
-    return res.setHeader('Location', apiPath(UserPath, `${id}/reading-lists/${title}/${storyId}`)).json(envelope);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id/reading-lists/:title/stories/:storyId')
-  @HttpCode(204)
-  @ApiOperation({
-    summary: 'Remove story from reading list.',
-  })
-  @ApiNoContentResponse({ description: 'Story successfully removed from reading list.' })
-  @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
-  @ApiForbiddenResponse({ description: 'Access is forbidden.', type: ErrorMessage })
-  async deleteStoryFromReadingList(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('title') title: string,
-    @Param('storyId', ParseIntPipe) storyId: number,
-    @User() user,
-  ) {
-    /** Owner-level access restriction */
-    if (id !== user.id) {
-      throw new UnauthorizedException();
-    }
-    await this.storyService.findOneById(storyId);
-    await this.readingListService.disconnectStory(id, title, storyId);
   }
 }

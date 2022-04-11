@@ -11,7 +11,7 @@ const usersAmount = 10;
 const storiesAmount = 100;
 const commentsCnt = 500;
 const readingListsAmount = 20;
-const subscriptionsCnt = Math.floor((usersAmount * usersAmount) / 4);
+// const subscriptionsCnt = Math.floor((usersAmount * usersAmount) / 4);
 
 const usersData: any[] = [];
 
@@ -32,15 +32,13 @@ async function generateUsers() {
   }
 }
 
-const generateAritcles = () => {
+const generateStories = () => {
   const storiesData = Array.from({ length: storiesAmount }).map(() => {
     const _description = faker.hacker.phrase();
     const phraseCleaned = _description.replace(/[^\w\s]/gi, '');
     const phraseParts = phraseCleaned.split(' ');
-    // console.log(phraseCleaned);
-    // console.log(phraseParts);
     let _title = phraseParts[0];
-    for (let i = 0; i < randomInt(Math.floor(phraseParts.length / 4), Math.floor(phraseParts.length / 2)); i++) {
+    for (let i = 0; i < randomInt(Math.floor(phraseParts.length / 3), Math.floor(phraseParts.length / 2)); i++) {
       let alreadyPicked = true;
       let word = '';
       while (alreadyPicked) {
@@ -73,86 +71,97 @@ const generateComments = () => {
   fs.writeFileSync('./prisma/data/comments.json', JSON.stringify(commentsData));
 };
 
-const generateSubscriptions = () => {
-  const subscriptionsData = [];
-  const subsCouples = [];
-
-  for (let i = 0; i < subscriptionsCnt; i++) {
-    let validCombination = false;
-
-    let _subscriberId = getRandomInt(usersAmount) + 1;
-    let _subscribingId = getRandomInt(usersAmount) + 1;
-
-    if (
-      _subscriberId !== _subscribingId &&
-      subsCouples.find((item) => {
-        return item.subscriberId === _subscriberId && item.subscribingId === _subscribingId;
-      }) === undefined
-    ) {
-      validCombination = true;
-    }
-
-    while (!validCombination) {
-      _subscriberId = getRandomInt(usersAmount) + 1;
-      _subscribingId = getRandomInt(usersAmount) + 1;
-      if (
-        _subscriberId !== _subscribingId &&
-        subsCouples.find((item) => {
-          return item.subscriberId === _subscriberId && item.subscribingId === _subscribingId;
-        }) === undefined
-      ) {
-        validCombination = true;
-      }
-    }
-
-    subsCouples.push({
-      subscriberId: _subscriberId,
-      subscribingId: _subscribingId,
-    });
-
-    subscriptionsData.push({
-      subscriberId: _subscriberId,
-      subscribingId: _subscribingId,
-    });
-  }
-
-  fs.writeFileSync('./prisma/data/subscriptions.json', JSON.stringify(subscriptionsData));
-};
-
 const generateReadingLists = () => {
-  const readingListsData: any[] = [];
+  const readingListsData = [];
+  const storiesOnReadingLists = [];
   for (let i = 1; i <= readingListsAmount; i++) {
-    const stories = [];
     readingListsData.push({
       title: faker.word.noun(),
       authorId: getRandomInt(usersAmount) + 1,
-      stories: {
-        connect: []
-      }
     });
     const storiesCnt = randomInt(3, 8);
-    const usedStories: any[]  = [];
+    const usedStories: any[] = [];
     for (let j = 0; j < storiesCnt; j++) {
       let validStory = false;
       while (!validStory) {
         const storyId = randomInt(storiesAmount) + 1;
         if (!usedStories.includes(storyId)) {
           validStory = true;
-          stories.push({id: storyId});
+          storiesOnReadingLists.push({
+            readingListId: i,
+            storyId: storyId,
+          });
         }
         usedStories.push(storyId);
       }
     }
-    readingListsData[i-1].stories.connect = stories;
   }
   fs.writeFileSync('./prisma/data/reading-lists.json', JSON.stringify(readingListsData));
-  // fs.writeFileSync('./prisma/data/stories-on-reading-lists.json', JSON.stringify(storiesOnReadingLists));
+  fs.writeFileSync('./prisma/data/stories-on-reading-lists.json', JSON.stringify(storiesOnReadingLists));
 };
+
+// const generateSubscriptions = () => {
+//   const subscriptionsData = [];
+//   const subsCouples = [];
+//
+//   for (let i = 0; i < subscriptionsCnt; i++) {
+//     let validCombination = false;
+//
+//     let _subscriberId = getRandomInt(usersAmount) + 1;
+//     let _subscribingId = getRandomInt(usersAmount) + 1;
+//
+//     if (
+//       _subscriberId !== _subscribingId &&
+//       subsCouples.find((item) => {
+//         return (
+//           item.subscriberId === _subscriberId &&
+//           item.subscribingId === _subscribingId
+//         );
+//         return item.subscriberId === _subscriberId && item.subscribingId === _subscribingId;
+//       }) === undefined
+//     ) {
+//       validCombination = true;
+//     }
+//
+//     while (!validCombination) {
+//       _subscriberId = getRandomInt(usersAmount) + 1;
+//       _subscribingId = getRandomInt(usersAmount) + 1;
+//       if (
+//         _subscriberId !== _subscribingId &&
+//         subsCouples.find((item) => {
+//           return (
+//             item.subscriberId === _subscriberId &&
+//             item.subscribingId === _subscribingId
+//           );
+//           return item.subscriberId === _subscriberId && item.subscribingId === _subscribingId;
+//         }) === undefined
+//       ) {
+//         validCombination = true;
+//       }
+//     }
+//
+//     subsCouples.push({
+//       subscriberId: _subscriberId,
+//       subscribingId: _subscribingId,
+//     });
+//
+//     subscriptionsData.push({
+//       title: `${usersData[_subscribingId - 1].givenName} ${
+//         usersData[_subscribingId - 1].familyName
+//       }`,
+//       subscriberId: _subscriberId,
+//       subscribingId: _subscribingId,
+//     });
+//   }
+//
+//   console.log(subscriptionsData);
+//   fs.writeFileSync('./prisma/data/subscriptions.json', JSON.stringify(subscriptionsData));
+// };
 
 generateUsers().then(() => {
   fs.writeFileSync('./prisma/data/users.json', JSON.stringify(usersData));
-  generateAritcles();
+  generateStories();
   generateComments();
   generateReadingLists();
-  generateSubscriptions();
+  // generateSubscriptions();
 });
