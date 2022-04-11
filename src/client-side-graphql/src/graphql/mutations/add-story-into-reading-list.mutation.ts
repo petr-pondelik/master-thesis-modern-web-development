@@ -1,8 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 
 const ADD_STORY_INTO_READING_LIST = gql`
-  mutation AddStoryIntoReadingList($title: String!, $userId: Int!, $storyId: Int!) {
-    addStoryIntoReadingList(title: $title, userId: $userId, storyId: $storyId) {
+  mutation AddStoryIntoReadingList($readingListId: Int!, $id: Int!) {
+    addStoryIntoReadingList(readingListId: $readingListId, storyId: $id) {
       id
       title
     }
@@ -16,9 +16,8 @@ type AddStoryIntoReadingListData = {
 };
 
 type AddStoryIntoReadingListVars = {
-  title: string,
-  userId: number,
-  storyId: number
+  readingListId: number;
+  id: number
 };
 
 export function useAddStoryIntoReadingListMutation(_variables: AddStoryIntoReadingListVars, _onCompleted?: any) {

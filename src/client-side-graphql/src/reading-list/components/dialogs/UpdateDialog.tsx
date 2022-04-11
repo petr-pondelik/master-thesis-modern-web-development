@@ -4,12 +4,10 @@ import { UpdateReadingListDto } from '../../dto';
 import EditIcon from '@mui/icons-material/Edit';
 import { ReadingListForm } from '../forms';
 import { CreateDialogState } from './CreateDialog';
-import { useNavigate } from 'react-router-dom';
 import { useJwtStore } from '../../../store';
 import { apolloClient } from '../../../graphql';
 import { UpdateReadingListData, useUpdateReadingListMutation } from '../../../graphql/mutations';
 import { UserReadingListQueryReadingList } from '../../../graphql/queries';
-import { Paths } from '../../../common';
 
 export type UpdateDialogState = {
   open: boolean;
@@ -26,24 +24,21 @@ export const UpdateDialog = (props: { readingList: UserReadingListQueryReadingLi
     title: '',
   });
 
-  const navigate = useNavigate();
-
   const user = useJwtStore((state) => state.user);
   if (!user) {
     return null;
   }
 
-  const actionCallback = (data: UpdateReadingListData) => {
-    const updated = data.updateReadingList;
+  const actionCallback = () => {
     apolloClient.refetchQueries({
       include: ['UserReadingList'],
     });
-    navigate(Paths.userReadingLists(updated.author.id, updated.title));
+    handleClose();
   };
 
   const [updateReadingList] = useUpdateReadingListMutation(
-    { title: readingList.title, userId: readingList.author.id, content: dto },
-    (data: UpdateReadingListData) => actionCallback(data),
+    { id: readingList.id, content: dto },
+    (data: UpdateReadingListData) => actionCallback(),
   );
 
   const handleOpen = () => {

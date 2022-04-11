@@ -28,17 +28,15 @@ const ReadingListItem = (props: ReadingListItemProps) => {
 
   const [addStory] = useAddStoryIntoReadingListMutation(
     {
-      userId: readingList.author.id,
-      title: readingList.title,
-      storyId: story.id,
+      readingListId: readingList.id,
+      id: story.id,
     },
     actionCallback,
   );
 
   const [removeStory] = useRemoveStoryFromReadingListMutation(
     {
-      userId: readingList.author.id,
-      title: readingList.title,
+      readingListId: readingList.id,
       id: story.id,
     },
     actionCallback,

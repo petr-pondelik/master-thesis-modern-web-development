@@ -28,14 +28,13 @@ export class UserResolver {
 
   @ResolveField('readingLists')
   async getReadingLists(@GraphQLUser() authUser, @Parent() user, @Args('limit') limit: number) {
-    console.log(authUser);
     const { id } = user;
     return this.userService.findReadingLists(id, limit);
   }
 
   @ResolveField('readingList')
-  async getReadingList(@Parent() user, @Args('id', ParseIntPipe) id: number) {
-    const { userId } = user;
-    return this.readingListService.findAuthorsReadingList(id, userId);
+  async getReadingList(@Parent() user, @Args('id', ParseIntPipe) readingListId: number) {
+    const { id: userId } = user;
+    return this.readingListService.findAuthorsReadingList(readingListId, userId);
   }
 }

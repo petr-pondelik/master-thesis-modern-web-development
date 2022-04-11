@@ -10,15 +10,15 @@ export const ReadingListViewPage = () => {
   if (!user) {
     return null;
   }
-  let userId, title;
-  if (params.userId && params.readingListTitle) {
+  let userId, readingListId;
+  if (params.userId && params.readingListId) {
     userId = parseInt(params.userId);
-    title = params.readingListTitle;
+    readingListId = parseInt(params.readingListId);
   } else {
     return <ErrorPlaceholder />;
   }
 
-  const { data, loading, error } = useUserReadingListQuery({ userId: userId, title: title });
+  const { data, loading, error } = useUserReadingListQuery({ userId: userId, readingListId: readingListId });
   if (error) {
     return <ErrorPlaceholder />;
   }

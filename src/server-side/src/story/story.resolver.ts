@@ -34,7 +34,11 @@ export class StoryResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation('createStory')
-  async doCreateStory(@Args('content') content: CreateStoryDto) {
+  async doCreateStory(@Args('content') content: CreateStoryDto, @GraphQLUser() user) {
+    /** Owner-level access restriction */
+    if (user.id !== content.authorId) {
+      throw new ForbiddenException();
+    }
     return this.storyService.create(content);
   }
 

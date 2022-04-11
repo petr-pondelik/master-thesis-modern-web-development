@@ -4,7 +4,6 @@ const USER_WITH_STORIES_QUERY = gql`
   query UserWithStories($id: Int!, $limit: Int) {
     user(id: $id) {
       id
-      email
       profileDescription
       givenName
       familyName
@@ -26,7 +25,6 @@ type UserWithStoriesQueryStory = {
 export type UserWithStoriesQueryUser = {
   id: number;
   createdAt: string;
-  email: string;
   givenName?: string | null;
   familyName?: string | null;
   profileDescription?: string | null;

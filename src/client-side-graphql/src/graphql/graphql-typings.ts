@@ -91,10 +91,10 @@ export interface IMutation {
     updateStory(id: number, content: UpdateStoryContent): Nullable<Story> | Promise<Nullable<Story>>;
     deleteStory(id: number): Nullable<Story> | Promise<Nullable<Story>>;
     createReadingList(content: CreateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
-    updateReadingList(title: string, userId: number, content: UpdateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
-    deleteReadingList(title: string, userId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
-    addStoryIntoReadingList(title: string, userId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
-    removeStoryFromReadingList(title: string, userId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    updateReadingList(id: number, content: UpdateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    deleteReadingList(id: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    addStoryIntoReadingList(readingListId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    removeStoryFromReadingList(readingListId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 }
 
 type Nullable<T> = T | null;

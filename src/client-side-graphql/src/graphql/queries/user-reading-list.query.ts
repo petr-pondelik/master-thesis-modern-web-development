@@ -1,10 +1,11 @@
 import { gql, useQuery } from '@apollo/client';
 
 const USER_READING_LIST_QUERY = gql`
-  query UserReadingList($userId: Int!, $title: String!) {
+  query UserReadingList($userId: Int!, $readingListId: Int!) {
     user(id: $userId) {
       id
-      readingList(title: $title) {
+      readingList(id: $readingListId) {
+        id
         createdAt
         title
         author {
@@ -43,6 +44,7 @@ export type UserReadingListQueryStory = {
 };
 
 export type UserReadingListQueryReadingList = {
+  id: number;
   createdAt: string;
   title: string;
   author: UserReadingListQueryAuthor;
@@ -58,7 +60,7 @@ export type UserReadingListData = {
 
 export type UserReadingListVars = {
   userId: number;
-  title: string;
+  readingListId: number;
 };
 
 export function useUserReadingListQuery(_variables: UserReadingListVars) {

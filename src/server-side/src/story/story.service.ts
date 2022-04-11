@@ -103,6 +103,9 @@ export class StoryService {
 
   async delete(_id: number): Promise<StoryEntity> {
     try {
+      await this.prisma.storiesOnReadingLists.deleteMany({
+        where: { storyId: _id },
+      });
       return await this.prisma.story.delete({
         where: {
           id: _id,

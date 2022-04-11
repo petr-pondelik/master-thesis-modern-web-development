@@ -27,7 +27,7 @@ export const AppRoutes = () => {
         {user && (
           <>
             <Route path={'/users/:id/reading-lists'} element={<ReadingListCollectionPage />} />
-            <Route path={'/users/:userId/reading-lists/:readingListTitle'} element={<UserReadingListViewPage />} />
+            <Route path={'/users/:userId/reading-lists/:readingListId'} element={<UserReadingListViewPage />} />
           </>
         )}
         <Route path={'*'} element={<Navigate to={'/'} />} />

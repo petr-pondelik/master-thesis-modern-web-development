@@ -19,7 +19,7 @@ export function EntityList(props: EntityListProps) {
 
   if (items) {
     const rows = items.map((item, _key) => {
-      const _path = `${itemPath}/${item.id ?? item.title}`;
+      const _path = `${itemPath}/${item.id}`;
       return (
         <EntityListItem
           entity={item}

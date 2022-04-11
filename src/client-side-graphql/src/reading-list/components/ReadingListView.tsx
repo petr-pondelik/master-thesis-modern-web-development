@@ -56,8 +56,7 @@ export const ReadingListView = (props: {
 
   const [removeStory] = useRemoveStoryFromReadingListMutation(
     {
-      userId: readingList.author.id,
-      title: readingList.title,
+      readingListId: readingList.id,
       id: -1,
     },
     removeStoryCallback,

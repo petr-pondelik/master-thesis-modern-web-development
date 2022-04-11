@@ -32,7 +32,7 @@ type User implements Entity {
     stories(limit: Int): [Story!]!
     story(id: Int): Story
     readingLists(limit: Int): [ReadingList!]!
-    readingList(title: String): ReadingList
+    readingList(id: Int!): ReadingList
 }
 
 type Story implements NamedEntity {
@@ -86,8 +86,8 @@ type Mutation {
     updateStory(id: Int! content: UpdateStoryContent!): Story
     deleteStory(id: Int!): Story
     createReadingList(content: CreateReadingListContent!): ReadingList
-    updateReadingList(title: String!, userId: Int!, content: UpdateReadingListContent!): ReadingList
-    deleteReadingList(title: String!, userId: Int!): ReadingList
-    addStoryIntoReadingList(title: String!, userId: Int!, storyId: Int!): ReadingList
-    removeStoryFromReadingList(title: String!, userId: Int!, storyId: Int!): ReadingList
+    updateReadingList(id: Int!, content: UpdateReadingListContent!): ReadingList
+    deleteReadingList(id: Int!): ReadingList
+    addStoryIntoReadingList(readingListId: Int!, storyId: Int!): ReadingList
+    removeStoryFromReadingList(readingListId: Int!, storyId: Int!): ReadingList
 }

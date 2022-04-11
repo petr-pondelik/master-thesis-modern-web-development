@@ -8,8 +8,8 @@ export const Paths = {
   stories: (id?: number) => { return id ? `/stories/${id}` : '/stories' },
   users: (id?: number) => {return id ? `/users/${id}` : '/users' },
   userStories: (id: number) => {return `/users/${id}/stories`},
-  userReadingLists: (userId: number, title?: string) => {
-    return title ? `/users/${userId}/reading-lists/${title}` : `/users/${userId}/reading-lists`
+  userReadingLists: (userId: number, readingListId?: number) => {
+    return readingListId ? `/users/${userId}/reading-lists/${readingListId}` : `/users/${userId}/reading-lists`
   },
   signIn: '/sign-in'
 }

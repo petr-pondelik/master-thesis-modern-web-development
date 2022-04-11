@@ -1,8 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 
 const REMOVE_STORY_FROM_READING_LIST = gql`
-  mutation RemoveStoryFromReadingList($title: String!, $userId: Int!, $id: Int!) {
-    removeStoryFromReadingList(title: $title, userId: $userId, storyId: $id) {
+  mutation RemoveStoryFromReadingList($readingListId: Int!, $id: Int!) {
+    removeStoryFromReadingList(readingListId: $readingListId, storyId: $id) {
       id
       title
     }
@@ -16,8 +16,7 @@ type RemoveStoryFromReadingListData = {
 };
 
 type RemoveStoryFromReadingListVars = {
-  userId: number;
-  title: string;
+  readingListId: number;
   id: number;
 };
 

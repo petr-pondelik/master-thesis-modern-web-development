@@ -5,6 +5,7 @@ const USER_READING_LISTS_QUERY = gql`
     user(id: $id) {
       id
       readingLists(limit: $limit) {
+        id
         title
       }
     }
@@ -12,20 +13,21 @@ const USER_READING_LISTS_QUERY = gql`
 `;
 
 export type UserReadingListsQueryReadingList = {
-  title: string,
-}
+  id: number;
+  title: string;
+};
 
 export type UserReadingListsData = {
   user: {
-    id: number,
+    id: number;
     readingLists: UserReadingListsQueryReadingList[];
   };
-}
+};
 
 type UserReadingListsVars = {
   id: number;
   limit?: number;
-}
+};
 
 export function useUserReadingListsQuery(_variables: UserReadingListsVars) {
   return useQuery<UserReadingListsData, UserReadingListsVars>(USER_READING_LISTS_QUERY, {

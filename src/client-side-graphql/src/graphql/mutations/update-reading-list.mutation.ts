@@ -2,8 +2,8 @@ import { gql, useMutation } from '@apollo/client';
 import { UpdateReadingListContent } from '../graphql-typings';
 
 const UPDATE_READING_LIST_MUTATION = gql`
-  mutation UpdateReadingList($title: String!, $userId: Int!, $content: UpdateReadingListContent!) {
-    updateReadingList(title: $title, userId: $userId, content: $content) {
+  mutation UpdateReadingList($id: Int!, $content: UpdateReadingListContent!) {
+    updateReadingList(id: $id, content: $content) {
       id
       title
       author {
@@ -24,8 +24,7 @@ export type UpdateReadingListData = {
 };
 
 type UpdateReadingListVars = {
-  title: string;
-  userId: number;
+  id: number;
   content: UpdateReadingListContent;
 };
 

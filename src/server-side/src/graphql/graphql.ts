@@ -98,13 +98,13 @@ export abstract class IMutation {
 
     abstract createReadingList(content: CreateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 
-    abstract updateReadingList(title: string, userId: number, content: UpdateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    abstract updateReadingList(id: number, content: UpdateReadingListContent): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 
-    abstract deleteReadingList(title: string, userId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    abstract deleteReadingList(id: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 
-    abstract addStoryIntoReadingList(title: string, userId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    abstract addStoryIntoReadingList(readingListId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 
-    abstract removeStoryFromReadingList(title: string, userId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
+    abstract removeStoryFromReadingList(readingListId: number, storyId: number): Nullable<ReadingList> | Promise<Nullable<ReadingList>>;
 }
 
 type Nullable<T> = T | null;
