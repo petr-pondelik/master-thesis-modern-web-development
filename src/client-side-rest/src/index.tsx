@@ -4,13 +4,13 @@ import './index.css';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import { AppRoutes } from './AppRoutes';
+import { Router } from './Router';
 
 const rootElement = document.getElementById('root');
 
 render(
   <BrowserRouter>
-    <AppRoutes />
+    <Router />
   </BrowserRouter>,
   rootElement,
 );
