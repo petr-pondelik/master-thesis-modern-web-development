@@ -4,6 +4,7 @@ import { EntityDelete } from '../EntityDelete';
 import { red } from '@mui/material/colors';
 import CustomLink from '../../custom-link/CustomLink';
 import { HateoasLink, UserEntity } from 'services/rest-api-service';
+import { formatAuthor } from '../../../../helpers';
 
 type EntityCardHeaderProps = {
   title: string,
@@ -48,7 +49,7 @@ export const EntityCardHeader = (props: EntityCardHeaderProps) => {
   };
 
   return <CardHeader
-    title={title}
+    title={formatAuthor((author))}
     subheader={subheader}
     avatar={renderAuthor()}
     action={

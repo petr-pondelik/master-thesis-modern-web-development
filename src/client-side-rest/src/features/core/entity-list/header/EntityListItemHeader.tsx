@@ -1,14 +1,11 @@
 import { Avatar, CardActionArea, CardHeader } from '@mui/material';
-import { findLink, HttpRequest, UserEnvelope, PartialUserEntity, UserEntity } from 'services/rest-api-service';
+import { findLink, HttpRequest, UserEnvelope } from 'services/rest-api-service';
 import { red } from '@mui/material/colors';
 import { useQuery } from 'react-query';
 import { Fragment } from 'react';
 import { EntityDelete } from 'features/core/entity-card';
 import { CustomLink } from 'features/core/custom-link';
-
-export const formatAuthor = (author: UserEntity | PartialUserEntity | undefined) => {
-  return author ? `${author.givenName} ${author.familyName}` : '...';
-};
+import { formatAuthor } from '../../../../helpers';
 
 export const EntityListItemHeader = (props: { entity: any, refetch?: any }) => {
   const { entity, refetch } = props;

@@ -16,7 +16,7 @@ import { StoryService } from './story.service';
 import { CreateStoryDto, SearchStoryDto, UpdateStoryDto } from './dto';
 import { addLinks, createLink } from '../common/hateoas';
 import { UserPath } from '../user/user.controller';
-import { User } from '../common/decorator';
+import { Jwt, User } from '../common/decorator';
 import { apiPath } from '../common/helpers';
 import {
   ApiCreatedResponse,
@@ -103,7 +103,7 @@ export class StoryController {
     description: 'Story not found.',
     type: ErrorMessage,
   })
-  async findOne(@Param('id', ParseIntPipe) _id: number): Promise<StoryEnvelope> {
+  async findOne(@Param('id', ParseIntPipe) _id: number, @Jwt() jwt): Promise<StoryEnvelope> {
     const story = await this.storyService.findOneById(_id);
     let envelope = new StoryEnvelope();
     envelope = { ...envelope, ...story };
@@ -112,6 +112,12 @@ export class StoryController {
       createLink('parent', apiPath(StoryPath), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
     ];
+    if (jwt && jwt.sub === story.authorId) {
+      links.push(
+        createLink('update', apiPath(StoryPath, story.id), 'PATCH'),
+        createLink('delete', apiPath(StoryPath, story.id), 'DELETE'),
+      );
+    }
     addLinks(envelope, links);
     return envelope;
   }
