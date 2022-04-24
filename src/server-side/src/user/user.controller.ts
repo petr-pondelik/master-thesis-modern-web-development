@@ -80,6 +80,7 @@ export class UserController {
     addLinks(envelope, [
       createLink('self', apiPath(UserPath, user.id), 'GET'),
       createLink('stories', apiPath(UserPath, `${user.id}/stories`), 'GET'),
+      createLink('reading-lists', apiPath(UserPath, `${user.id}/reading-lists`), 'GET'),
     ]);
     return envelope;
   }
@@ -153,18 +154,21 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   async findUsersReadingLists(
     @Param('id', ParseIntPipe) _id: number,
-    @Limit() limit: number | undefined
+    @Limit() limit: number | undefined,
+    @Jwt() jwt
   ): Promise<ReadingListCollectionEnvelope> {
     const readingLists = await this.userService.findReadingLists(_id, limit);
     const envelope = new ReadingListCollectionEnvelope(readingLists);
-    addLinks(envelope, [
+    const links = [
       createLink('self', apiPath(UserPath, `${_id}/reading-lists`), 'GET'),
-      createLink('create', apiPath(ReadingListPath), 'POST'),
-    ]);
+    ];
+    if (jwt && jwt.sub === _id) {
+      links.push(createLink('create', apiPath(StoryPath), 'POST'));
+    }
+    addLinks(envelope, links);
     for (const rl of envelope.data) {
       addLinks(rl, [
         createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.id}`), 'GET'),
-        createLink('stories', apiPath(ReadingListPath, `${rl.id}/stories`), 'GET'),
         createLink('addStory', apiPath(ReadingListPath, `${rl.id}/stories/:storyId`), 'PUT'),
         createLink('removeStory', apiPath(ReadingListPath, `${rl.id}/stories/:storyId`), 'DELETE'),
       ]);
@@ -181,18 +185,24 @@ export class UserController {
   async findReadingList(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('readingListId', ParseIntPipe) readingListId: number,
+    @Jwt() jwt
   ): Promise<ReadingListEnvelope> {
     const readingList = await this.readingListService.findAuthorsReadingList(readingListId, userId);
     let envelope = new ReadingListEnvelope();
     envelope = { ...envelope, ...readingList };
-    addLinks(envelope, [
-      createLink('self', apiPath(UserPath, `${userId}/reading-lists/${readingListId}`), 'GET'),
-      createLink('parent', apiPath(UserPath, `${userId}/reading-lists`), 'GET'),
-      createLink('author', apiPath(UserPath, `${userId}`), 'GET'),
-      createLink('update', apiPath(ReadingListPath, readingListId), 'PATCH'),
-      createLink('delete', apiPath(ReadingListPath, readingListId), 'DELETE'),
-      createLink('stories', apiPath(ReadingListPath, `${readingListId}/stories`), 'GET'),
-    ]);
+    const links = [
+        createLink('self', apiPath(UserPath, `${userId}/reading-lists/${readingListId}`), 'GET'),
+        createLink('parent', apiPath(UserPath, `${userId}/reading-lists`), 'GET'),
+        createLink('author', apiPath(UserPath, userId), 'GET'),
+        createLink('stories', apiPath(ReadingListPath, `${readingListId}/stories`), 'GET'),
+    ]
+    if (jwt && jwt.sub === userId) {
+      links.push(
+        createLink('update', apiPath(ReadingListPath, readingListId), 'PATCH'),
+        createLink('delete', apiPath(ReadingListPath, readingListId), 'DELETE')
+      );
+    }
+    addLinks(envelope, links);
     return envelope;
   }
 }

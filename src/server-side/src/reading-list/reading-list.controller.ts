@@ -24,7 +24,7 @@ import {
 } from '@nestjs/common';
 import { StoryCollectionEnvelope } from '../story/envelopes';
 import { ErrorMessage } from '../common/message';
-import { Limit, User } from '../common/decorator';
+import { Jwt, Limit, User } from '../common/decorator';
 import { ReadingListService } from './reading-list.service';
 import { addLinks, createLink } from '../common/hateoas';
 import { apiPath } from '../common/helpers';
@@ -56,19 +56,22 @@ export class ReadingListController {
   async findStories(
     @Param('id', ParseIntPipe) id: number,
     @Limit() limit: number | undefined,
+    @Jwt() jwt
   ): Promise<StoryCollectionEnvelope> {
     const stories = await this.readingListService.findStories(id, limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [
-      createLink('self', apiPath(ReadingListPath, `id`), 'GET'),
-      createLink('create', apiPath(ReadingListPath), 'POST'),
+      createLink('self', apiPath(ReadingListPath, `${id}/stories`), 'GET'),
     ]);
     for (const s of envelope.data) {
-      addLinks(s, [
-        createLink('self', apiPath(StoryPath, `${s.id}`), 'GET'),
-        createLink('author', apiPath(UserPath, `${s.authorId}`), 'GET'),
-        createLink('delete', apiPath(ReadingListPath, `${id}/stories/${s.id}`), 'DELETE'),
-      ]);
+      const links = [
+        createLink('self', apiPath(StoryPath, s.id), 'GET'),
+        createLink('author', apiPath(UserPath, s.authorId), 'GET'),
+      ];
+      if (jwt && jwt.sub === id) {
+        links.push(createLink('delete', apiPath(ReadingListPath, `${id}/stories/${s.id}`), 'DELETE'));
+      }
+      addLinks(s, links);
     }
     return envelope;
   }
