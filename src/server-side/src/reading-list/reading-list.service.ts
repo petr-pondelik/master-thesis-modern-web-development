@@ -21,7 +21,21 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findAuthorsReadingList(_id: number, _authorId: number): Promise<ReadingListEntity> {
+  async findManyByAuthor(_authorId: number, _limit: number | undefined): Promise<ReadingListEntity[]> {
+    const data = await this.prisma.readingList.findMany({
+      where: { authorId: _authorId },
+      take: _limit,
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    if (data === null) {
+      throw new NotFoundException();
+    }
+    return data;
+  }
+
+  async findOneByAuthor(_id: number, _authorId: number): Promise<ReadingListEntity> {
     const readingList = await this.prisma.readingList.findFirst({
       where: { id: _id, authorId: _authorId },
       include: {

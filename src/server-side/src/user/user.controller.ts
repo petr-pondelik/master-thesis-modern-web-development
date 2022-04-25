@@ -96,7 +96,7 @@ export class UserController {
     @Jwt() jwt,
     @Limit() limit: number | undefined,
   ): Promise<StoryCollectionEnvelope> {
-    const stories = await this.userService.findStories(_id, limit);
+    const stories = await this.storyService.findManyByAuthor(_id, limit);
     const envelope = new StoryCollectionEnvelope(stories);
     const links = [createLink('self', apiPath(UserPath, `${_id}/stories`), 'GET')];
     if (jwt && jwt.sub === _id) {
@@ -113,7 +113,7 @@ export class UserController {
     return envelope;
   }
 
-  @Get(':id/stories/:storyId')
+  @Get(':userId/stories/:storyId')
   @ApiOperation({
     summary: 'Find story under user.',
   })
@@ -126,16 +126,16 @@ export class UserController {
     type: ErrorMessage,
   })
   async findStoryUnderUser(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number,
     @Param('storyId', ParseIntPipe) storyId: number,
     @Jwt() jwt,
   ): Promise<StoryEnvelope> {
-    const story = await this.storyService.findOneUnderAuthor(storyId, id);
+    const story = await this.storyService.findOneByAuthor(storyId, userId);
     let envelope = new StoryEnvelope();
     envelope = { ...envelope, ...story };
     const links = [
-      createLink('self', apiPath(UserPath, `${id}/stories/${story.id}`), 'GET'),
-      createLink('parent', apiPath(UserPath, `${id}/stories`), 'GET'),
+      createLink('self', apiPath(UserPath, `${storyId}/stories/${story.id}`), 'GET'),
+      createLink('parent', apiPath(UserPath, `${storyId}/stories`), 'GET'),
       createLink('author', apiPath(UserPath, story.authorId), 'GET'),
     ];
     if (jwt && jwt.sub === story.authorId) {
@@ -157,18 +157,19 @@ export class UserController {
     @Limit() limit: number | undefined,
     @Jwt() jwt
   ): Promise<ReadingListCollectionEnvelope> {
-    const readingLists = await this.userService.findReadingLists(_id, limit);
+    const readingLists = await this.readingListService.findManyByAuthor(_id, limit);
     const envelope = new ReadingListCollectionEnvelope(readingLists);
     const links = [
       createLink('self', apiPath(UserPath, `${_id}/reading-lists`), 'GET'),
     ];
     if (jwt && jwt.sub === _id) {
-      links.push(createLink('create', apiPath(StoryPath), 'POST'));
+      links.push(createLink('create', apiPath(ReadingListPath), 'POST'));
     }
     addLinks(envelope, links);
     for (const rl of envelope.data) {
       addLinks(rl, [
         createLink('self', apiPath(UserPath, `${_id}/reading-lists/${rl.id}`), 'GET'),
+        createLink('stories', apiPath(ReadingListPath, `${rl.id}/stories`), 'GET'),
         createLink('addStory', apiPath(ReadingListPath, `${rl.id}/stories/:storyId`), 'PUT'),
         createLink('removeStory', apiPath(ReadingListPath, `${rl.id}/stories/:storyId`), 'DELETE'),
       ]);
@@ -178,7 +179,7 @@ export class UserController {
 
   @Get(':userId/reading-lists/:readingListId')
   @ApiOperation({
-    summary: 'Find user\'s reading list.',
+    summary: "Find user's reading list.",
   })
   @ApiOkResponse({ description: 'Reading list successfully retrieved.', type: ReadingListEnvelope })
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
@@ -187,7 +188,7 @@ export class UserController {
     @Param('readingListId', ParseIntPipe) readingListId: number,
     @Jwt() jwt
   ): Promise<ReadingListEnvelope> {
-    const readingList = await this.readingListService.findAuthorsReadingList(readingListId, userId);
+    const readingList = await this.readingListService.findOneByAuthor(readingListId, userId);
     let envelope = new ReadingListEnvelope();
     envelope = { ...envelope, ...readingList };
     const links = [

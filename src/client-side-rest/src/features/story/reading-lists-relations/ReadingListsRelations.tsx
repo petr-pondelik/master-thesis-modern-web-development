@@ -30,12 +30,15 @@ const ReadingListItem = (props: { readingList: ReadingListEnvelope, story: Story
   const addStoryLink = findLink(readingList._links, 'addStory');
   const removeStoryLink = findLink(readingList._links, 'removeStory');
 
+  console.log(storiesLink);
+
   const { data: storiesRes, refetch: refetchStories } = useQuery<StoryCollectionEnvelope>(
     [`reading-list-stories`, readingList.id],
     () => HttpRequest<StoryCollectionEnvelope>(storiesLink.href, storiesLink.method),
   );
 
   const stories: StoryEnvelope[] = storiesRes?.data ?? [];
+  console.log(stories);
   const containsStory = !!stories.find((item) => item.id === story.id);
 
   const addStory = useMutation(

@@ -39,12 +39,26 @@ export class StoryService {
       },
     });
     if (story === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+      throw new NotFoundException();
     }
     return story;
   }
 
-  async findOneUnderAuthor(_id: number, _authorId: number): Promise<StoryEntity> {
+  async findManyByAuthor(_authorId: number, _limit: number | undefined): Promise<StoryEntity[]> {
+    const data = await this.prisma.story.findMany({
+      where: { authorId: _authorId },
+      take: _limit,
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    if (data === null) {
+      throw new NotFoundException();
+    }
+    return data;
+  }
+
+  async findOneByAuthor(_id: number, _authorId: number): Promise<StoryEntity> {
     const story = await this.prisma.story.findFirst({
       where: { id: _id, authorId: _authorId },
       include: {
@@ -57,7 +71,7 @@ export class StoryService {
       },
     });
     if (story === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+      throw new NotFoundException();
     }
     return story;
   }
