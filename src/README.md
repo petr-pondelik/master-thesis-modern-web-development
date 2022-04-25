@@ -4,6 +4,8 @@
 
 ```bash
 sudo docker-compose up
+
+docker-compose -f docker-compose.prod.yml up
 ```
 
 ## Docker Commands

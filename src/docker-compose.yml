@@ -61,6 +61,25 @@ services:
              yarn prisma:generate-client &&
              yarn start:dev"
 
+  mthesis-client-side-rest:
+    container_name: mthesis-client-side-rest
+    build:
+      context: ./client-side-rest
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./client-side-rest/src:/usr/mthesis/client-side-rest/src
+    depends_on:
+      - mthesis-postgres
+      - mthesis-prisma
+      - mthesis-server-side
+    expose:
+      - '3000'
+    ports:
+      - '3100:3000'
+    command: >
+      sh -c "yarn start"
+
 # Commands to build and run the composition
 #   docker-compose build
 #   docker-compose up

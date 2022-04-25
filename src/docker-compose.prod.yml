@@ -2,9 +2,9 @@ version: "3.7"
 
 services:
 
-  m-thesis-db:
+  mthesis-postgres:
     image: postgres:12.10
-    container_name: m-thesis-db
+    container_name: mthesis-postgres
     restart: always
     environment:
       - POSTGRES_USER=mthesis_u
@@ -15,20 +15,43 @@ services:
     volumes:
       - ./postgres/postgres-data:/var/lib/postgresql/data
 
-  m-thesis-server-side:
-    container_name: m-thesis-server-side
+  mthesis-prisma:
+    container_name: mthesis-prisma
+    build:
+      context: ./prisma
+      dockerfile: Dockerfile
+    command: yarn prisma:up
+    depends_on:
+      - mthesis-postgres
+
+  mthesis-server-side:
+    container_name: mthesis-server-side
     build:
       context: ./server-side
       dockerfile: Dockerfile-prod
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
     depends_on:
-      - m-thesis-db
+      - mthesis-postgres
+      - mthesis-prisma
     ports:
       - '8080:3000'
     command: >
-      sh -c "yarn db:restart &&
-             yarn start:prod"
+      sh -c "yarn start:prod"
+
+  mthesis-client-side-rest:
+    container_name: mthesis-client-side-rest
+    build:
+      context: ./client-side-rest
+      dockerfile: Dockerfile
+    depends_on:
+      - mthesis-postgres
+      - mthesis-prisma
+      - mthesis-server-side
+    expose:
+      - '3010'
+    ports:
+      - '3100:3010'
 
 
 # Commands to build and run the composition
