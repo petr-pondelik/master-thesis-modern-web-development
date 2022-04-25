@@ -7,6 +7,9 @@ export type AppUser = {
   _links: HateoasLink[]
 };
 
+const JWT_KEY = 'mthesis-rest-jwt';
+const JWT_USER = 'mthesis-rest-user';
+
 type UserStoreState = {
   jwt: string | null;
   user: AppUser | null;
@@ -15,11 +18,11 @@ type UserStoreState = {
 };
 
 export const getJwtFromStorage = (): string | null => {
-  return localStorage.getItem('mthesis-jwt');
+  return localStorage.getItem(JWT_KEY);
 };
 
 export const getUserFromStorage = (): AppUser | null => {
-  const userStr = localStorage.getItem('mthesis-user');
+  const userStr = localStorage.getItem(JWT_USER);
   return userStr ? JSON.parse(userStr) : null;
 };
 
@@ -27,20 +30,20 @@ export const useUserStore = create<UserStoreState>((set) => ({
   jwt: getJwtFromStorage(),
   user: getUserFromStorage(),
   setUser: (envelope: JwtEnvelope) => {
-    localStorage.setItem('mthesis-jwt', envelope.access_token);
+    localStorage.setItem(JWT_KEY, envelope.access_token);
     const _user: AppUser = {
       data: jwtDecode<JwtPayload>(envelope.access_token),
       _links: envelope._links
     };
-    localStorage.setItem('mthesis-user', JSON.stringify(_user));
+    localStorage.setItem(JWT_USER, JSON.stringify(_user));
     set({
       jwt: envelope.access_token,
       user: _user
     });
   },
   removeUser: () => {
-    localStorage.removeItem('mthesis-jwt');
-    localStorage.removeItem('mthesis-user');
+    localStorage.removeItem(JWT_KEY);
+    localStorage.removeItem(JWT_USER);
     set({
       jwt: null,
       user: null,
