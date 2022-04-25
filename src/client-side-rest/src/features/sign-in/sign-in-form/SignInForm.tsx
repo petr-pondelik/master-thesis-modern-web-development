@@ -1,9 +1,11 @@
 import { Button, Grid } from '@mui/material';
 import { useState } from 'react';
-import { SignInDto, useSignIn } from 'services/rest-api-service';
+import { JwtEnvelope, SignInDto, useSignIn } from 'services/rest-api-service';
 import { validateEmail, validatePassword } from 'validations/validation-functions';
 import MessageBox from 'features/core/message-box/MessageBox';
 import { CustomInput } from 'features/core/custom-input';
+import { useUserStore } from '../../../store';
+import { useNavigate } from 'react-router-dom';
 
 const Messages = {
   invalidCredentials: 'Please enter valid credentials.',
@@ -18,7 +20,16 @@ export const SignInForm = () => {
   const [dto, setDto] = useState<SignInDto>({ email: '', password: '' });
   const [validation, setValidation] = useState<SignInValidationState>({ email: false, password: false });
   const [enabled, setEnabled] = useState<boolean>(false);
-  const signIn = useSignIn(dto);
+
+  const setUser = useUserStore(state => state.setUser);
+  const navigate = useNavigate();
+
+  const signInSuccessCallback = (data: JwtEnvelope) => {
+    setUser(data);
+    navigate('/');
+  };
+
+  const signIn = useSignIn(dto, signInSuccessCallback);
 
   const update = (dtoFragment: any, validationFragment: any) => {
     const newValidation: SignInValidationState = { ...validation, ...validationFragment };
