@@ -97,6 +97,9 @@ export const ReadingListsRelations = (props: ReadingListsRelationsProps) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
+    apolloClient.refetchQueries({
+      include: ['UserReadingListsWithStories']
+    });
     setOpen(true);
   };
 

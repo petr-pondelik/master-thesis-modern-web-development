@@ -29,10 +29,7 @@ export const ReadingListView = (props: {
   };
 
   const [deleteReadingList] = useDeleteReadingListMutation(
-    {
-      userId: readingList.author.id,
-      title: readingList.title,
-    },
+    { id: readingList.id, },
     deleteCallback,
   );
 
@@ -48,7 +45,6 @@ export const ReadingListView = (props: {
   };
 
   const removeStoryCallback = () => {
-    console.log('TEST');
     apolloClient.refetchQueries({
       include: ['UserReadingList'],
     });

@@ -31,7 +31,7 @@ export const CreateDialog = () => {
   const createCallback = () => {
     handleClose();
     apolloClient.refetchQueries({
-      include: ['UserReadingLists'],
+      include: ['UserReadingLists', 'UserReadingListsWithStories'],
     });
   };
 

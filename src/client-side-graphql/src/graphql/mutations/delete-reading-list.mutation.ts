@@ -1,8 +1,8 @@
 import { gql, useMutation } from '@apollo/client';
 
 const DELETE_READING_LIST_MUTATION = gql`
-  mutation DeleteReadingList($title: String!, $userId: Int!) {
-    deleteReadingList(title: $title, userId: $userId) {
+  mutation DeleteReadingList($id: Int!) {
+    deleteReadingList(id: $id) {
       id
     }
   }
@@ -15,8 +15,7 @@ type DeleteReadingListData = {
 };
 
 type DeleteReadingListVars = {
-  userId: number;
-  title: string;
+  id: number;
 };
 
 export function useDeleteReadingListMutation(_variables: DeleteReadingListVars, onCompleted?: any) {
