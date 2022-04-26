@@ -44,15 +44,13 @@ services:
     build:
       context: ./client-side-rest
       dockerfile: Dockerfile
+      target: production
     depends_on:
       - mthesis-postgres
       - mthesis-prisma
       - mthesis-server-side
-    expose:
-      - '3010'
     ports:
       - '3100:3010'
-
 
 # Commands to build and run the composition
 #   docker-compose -f docker-compose.prod.yml build
