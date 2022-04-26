@@ -13,6 +13,8 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { GraphQLConfig } from './services/graphql-api-service';
+import { createStore, get, set } from 'idb-keyval';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -77,4 +79,72 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Any other custom service worker logic can go here.
+
+// Return cached response when possible, and fetch new results from server in
+// the background and update the cache.
+self.addEventListener('fetch', async (event) => {
+  const { request } = event;
+  if (new URL(request.url).origin === GraphQLConfig.host && request.method === 'POST') {
+    event.respondWith(customStaleWhileRevalidate(request));
+  }
+});
+
+async function customStaleWhileRevalidate(request: Request): Promise<any> {
+  const cachedResponse = await getCache(request.clone());
+  const fetchPromise = fetch(request.clone())
+    .then((response) => {
+      setCache(request.clone(), response.clone());
+      return response;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  return cachedResponse ? Promise.resolve(cachedResponse) : fetchPromise;
+}
+
+async function serializeResponse(response: Response) {
+  const serializedHeaders: any = {};
+  for (const entry of Object.entries(response.headers)) {
+    serializedHeaders[entry[0]] = entry[1];
+  }
+  const serialized: any = {
+    headers: serializedHeaders,
+    status: response.status,
+    statusText: response.statusText
+  };
+  serialized.body = await response.json();
+  return serialized;
+}
+
+
+const CacheKey = 'graphql-api-cache';
+const graphQlCacheStore = createStore(CacheKey, 'GraphQLPostResponses');
+
+async function setCache(request: Request, response: Response) {
+  const body = await request.json();
+  // const id = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(body.query));
+  const id = `${body.operationName}-${JSON.stringify(body.variables)}`;
+
+  const entry = {
+    query: body.query,
+    response: await serializeResponse(response),
+    timestamp: Date.now()
+  };
+  await set(id, entry, graphQlCacheStore);
+}
+
+async function getCache(request: Request) {
+  let data;
+  try {
+    const body = await request.json();
+    // const id = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(body.query));
+    const id = `${body.operationName}-${JSON.stringify(body.variables)}`;
+    data = await get(id, graphQlCacheStore);
+    if (!data) {
+      return null;
+    }
+    return new Response(JSON.stringify(data.response.body), data.response);
+  } catch (err) {
+    return null;
+  }
+}

@@ -14,7 +14,7 @@ import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
-import ApiConfig from './services/rest-api-service/config';
+import ApiConfig from 'services/rest-api-service/config';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -78,7 +78,6 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
-
 
 // Cache 200 responses from the API by using StaleWhileRevalidate strategy
 registerRoute(

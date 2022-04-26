@@ -16,6 +16,7 @@
     "@types/react": "^16.14.24",
     "@types/react-dom": "^16.9.14",
     "graphql": "^16.3.0",
+    "idb-keyval": "^6.1.0",
     "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "lodash.merge": "^4.6.2",

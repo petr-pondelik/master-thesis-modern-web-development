@@ -52,6 +52,19 @@ services:
     ports:
       - '3100:3010'
 
+  mthesis-client-side-graphql:
+    container_name: mthesis-client-side-graphql
+    build:
+      context: ./client-side-graphql
+      dockerfile: Dockerfile
+      target: production
+    depends_on:
+      - mthesis-postgres
+      - mthesis-prisma
+      - mthesis-server-side
+    ports:
+      - '3200:3020'
+
 # Commands to build and run the composition
 #   docker-compose -f docker-compose.prod.yml build
 #   docker-compose -f docker-compose.prod.yml up

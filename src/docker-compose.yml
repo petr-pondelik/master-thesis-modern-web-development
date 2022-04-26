@@ -80,6 +80,25 @@ services:
     command: >
       sh -c "yarn start"
 
+  mthesis-client-side-graphql:
+    container_name: mthesis-client-side-graphql
+    build:
+      context: ./client-side-graphql
+      dockerfile: Dockerfile
+      target: development
+    volumes:
+      - ./client-side-graphql/src:/usr/mthesis/client-side-graphql/src
+    depends_on:
+      - mthesis-postgres
+      - mthesis-prisma
+      - mthesis-server-side
+    expose:
+      - '3000'
+    ports:
+      - '3200:3000'
+    command: >
+      sh -c "yarn start"
+
 # Commands to build and run the composition
 #   docker-compose build
 #   docker-compose up
