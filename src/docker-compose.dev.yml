@@ -24,8 +24,8 @@ services:
     depends_on:
       - mthesis-postgres
 
-  prisma-studio:
-    container_name: prisma-studio
+  mthesis-prisma-studio:
+    container_name: mthesis-prisma-studio
     build:
       context: ./prisma
       dockerfile: Dockerfile-prisma-studio
