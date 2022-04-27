@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "prisma:up": "prisma generate && prisma db push --force-reset && prisma db seed"
+    "prisma:up": "prisma db push --force-reset && prisma db seed",
+    "data:generate": "ts-node prisma/generate-data.ts"
   },
   "dependencies": {
     "@prisma/client": "^3.11.1",

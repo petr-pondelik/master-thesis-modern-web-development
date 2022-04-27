@@ -21,6 +21,7 @@ COPY prisma/* ./
 RUN yarn
 
 RUN yarn prisma:generate-client
+RUN yarn graphql:generate-classes
 
 # Bundle all app source files into the container
 COPY . .

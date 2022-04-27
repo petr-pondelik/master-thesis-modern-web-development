@@ -138,7 +138,6 @@ export class ReadingListService {
       return result.readingList;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
-        console.log(error);
         if (Constants.RECORD_NOT_FOUND === error.code || Constants.QUERY_INTERPRETATION_ERROR === error.code) {
           throw new NotFoundException();
         } else if (error.code === Constants.UNIQ_CONSTRAINT_VIOLATED) {

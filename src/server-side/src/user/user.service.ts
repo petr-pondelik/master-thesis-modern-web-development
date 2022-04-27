@@ -17,7 +17,7 @@ export class UserService {
       orderBy: { id: 'desc' },
     });
     if (user === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+      throw new NotFoundException();
     }
     if (!withPassword) {
       const { password, ...userEntity } = user;
@@ -32,7 +32,7 @@ export class UserService {
       orderBy: { id: 'desc' },
     });
     if (user === null) {
-      throw new NotFoundException(Messages.NOT_FOUND);
+      throw new NotFoundException();
     }
     const { password, ...userEntity } = user;
     return userEntity;

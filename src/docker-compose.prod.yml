@@ -15,10 +15,10 @@ services:
     volumes:
       - ./postgres/postgres-data:/var/lib/postgresql/data
 
-  mthesis-prisma:
-    container_name: mthesis-prisma
+  mthesis-prisma-db-init:
+    container_name: mthesis-prisma-db-init
     build:
-      context: ./prisma
+      context: ./prisma-tools
       dockerfile: Dockerfile
     command: yarn prisma:up
     depends_on:
@@ -33,7 +33,7 @@ services:
     # Run in dev mode: yarn run start:dev
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
     ports:
       - '8080:3000'
     command: >
@@ -47,7 +47,7 @@ services:
       target: production
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
       - mthesis-server-side
     ports:
       - '3100:3010'
@@ -60,7 +60,7 @@ services:
       target: production
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
       - mthesis-server-side
     ports:
       - '3200:3020'

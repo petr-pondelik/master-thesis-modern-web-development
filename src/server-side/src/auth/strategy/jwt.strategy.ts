@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../../user/user.service';
+import { UserEntity } from '../../user/entities';
 
 export type JwtPayload = {
   sub: number;
@@ -19,8 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
-    console.log(payload);
+  async validate(payload: JwtPayload): Promise<UserEntity> {
     try {
       return await this.userService.findOneByEmail(payload.email);
     } catch (error) {

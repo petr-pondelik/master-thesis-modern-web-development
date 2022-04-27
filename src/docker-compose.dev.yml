@@ -15,10 +15,10 @@ services:
     volumes:
       - ./postgres/postgres-data:/var/lib/postgresql/data
 
-  mthesis-prisma:
-    container_name: mthesis-prisma
+  mthesis-prisma-db-init:
+    container_name: mthesis-prisma-db-init
     build:
-      context: ./prisma
+      context: ./prisma-tools
       dockerfile: Dockerfile
     command: yarn prisma:up
     depends_on:
@@ -27,11 +27,11 @@ services:
   mthesis-prisma-studio:
     container_name: mthesis-prisma-studio
     build:
-      context: ./prisma
+      context: ./prisma-tools
       dockerfile: Dockerfile-prisma-studio
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
     ports:
       - '5555:5555'
     command: yarn prisma studio
@@ -45,12 +45,12 @@ services:
     # Mount api directory (./server-side) to (:) docker container (/usr/src/app)
     # Reflect host file changes within the container
     volumes:
-      - ./server-side:/usr/mthesis/app
+      - ./server-side:/usr/mthesis/server-side
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
     expose:
       - '3000'
     ports:
@@ -71,7 +71,7 @@ services:
       - ./client-side-rest/src:/usr/mthesis/client-side-rest/src
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
       - mthesis-server-side
     expose:
       - '3000'
@@ -90,7 +90,7 @@ services:
       - ./client-side-graphql/src:/usr/mthesis/client-side-graphql/src
     depends_on:
       - mthesis-postgres
-      - mthesis-prisma
+      - mthesis-prisma-db-init
       - mthesis-server-side
     expose:
       - '3000'
