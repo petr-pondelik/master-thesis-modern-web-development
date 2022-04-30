@@ -1,6 +1,10 @@
-import { CreateReadingListDto, HateoasLink, HttpRequest, ReadingListEnvelope } from 'services/rest-api-service';
+import {
+  CreateReadingListDto,
+  HateoasLink,
+  ReadingListEnvelope,
+  useLinkMutation,
+} from 'services/rest-api-service';
 import { Fragment, useState } from 'react';
-import { useMutation } from 'react-query';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -29,16 +33,12 @@ export const CreateDialog = (props: { createLink: HateoasLink, refetch: any }) =
     authorId: user.data.sub,
   });
 
-  const mutation = useMutation(
-    (dto: CreateReadingListDto) =>
-      HttpRequest<ReadingListEnvelope, CreateReadingListDto>(createLink.href, createLink.method, dto),
-    {
-      onSuccess: () => {
-        handleClose();
-        refetch();
-      },
+  const mutation = useLinkMutation<ReadingListEnvelope, CreateReadingListDto>(createLink, dto,     {
+    onSuccess: () => {
+      handleClose();
+      refetch();
     },
-  );
+  },);
 
   const handleOpen = () => {
     setOpen(true);

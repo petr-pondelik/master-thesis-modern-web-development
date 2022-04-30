@@ -58,6 +58,7 @@ export class ReadingListController {
     @Limit() limit: number | undefined,
     @Jwt() jwt
   ): Promise<StoryCollectionEnvelope> {
+    const readingList = await this.readingListService.findById(id);
     const stories = await this.readingListService.findStories(id, limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [
@@ -68,7 +69,7 @@ export class ReadingListController {
         createLink('self', apiPath(StoryPath, s.id), 'GET'),
         createLink('author', apiPath(UserPath, s.authorId), 'GET'),
       ];
-      if (jwt && jwt.sub === id) {
+      if (jwt && jwt.sub === readingList.authorId) {
         links.push(createLink('delete', apiPath(ReadingListPath, `${id}/stories/${s.id}`), 'DELETE'));
       }
       addLinks(s, links);
@@ -78,7 +79,6 @@ export class ReadingListController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @HttpCode(201)
   @ApiOperation({
     summary: 'Create a new reading list.',
   })
@@ -154,7 +154,6 @@ export class ReadingListController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':readingListId/stories/:storyId')
-  @HttpCode(201)
   @ApiOperation({
     summary: 'Add story into reading list.',
   })

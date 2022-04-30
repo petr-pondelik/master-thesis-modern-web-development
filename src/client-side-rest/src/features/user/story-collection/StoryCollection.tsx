@@ -1,13 +1,13 @@
-import { useQuery } from 'react-query';
-import { findLink, HateoasLink, HttpRequest, StoryCollectionEnvelope } from 'services/rest-api-service';
+import { findLink, HateoasLink, StoryCollectionEnvelope } from 'services/rest-api-service';
 import { Fragment } from 'react';
 import { EntityList } from 'features/core/entity-list';
-import { StoryCreateDialog } from '../../story';
+import { StoryCreateDialog } from 'features/story';
+import { useLinkQuery } from 'services/rest-api-service/queries';
 
 export const StoryCollection = (props: { link: HateoasLink }) => {
   const { link } = props;
-  const { data: stories, isLoading, error, refetch } = useQuery<StoryCollectionEnvelope>(
-    ['myStories'], () => HttpRequest<StoryCollectionEnvelope>(link.href, link.method),
+  const { data: stories, isLoading, error, refetch } = useLinkQuery<StoryCollectionEnvelope>(
+    ['myStories'], link,
   );
   return <Fragment>
     <EntityList items={stories} isLoading={isLoading} error={error} showHeader={false} />

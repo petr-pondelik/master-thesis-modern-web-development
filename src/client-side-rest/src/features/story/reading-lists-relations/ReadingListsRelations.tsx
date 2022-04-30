@@ -1,21 +1,15 @@
 import { useState } from 'react';
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemText, Radio,
-} from '@mui/material';
+import { Button, Dialog, DialogTitle, List, ListItem, ListItemText, Radio } from '@mui/material';
 import {
   findLink,
-  HttpRequest,
   ReadingListCollectionEnvelope,
   ReadingListEnvelope,
-  StoryCollectionEnvelope, StoryEnvelope,
+  StoryCollectionEnvelope,
+  StoryEnvelope,
+  useLinkMutation,
 } from 'services/rest-api-service';
-import { useMutation, useQuery } from 'react-query';
 import { AppUser } from 'store';
+import { useLinkQuery } from 'services/rest-api-service/queries';
 
 export interface SimpleDialogProps {
   open: boolean;
@@ -24,53 +18,44 @@ export interface SimpleDialogProps {
   story: StoryEnvelope;
 }
 
-const ReadingListItem = (props: { readingList: ReadingListEnvelope, story: StoryEnvelope }) => {
+const ReadingListItem = (props: { readingList: ReadingListEnvelope; story: StoryEnvelope }) => {
   const { readingList, story } = props;
   const storiesLink = findLink(readingList._links, 'stories');
   const addStoryLink = findLink(readingList._links, 'addStory');
   const removeStoryLink = findLink(readingList._links, 'removeStory');
 
-  console.log(storiesLink);
-
-  const { data: storiesRes, refetch: refetchStories } = useQuery<StoryCollectionEnvelope>(
+  const { data: storiesRes, refetch: refetchStories } = useLinkQuery<StoryCollectionEnvelope>(
     [`reading-list-stories`, readingList.id],
-    () => HttpRequest<StoryCollectionEnvelope>(storiesLink.href, storiesLink.method),
+    storiesLink,
   );
 
   const stories: StoryEnvelope[] = storiesRes?.data ?? [];
-  console.log(stories);
   const containsStory = !!stories.find((item) => item.id === story.id);
 
-  const addStory = useMutation(
-    (storyId: number) =>
-      HttpRequest<boolean>(addStoryLink.href.replace(':storyId', storyId.toString()), addStoryLink.method),
-    {
-      onSuccess: () => {
-        refetchStories();
-      },
+  addStoryLink.href = addStoryLink.href.replace(':storyId', story.id.toString());
+  const addStory = useLinkMutation(addStoryLink, undefined, {
+    onSuccess: () => {
+      refetchStories();
     },
-  );
+  });
 
-  const removeStory = useMutation(
-    (storyId: number) =>
-      HttpRequest<boolean>(removeStoryLink.href.replace(':storyId', storyId.toString()), removeStoryLink.method),
-    {
-      onSuccess: () => {
-        refetchStories();
-      },
+  removeStoryLink.href = removeStoryLink.href.replace(':storyId', story.id.toString());
+  const removeStory = useLinkMutation(removeStoryLink, undefined, {
+    onSuccess: () => {
+      refetchStories();
     },
-  );
+  });
 
-  const handleListItemClick = (storyId: number) => {
+  const handleListItemClick = () => {
     if (containsStory) {
-      removeStory.mutate(storyId);
+      removeStory.mutate(undefined);
     } else {
-      addStory.mutate(storyId);
+      addStory.mutate(undefined);
     }
   };
 
   return (
-    <ListItem button onClick={() => handleListItemClick(story.id)} key={readingList.id}>
+    <ListItem button onClick={() => handleListItemClick()} key={readingList.id}>
       <ListItemText primary={readingList.title} />
       <Radio checked={containsStory} />
     </ListItem>
@@ -85,10 +70,7 @@ function RelationsDialog(props: SimpleDialogProps) {
   };
 
   const fetchLink = findLink(user._links, 'reading-lists');
-  const { data } = useQuery<ReadingListCollectionEnvelope>(
-    ['my-reading-lists'], () => HttpRequest<ReadingListCollectionEnvelope>(fetchLink.href, fetchLink.method),
-  );
-
+  const { data } = useLinkQuery<ReadingListCollectionEnvelope>(['my-reading-lists'], fetchLink);
   const readingLists = data?.data ?? [];
 
   return (
@@ -103,7 +85,7 @@ function RelationsDialog(props: SimpleDialogProps) {
   );
 }
 
-export const ReadingListsRelations = (props: { user: AppUser, story: StoryEnvelope }) => {
+export const ReadingListsRelations = (props: { user: AppUser; story: StoryEnvelope }) => {
   const { user, story } = props;
   const [open, setOpen] = useState(false);
 
@@ -117,15 +99,10 @@ export const ReadingListsRelations = (props: { user: AppUser, story: StoryEnvelo
 
   return (
     <div>
-      <Button variant='outlined' onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen}>
         Assign to Reading Lists
       </Button>
-      <RelationsDialog
-        open={open}
-        onClose={handleClose}
-        user={user}
-        story={story}
-      />
+      <RelationsDialog open={open} onClose={handleClose} user={user} story={story} />
     </div>
   );
 };

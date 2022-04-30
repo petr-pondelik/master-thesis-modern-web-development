@@ -20,10 +20,10 @@ export const Router = () => {
         <Route path={'/stories'} element={<StoryListPage />} />
         <Route path={'/stories/:id'} element={<StoryViewPage />} />
         <Route path={'/users/:id'} element={<UserViewPage />} />
-        <Route path={'/users/:id/stories'} element={<UserStoryCollectionPage />} />
-        <Route path={'/users/:userId/stories/:storyId'} element={<UserStoryViewPage />} />
         {user && (
           <>
+            <Route path={'/users/:id/stories'} element={<UserStoryCollectionPage />} />
+            <Route path={'/users/:userId/stories/:storyId'} element={<UserStoryViewPage />} />
             <Route path={'/users/:id/reading-lists'} element={<UserReadingListCollectionPage />} />
             <Route path={'/users/:userId/reading-lists/:readingListId'} element={<UserReadingListViewPage />} />
           </>

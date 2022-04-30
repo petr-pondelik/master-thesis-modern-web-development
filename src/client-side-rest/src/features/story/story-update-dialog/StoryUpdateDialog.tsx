@@ -1,18 +1,22 @@
-import { findLink, HttpRequest, queryClient, StoryEnvelope, UpdateStoryDto } from 'services/rest-api-service';
+import {
+  findLink,
+  queryClient,
+  StoryEnvelope,
+  UpdateStoryDto,
+  useLinkMutation,
+} from 'services/rest-api-service';
 import EditIcon from '@mui/icons-material/Edit';
 import { Fragment, useState } from 'react';
-import { useMutation } from 'react-query';
 import { FullscreenDialog } from 'features/core/dialogs';
 import { StoryForm } from 'features/story';
 
 export type StoryUpdateDialogState = {
-  open: boolean,
-  actionEnabled: boolean,
-  dto: UpdateStoryDto
-}
+  open: boolean;
+  actionEnabled: boolean;
+  dto: UpdateStoryDto;
+};
 
 export const StoryUpdateDialog = (props: { story: StoryEnvelope }) => {
-
   const { story } = props;
   const updateLink = findLink(story._links, 'update');
 
@@ -24,15 +28,12 @@ export const StoryUpdateDialog = (props: { story: StoryEnvelope }) => {
     content: story ? story.content : '',
   });
 
-  const mutation = useMutation(
-    (dto: UpdateStoryDto) => HttpRequest<StoryEnvelope, UpdateStoryDto>(updateLink.href, updateLink.method, dto),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['story', story.id]);
-        handleClose();
-      },
+  const mutation = useLinkMutation(updateLink, dto, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['story', story.id]);
+      handleClose();
     },
-  );
+  });
 
   const handleOpen = () => {
     setOpen(true);

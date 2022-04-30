@@ -3,8 +3,10 @@ import { getJwtFromStorage } from 'store';
 import { HttpMethod } from 'types';
 
 export async function HttpRequest<TResponse, TDto = undefined>(
-  url: string, method: HttpMethod = 'GET', dto: TDto | undefined = undefined): Promise<TResponse> {
-
+  url: string,
+  method: HttpMethod = 'GET',
+  dto: TDto | undefined = undefined,
+): Promise<TResponse> {
   url = `${ApiConfig.path()}${url}`;
 
   const jwt = getJwtFromStorage();
@@ -29,14 +31,13 @@ export async function HttpRequest<TResponse, TDto = undefined>(
 
   const init = { ...defaultInit, ...customInit };
 
-  return fetch(url, init).then(res => {
+  return fetch(url, init).then((res) => {
     if (res.status === 204) {
-      return new Promise<TResponse>((resolve => resolve({ data: [], _links: [] } as unknown as TResponse)));
+      return new Promise<TResponse>((resolve) => resolve({ data: [], _links: [] } as unknown as TResponse));
     } else {
       return res.json() as Promise<TResponse>;
     }
   });
-
 }
 
 export default HttpRequest;

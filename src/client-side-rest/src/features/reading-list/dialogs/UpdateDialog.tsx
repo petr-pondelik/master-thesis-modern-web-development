@@ -1,12 +1,11 @@
 import {
   findLink,
-  HttpRequest,
   queryClient,
   ReadingListEnvelope,
   UpdateReadingListDto,
+  useLinkMutation,
 } from 'services/rest-api-service';
 import { Fragment, useState } from 'react';
-import { useMutation } from 'react-query';
 import EditIcon from '@mui/icons-material/Edit';
 import { useUserStore } from 'store';
 import { FullscreenDialog } from 'features/core/dialogs';
@@ -32,15 +31,11 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope }) => {
     return null;
   }
 
-  const mutation = useMutation(
-    (dto: UpdateReadingListDto) =>
-      HttpRequest<ReadingListEnvelope, UpdateReadingListDto>(updateLink.href, updateLink.method, dto),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['readingList', user.data.sub, readingList.id]);
-      },
+  const mutation = useLinkMutation(updateLink, dto, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['readingList', user.data.sub, readingList.id]);
     },
-  );
+  });
 
   const handleOpen = () => {
     setOpen(true);

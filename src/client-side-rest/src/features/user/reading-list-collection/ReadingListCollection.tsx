@@ -1,13 +1,13 @@
-import { useQuery } from 'react-query';
 import { Fragment } from 'react';
 import { CreateDialog } from 'features/reading-list';
-import { findLink, HateoasLink, HttpRequest, ReadingListCollectionEnvelope } from 'services/rest-api-service';
+import { findLink, HateoasLink, ReadingListCollectionEnvelope } from 'services/rest-api-service';
 import { EntityList } from 'features/core/entity-list';
+import { useLinkQuery } from 'services/rest-api-service/queries';
 
 export const ReadingListCollection = (props: { link: HateoasLink }) => {
   const { link } = props;
-  const { data: readingLists, isLoading, error, refetch } = useQuery<ReadingListCollectionEnvelope>(
-    ['my-reading-lists'], () => HttpRequest<ReadingListCollectionEnvelope>(link.href, link.method),
+  const { data: readingLists, isLoading, error, refetch } = useLinkQuery<ReadingListCollectionEnvelope>(
+    ['my-reading-lists'], link,
   );
   return <Fragment>
     <EntityList items={readingLists} isLoading={isLoading} error={error} showHeader={false} />

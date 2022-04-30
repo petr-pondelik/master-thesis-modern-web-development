@@ -28,7 +28,7 @@ async function bootstrap() {
     .addTag('Subscriptions')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('open-api', app, document);
+  SwaggerModule.setup('api', app, document);
 
   app.enableCors({
     allowedHeaders: '*',

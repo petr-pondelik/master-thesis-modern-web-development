@@ -123,7 +123,7 @@ export class StoryController {
   }
 
   @Post()
-  @HttpCode(201)
+  // @HttpCode(201)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Create a new story.',

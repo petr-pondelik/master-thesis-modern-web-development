@@ -48,7 +48,7 @@ export class UserController {
   }
 
   @Post('sign-up')
-  @HttpCode(201)
+  // @HttpCode(201)
   @UseInterceptors(new LocationResponseHeaderInterceptor(apiPath(UserPath)))
   @ApiOperation({
     summary: 'Sign up a new user.',
