@@ -1,4 +1,4 @@
-import ApiConfig from './config';
+import ApiConfig from '../services/rest-api-service/config';
 import { getJwtFromStorage } from 'store';
 import { HttpMethod } from 'types';
 

@@ -1,13 +1,13 @@
 import EditIcon from '@mui/icons-material/Edit';
 import { Fragment, useState } from 'react';
-import { StoryForm } from '../story-form';
-import { FullscreenDialog } from '../../core/dialogs/fullscreen-dialog';
+import { StoryForm } from 'features/story';
+import { FullscreenDialog } from 'features/core';
 import {
-  apolloClient,
   StoryQueryStory,
   UpdateStoryContent,
   useUpdateStoryMutation,
 } from 'services/graphql-api-service';
+import { useApolloClient } from '@apollo/client';
 
 export type StoryUpdateDialogState = {
   open: boolean;
@@ -24,6 +24,7 @@ export const StoryUpdateDialog = (props: { story: StoryQueryStory }) => {
     description: story ? story.description : '',
     content: story ? story.content : '',
   });
+  const apolloClient = useApolloClient();
 
   const actionCallback = () => {
     apolloClient.refetchQueries({

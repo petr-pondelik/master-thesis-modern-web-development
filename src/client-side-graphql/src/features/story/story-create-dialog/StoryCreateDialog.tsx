@@ -5,7 +5,8 @@ import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useUserStore } from 'store';
-import { apolloClient, CreateStoryContent, useCreateStoryMutation } from 'services/graphql-api-service';
+import { CreateStoryContent, useCreateStoryMutation } from 'services/graphql-api-service';
+import { useApolloClient } from '@apollo/client';
 
 export type StoryCreateDialogState = {
   open: boolean,
@@ -28,6 +29,7 @@ export const StoryCreateDialog = ( ) => {
       content: '',
       authorId: user.sub,
     });
+  const apolloClient = useApolloClient();
 
   const createCallback = () => {
     handleClose();

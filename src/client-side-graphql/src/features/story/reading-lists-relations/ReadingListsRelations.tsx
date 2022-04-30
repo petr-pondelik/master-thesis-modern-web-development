@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Button, Dialog, DialogTitle, List, ListItem, ListItemText, Radio } from '@mui/material';
 import { AppUser } from '../../../store';
 import {
-  apolloClient,
   StoryQueryStory, useAddStoryIntoReadingListMutation, useRemoveStoryFromReadingListMutation,
   UserReadingListsWithStoriesQueryReadingList,
   UserStoryQueryStory, useUserReadingListsWithStoriesQuery,
 } from 'services/graphql-api-service';
+import { useApolloClient } from '@apollo/client';
 
 type ReadingListItemProps = {
   readingList: UserReadingListsWithStoriesQueryReadingList;
@@ -17,6 +17,8 @@ const ReadingListItem = (props: ReadingListItemProps) => {
   const { readingList, story } = props;
   const stories = readingList.stories;
   const containsStory = !!stories.find((item) => item.id === story.id);
+
+  const apolloClient = useApolloClient();
 
   const actionCallback = () => {
     apolloClient.refetchQueries({
@@ -93,6 +95,7 @@ type ReadingListsRelationsProps = {
 export const ReadingListsRelations = (props: ReadingListsRelationsProps) => {
   const { user, story } = props;
   const [open, setOpen] = useState(false);
+  const apolloClient = useApolloClient();
 
   const handleClickOpen = () => {
     apolloClient.refetchQueries({

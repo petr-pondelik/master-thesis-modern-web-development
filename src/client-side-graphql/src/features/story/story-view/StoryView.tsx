@@ -5,13 +5,13 @@ import { EntityCard, EntityCardHeader } from 'features/core';
 import { ReadingListsRelations, StoryUpdateDialog } from 'features/story';
 import { AppUser, useUserStore } from 'store';
 import {
-  apolloClient,
   StoryQueryStory,
   useDeleteStoryMutation,
   UserStoryQueryStory,
 } from 'services/graphql-api-service';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
+import { useApolloClient } from '@apollo/client';
 
 const AssignToReadingLists = (user: AppUser | null, story: any) => {
   return user ? <ReadingListsRelations user={user} story={story} /> : null;
@@ -33,6 +33,7 @@ export const StoryView = (props: StoryViewProps) => {
 
   const user = useUserStore((state) => state.user);
   const navigate = useNavigate();
+  const apolloClient = useApolloClient();
 
   const updateNode = () => {
     return allowUpdate ? <StoryUpdateDialog story={story} /> : null;

@@ -1,6 +1,5 @@
 import {
   findLink,
-  queryClient,
   StoryEnvelope,
   UpdateStoryDto,
   useLinkMutation,
@@ -9,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Fragment, useState } from 'react';
 import { FullscreenDialog } from 'features/core/dialogs';
 import { StoryForm } from 'features/story';
+import { useQueryClient } from 'react-query';
 
 export type StoryUpdateDialogState = {
   open: boolean;
@@ -27,6 +27,7 @@ export const StoryUpdateDialog = (props: { story: StoryEnvelope }) => {
     description: story ? story.description : '',
     content: story ? story.content : '',
   });
+  const queryClient = useQueryClient();
 
   const mutation = useLinkMutation(updateLink, dto, {
     onSuccess: () => {

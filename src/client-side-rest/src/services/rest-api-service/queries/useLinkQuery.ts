@@ -1,6 +1,6 @@
 import { HateoasLink } from '../types';
 import { useQuery } from 'react-query';
-import HttpRequest from '../http-request';
+import { HttpRequest } from 'helpers';
 import { UseQueryOptions } from 'react-query/types/react/types';
 import { QueryKey } from 'react-query/types/core/types';
 

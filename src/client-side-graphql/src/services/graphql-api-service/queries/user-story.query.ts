@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client';
-import { Story } from '../graphql-typings';
 
 const USER_STORY_QUERY = gql`
   query UserStory($id: Int!, $storyId: Int!) {

@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { StoryEnvelope } from '../envelope';
-import HttpRequest from '../http-request';
+import { HttpRequest } from 'helpers';
 
 export const useUserStory = (userId: number, storyId: number) => {
   return useQuery<StoryEnvelope>(['story', storyId], () =>

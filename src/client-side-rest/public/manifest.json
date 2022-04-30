@@ -1,6 +1,6 @@
 {
-  "short_name": "REST API Client",
-  "name": "REST API Client",
+  "short_name": "REST Client",
+  "name": "REST Client",
   "icons": [
     {
       "src": "favicon.ico",

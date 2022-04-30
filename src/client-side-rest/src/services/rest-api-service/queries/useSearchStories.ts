@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query';
 import { StoryCollectionEnvelope } from '../envelope';
-import HttpRequest from '../http-request';
+import { HttpRequest } from 'helpers';
 import { SearchStoryDto } from 'services/rest-api-service';
 
 export const useSearchStories = (dto: SearchStoryDto) => {

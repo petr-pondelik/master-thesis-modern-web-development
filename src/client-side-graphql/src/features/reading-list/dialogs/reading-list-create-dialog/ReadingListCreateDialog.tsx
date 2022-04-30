@@ -2,10 +2,11 @@ import { Fragment, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { apolloClient, CreateReadingListContent, useCreateReadingListMutation } from 'services/graphql-api-service';
+import { CreateReadingListContent, useCreateReadingListMutation } from 'services/graphql-api-service';
 import { useUserStore } from 'store';
 import { FullscreenDialog } from 'features/core';
 import { ReadingListForm } from 'features/reading-list';
+import { useApolloClient } from '@apollo/client';
 
 export type CreateDialogState = {
   open: boolean;
@@ -14,6 +15,7 @@ export type CreateDialogState = {
 };
 
 export const ReadingListCreateDialog = () => {
+  const apolloClient = useApolloClient();
   const user = useUserStore((state) => state.user);
   if (!user) {
     return null;

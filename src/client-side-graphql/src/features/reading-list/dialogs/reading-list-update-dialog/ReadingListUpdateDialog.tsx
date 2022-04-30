@@ -1,13 +1,14 @@
 import { Fragment, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import {
-  apolloClient, UpdateReadingListContent,
+  UpdateReadingListContent,
   UserReadingListQueryReadingList,
   useUpdateReadingListMutation,
 } from 'services/graphql-api-service';
 import { useUserStore } from 'store';
 import { CreateDialogState, ReadingListForm } from 'features/reading-list';
 import { FullscreenDialog } from 'features/core';
+import { useApolloClient } from '@apollo/client';
 
 export type UpdateDialogState = {
   open: boolean;
@@ -23,6 +24,7 @@ export const ReadingListUpdateDialog = (props: { readingList: UserReadingListQue
   const [dto, setDto] = useState<UpdateReadingListContent>({
     title: '',
   });
+  const apolloClient = useApolloClient();
 
   const user = useUserStore((state) => state.user);
   if (!user) {

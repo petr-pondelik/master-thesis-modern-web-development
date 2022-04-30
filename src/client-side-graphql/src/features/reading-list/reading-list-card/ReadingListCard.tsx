@@ -4,11 +4,11 @@ import { CardContent, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import {
-  apolloClient,
   useDeleteReadingListMutation, useRemoveStoryFromReadingListMutation,
   UserReadingListQueryReadingList,
 } from 'services/graphql-api-service';
 import { ReadingListUpdateDialog, Shell_ReadingListCard } from 'features/reading-list';
+import { useApolloClient } from '@apollo/client';
 
 export const ReadingListCard = (props: {
   readingList: UserReadingListQueryReadingList | undefined;
@@ -22,6 +22,7 @@ export const ReadingListCard = (props: {
   }
 
   const navigate = useNavigate();
+  const apolloClient = useApolloClient();
 
   const deleteCallback = () => {
     navigate(deleteBacklink ?? '');

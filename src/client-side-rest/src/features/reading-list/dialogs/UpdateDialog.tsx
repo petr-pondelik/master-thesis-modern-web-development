@@ -1,6 +1,5 @@
 import {
   findLink,
-  queryClient,
   ReadingListEnvelope,
   UpdateReadingListDto,
   useLinkMutation,
@@ -10,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useUserStore } from 'store';
 import { FullscreenDialog } from 'features/core/dialogs';
 import { ReadingListForm } from 'features/reading-list';
+import { useQueryClient } from 'react-query';
 
 export type UpdateDialogState = {
   open: boolean;
@@ -25,6 +25,7 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope }) => {
   const [dto, setDto] = useState<UpdateReadingListDto>({
     title: '',
   });
+  const queryClient = useQueryClient();
 
   const user = useUserStore((state) => state.user);
   if (!user) {
