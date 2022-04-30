@@ -17,6 +17,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('Master Thesis REST API')
     .setDescription('Master Thesis REST API description.')

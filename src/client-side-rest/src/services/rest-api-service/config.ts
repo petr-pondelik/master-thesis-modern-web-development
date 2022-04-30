@@ -1,5 +1,5 @@
 export class Config {
-  host = 'http://localhost:8080';
+  host = 'http://localhost:8080/api';
   apiVersion = 'v1';
 
   path = (version = true) => {

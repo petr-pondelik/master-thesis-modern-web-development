@@ -3,11 +3,11 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponseEnvelope } from './common/hateoas';
 
 type RootData = {
-  apiVersion: string;
+  version: string;
 };
 
 const rootData: RootData = {
-  apiVersion: 'v1',
+  version: 'v1',
 };
 
 @ApiTags('API Root')

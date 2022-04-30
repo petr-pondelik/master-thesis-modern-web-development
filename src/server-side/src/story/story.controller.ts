@@ -53,7 +53,7 @@ export class StoryController {
   })
   @Get()
   @HttpCode(200)
-  async findNewest(@Limit() limit: number | undefined): Promise<StoryCollectionEnvelope> {
+  async findNewest(@Limit() limit?: number): Promise<StoryCollectionEnvelope> {
     const stories = await this.storyService.findMany(limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [
