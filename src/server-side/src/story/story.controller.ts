@@ -123,7 +123,6 @@ export class StoryController {
   }
 
   @Post()
-  // @HttpCode(201)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Create a new story.',
@@ -148,7 +147,6 @@ export class StoryController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  @HttpCode(204)
   @ApiOperation({
     summary: 'Partially update story.',
   })
@@ -169,7 +167,16 @@ export class StoryController {
     if (user.id !== story.authorId) {
       throw new ForbiddenException();
     }
-    await this.storyService.update(_id, dto);
+    const newStory = await this.storyService.update(_id, dto);
+    let envelope = new StoryEnvelope();
+    envelope = { ...envelope, ...newStory };
+    addLinks(envelope, [
+      createLink('self', apiPath(StoryPath, newStory.id), 'GET'),
+      createLink('author', apiPath(UserPath, newStory.authorId), 'GET'),
+      createLink('update', apiPath(StoryPath, newStory.id), 'PATCH'),
+      createLink('delete', apiPath(StoryPath, newStory.id), 'DELETE'),
+    ]);
+    return envelope;
   }
 
   @Delete(':id')
