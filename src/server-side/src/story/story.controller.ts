@@ -78,7 +78,7 @@ export class StoryController {
   })
   @Post('search')
   @HttpCode(200)
-  async search(@Body() dto: SearchStoryDto, @Limit() limit: number | undefined): Promise<StoryCollectionEnvelope> {
+  async search(@Body() dto: SearchStoryDto, @Limit() limit?: number): Promise<StoryCollectionEnvelope> {
     const stories = await this.storyService.search(dto, limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [createLink('self', apiPath(StoryPath, 'search'), 'POST')]);
@@ -195,6 +195,6 @@ export class StoryController {
     if (user.id !== story.authorId) {
       throw new ForbiddenException();
     }
-    await this.storyService.delete(_id);
+    return await this.storyService.delete(_id);
   }
 }

@@ -16,7 +16,7 @@ export class StoryResolver {
     @Args('searchString') searchString: string,
     @Args('limit') limit: number
   ) {
-    return this.storyService.search({searchString: searchString, author: ''}, limit);
+    return this.storyService.search({searchString: searchString}, limit);
   }
 
   @Query('story')

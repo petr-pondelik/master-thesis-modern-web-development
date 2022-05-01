@@ -5,8 +5,4 @@ export class SearchStoryDto {
   @ApiProperty()
   @IsString()
   searchString: string;
-
-  @ApiProperty()
-  @IsString()
-  author: string;
 }

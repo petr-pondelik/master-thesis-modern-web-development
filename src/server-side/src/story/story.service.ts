@@ -123,11 +123,11 @@ export class StoryService {
       return await this.prisma.story.delete({
         where: {
           id: _id,
-        },
+        }
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError && error.code === Constants.RECORD_NOT_FOUND) {
-        throw new NotFoundException(Messages.NOT_FOUND);
+        throw new NotFoundException();
       }
       throw error;
     }

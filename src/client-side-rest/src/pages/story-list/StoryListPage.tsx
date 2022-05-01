@@ -6,7 +6,7 @@ import { EntityList } from 'features/core/entity-list';
 import { PageContainer } from 'features/core/page-container';
 
 export const StoryListPage = () => {
-  const [dto, setDto] = useState<SearchStoryDto>({ searchString: '', author: '' });
+  const [dto, setDto] = useState<SearchStoryDto>({ searchString: '' });
 
   const { data, isLoading, error } = useSearchStories(dto);
 
