@@ -94,7 +94,7 @@ export class UserController {
   async findStories(
     @Param('id', ParseIntPipe) _id: number,
     @Jwt() jwt,
-    @Limit() limit: number | undefined,
+    @Limit() limit?: number | undefined,
   ): Promise<StoryCollectionEnvelope> {
     const stories = await this.storyService.findManyByAuthor(_id, limit);
     const envelope = new StoryCollectionEnvelope(stories);
@@ -154,8 +154,8 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   async findUsersReadingLists(
     @Param('id', ParseIntPipe) _id: number,
-    @Limit() limit: number | undefined,
-    @Jwt() jwt
+    @Jwt() jwt,
+    @Limit() limit?: number | undefined
   ): Promise<ReadingListCollectionEnvelope> {
     const readingLists = await this.readingListService.findManyByAuthor(_id, limit);
     const envelope = new ReadingListCollectionEnvelope(readingLists);

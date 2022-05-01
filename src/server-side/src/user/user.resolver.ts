@@ -19,7 +19,7 @@ export class UserResolver {
   }
 
   @ResolveField('stories')
-  async getStories(@Parent() user, @Args('limit') limit: number) {
+  async getStories(@Parent() user, @Args('limit') limit?: number | undefined) {
     const { id } = user;
     return this.storyService.findManyByAuthor(id, limit);
   }
@@ -31,7 +31,7 @@ export class UserResolver {
   }
 
   @ResolveField('readingLists')
-  async getReadingLists(@GraphQLUser() authUser, @Parent() user, @Args('limit') limit: number) {
+  async getReadingLists(@GraphQLUser() authUser, @Parent() user, @Args('limit') limit?: number | undefined) {
     const { id } = user;
     return this.readingListService.findManyByAuthor(id, limit);
   }

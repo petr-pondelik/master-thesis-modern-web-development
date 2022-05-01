@@ -16,7 +16,7 @@ export class ReadingListResolver {
   ) {}
 
   @ResolveField('stories')
-  async getStories(@Parent() readingList, @Args('limit') limit: number) {
+  async getStories(@Parent() readingList, @Args('limit') limit?: number | undefined) {
     const { id } = readingList;
     return this.readingListService.findStories(id, limit);
   }

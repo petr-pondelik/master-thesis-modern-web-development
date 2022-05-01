@@ -134,7 +134,7 @@ describe('StoryController', () => {
     jest.clearAllMocks();
   });
 
-  describe('Testing the test setup', () => {
+  describe('Verify the test setup.', () => {
     test('StoryController should be defined.', async () => {
       expect(storyController).toBeDefined();
     });
@@ -337,7 +337,7 @@ describe('StoryController', () => {
     });
 
     test('Should throw NotfoundException.', async () => {
-      // Test the thrown exception
+      // Test the exception
       await expect(
         storyController.findOne(100, {
           sub: user4Fixture.id,
@@ -354,23 +354,27 @@ describe('StoryController', () => {
   });
 
   describe('Testing the create() method.', () => {
-    test('Should return the created story envelope.', async () => {
-      // Prepare a DTO
-      const dto: CreateStoryDto = {
-        title: 'Create test',
-        content: 'Create test content',
-        description: 'Create test description',
-        authorId: 1,
-      };
+    // Fetch the user fixtures
+    const user4Fixture = usersFixture.find((u) => u.id === 4);
+    const user7Fixture = usersFixture.find((u) => u.id === 7);
 
+    // Prepare a DTO
+    const createDto: CreateStoryDto = {
+      title: 'Create test',
+      content: 'Create test content',
+      description: 'Create test description',
+      authorId: 4,
+    };
+
+    test('Should return the created story envelope.', async () => {
       // Prepare the expected envelope
       const envelope = {
         id: storiesFixture.length + 1,
         createdAt: new Date('2022-04-30 19:58:14.654'),
-        title: dto.title,
-        description: dto.description,
-        content: dto.content,
-        authorId: dto.authorId,
+        title: createDto.title,
+        description: createDto.description,
+        content: createDto.content,
+        authorId: createDto.authorId,
       } as StoryEnvelope;
       addLinks(envelope, [
         createLink('self', apiPath(StoryPath, envelope.id), 'GET'),
@@ -380,7 +384,7 @@ describe('StoryController', () => {
       ]);
 
       // Call the tested method
-      const res = await storyController.create(dto);
+      const res = await storyController.create(createDto, user4Fixture);
 
       // Test the result
       expect(res).toStrictEqual(envelope);
@@ -393,7 +397,15 @@ describe('StoryController', () => {
       expect(storyService.create.mock.calls.length).toBe(1);
 
       // Test that the service's create method was called with the right argument value
-      expect(storyService.create.mock.calls[0][0]).toBe(dto);
+      expect(storyService.create.mock.calls[0][0]).toBe(createDto);
+    });
+
+    test('Should throw ForbiddenException.', async () => {
+      // Test the exception
+      await expect(storyController.create(createDto, user7Fixture)).rejects.toEqual(new ForbiddenException());
+
+      // Test that the service's create method has not been called
+      expect(storyService.create.mock.calls.length).toBe(0);
     });
   });
 
@@ -409,7 +421,7 @@ describe('StoryController', () => {
     };
 
     test('Should throw ForbiddenException.', async () => {
-      // Test the thrown exception
+      // Test the exception
       await expect(storyController.update(2, updateDto, user4Fixture)).rejects.toEqual(new ForbiddenException());
 
       // Test that the service's findOneById method was called exactly once
@@ -423,7 +435,7 @@ describe('StoryController', () => {
     });
 
     test('Should throw NotFoundException.', async () => {
-      // Test the thrown exception
+      // Test the exception
       await expect(storyController.update(100, updateDto, user4Fixture)).rejects.toEqual(new NotFoundException());
 
       // Test that the service's findOneById method was called exactly once
@@ -480,7 +492,7 @@ describe('StoryController', () => {
     const user7Fixture = usersFixture.find((u) => u.id === 7);
 
     test('Should throw ForbiddenException.', async () => {
-      // Test the thrown exception
+      // Test the exception
       await expect(storyController.delete(2, user1Fixture)).rejects.toEqual(new ForbiddenException());
 
       // Test that the service's findOneById method was called exactly once
@@ -494,7 +506,7 @@ describe('StoryController', () => {
     });
 
     test('Should throw NotFoundException.', async () => {
-      // Test the thrown exception
+      // Test the exception
       await expect(storyController.delete(100, user1Fixture)).rejects.toEqual(new NotFoundException());
 
       // Test that the service's findOneById method was called exactly once

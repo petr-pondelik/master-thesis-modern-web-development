@@ -53,7 +53,7 @@ export class StoryController {
   })
   @Get()
   @HttpCode(200)
-  async findNewest(@Limit() limit?: number): Promise<StoryCollectionEnvelope> {
+  async findNewest(@Limit() limit?: number | undefined): Promise<StoryCollectionEnvelope> {
     const stories = await this.storyService.findMany(limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [
@@ -78,7 +78,7 @@ export class StoryController {
   })
   @Post('search')
   @HttpCode(200)
-  async search(@Body() dto: SearchStoryDto, @Limit() limit?: number): Promise<StoryCollectionEnvelope> {
+  async search(@Body() dto: SearchStoryDto, @Limit() limit?: number | undefined): Promise<StoryCollectionEnvelope> {
     const stories = await this.storyService.search(dto, limit);
     const envelope = new StoryCollectionEnvelope(stories);
     addLinks(envelope, [createLink('self', apiPath(StoryPath, 'search'), 'POST')]);
@@ -132,7 +132,11 @@ export class StoryController {
     type: StoryEnvelope,
   })
   @UseInterceptors(new LocationResponseHeaderInterceptor(apiPath(StoryPath)))
-  async create(@Body() dto: CreateStoryDto): Promise<StoryEnvelope> {
+  async create(@Body() dto: CreateStoryDto, @User() user): Promise<StoryEnvelope> {
+    /** Owner-level access restriction */
+    if (user.id !== dto.authorId) {
+      throw new ForbiddenException();
+    }
     const story = await this.storyService.create(dto);
     let envelope = new StoryEnvelope();
     envelope = { ...envelope, ...story };

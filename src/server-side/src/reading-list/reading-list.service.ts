@@ -21,7 +21,7 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findManyByAuthor(_authorId: number, _limit: number | undefined): Promise<ReadingListEntity[]> {
+  async findManyByAuthor(_authorId: number, _limit?: number | undefined): Promise<ReadingListEntity[]> {
     const data = await this.prisma.readingList.findMany({
       where: { authorId: _authorId },
       take: _limit,
@@ -53,7 +53,7 @@ export class ReadingListService {
     return readingList;
   }
 
-  async findStories(_id: number, _limit: number | undefined): Promise<StoryEntity[]> {
+  async findStories(_id: number, _limit?: number | undefined): Promise<StoryEntity[]> {
     const data = await this.prisma.readingList.findFirst({
       where: { id: _id },
       select: {

@@ -55,8 +55,8 @@ export class ReadingListController {
   @ApiNotFoundResponse({ description: 'Resource not found.', type: ErrorMessage })
   async findStories(
     @Param('id', ParseIntPipe) id: number,
-    @Limit() limit: number | undefined,
-    @Jwt() jwt
+    @Jwt() jwt,
+    @Limit() limit?: number | undefined
   ): Promise<StoryCollectionEnvelope> {
     const readingList = await this.readingListService.findById(id);
     const stories = await this.readingListService.findStories(id, limit);

@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateStoryDto, SearchStoryDto, UpdateStoryDto } from './dto';
 import { searchConditionHelper } from './helper';
-import { Messages } from './messages';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { Constants } from '../prisma/constants';
 import { StoryEntity } from './entities';
@@ -11,7 +10,7 @@ import { StoryEntity } from './entities';
 export class StoryService {
   constructor(private prisma: PrismaService) {}
 
-  async findMany(_limit: number | undefined): Promise<StoryEntity[]> {
+  async findMany(_limit?: number): Promise<StoryEntity[]> {
     return this.prisma.story.findMany({
       take: _limit,
       orderBy: { id: 'desc' },
@@ -44,7 +43,7 @@ export class StoryService {
     return story;
   }
 
-  async findManyByAuthor(_authorId: number, _limit: number | undefined): Promise<StoryEntity[]> {
+  async findManyByAuthor(_authorId: number, _limit?: number): Promise<StoryEntity[]> {
     const data = await this.prisma.story.findMany({
       where: { authorId: _authorId },
       take: _limit,
@@ -76,7 +75,7 @@ export class StoryService {
     return story;
   }
 
-  async search(dto: SearchStoryDto, _limit: number | undefined): Promise<StoryEntity[]> {
+  async search(dto: SearchStoryDto, _limit?: number): Promise<StoryEntity[]> {
     const _where = searchConditionHelper(dto);
     return this.prisma.story.findMany({
       where: _where,
