@@ -40,11 +40,11 @@ describe('StoryController', () => {
       title: 'Test 3 title',
       description: 'Test 3 description',
       content: 'Test 3 content',
-      authorId: 8,
+      authorId: 1,
     },
   ];
 
-  // Prepare uses fixture
+  // Prepare users fixture
   const usersFixture: UserEntity[] = [
     {
       id: 1,
@@ -57,7 +57,7 @@ describe('StoryController', () => {
     {
       id: 4,
       createdAt: new Date('2022-04-30 19:58:14.654'),
-      email: 'test@test4.com',
+      email: 'test4@test.com',
       givenName: 'Test 4',
       familyName: 'Test 4',
       profileDescription: 'Testing description 4',
@@ -65,7 +65,7 @@ describe('StoryController', () => {
     {
       id: 7,
       createdAt: new Date('2022-04-30 19:58:14.654'),
-      email: 'test@test7.com',
+      email: 'test7@test.com',
       givenName: 'Test 7',
       familyName: 'Test 7',
       profileDescription: 'Testing description 7',

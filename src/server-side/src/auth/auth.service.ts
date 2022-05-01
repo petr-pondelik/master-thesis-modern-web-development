@@ -37,7 +37,6 @@ export class AuthService {
       email: user.email,
     };
     return await this.jwtService.signAsync(payload, {
-      expiresIn: '12h',
       secret: this.configService.get('JWT_SECRET'),
     });
   }
