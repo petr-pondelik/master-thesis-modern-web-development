@@ -3,7 +3,7 @@ import { ErrorPlaceholder, PageContainer } from 'features/core';
 import { ReadingListCollection } from 'features/user';
 import { useParams } from 'react-router-dom';
 import { useUserReadingListsQuery } from 'services/graphql-api-service';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 
 export const UserReadingListCollectionPage = () => {
   const params = useParams();

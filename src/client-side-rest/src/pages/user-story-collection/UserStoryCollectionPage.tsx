@@ -1,6 +1,6 @@
 import { StoryCollection } from 'features/user';
 import { Typography } from '@mui/material';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { findLink } from 'services/rest-api-service';
 import { PageContainer } from 'features/core/page-container';
 

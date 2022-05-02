@@ -4,7 +4,7 @@ import { JwtEnvelope, SignInDto, useSignIn } from 'services/rest-api-service';
 import { validateEmail, validatePassword } from 'validations/validation-functions';
 import MessageBox from 'features/core/message-box/MessageBox';
 import { CustomInput } from 'features/core/custom-input';
-import { useUserStore } from '../../../store';
+import { useUserStore } from 'stores';
 import { useNavigate } from 'react-router-dom';
 
 const Messages = {

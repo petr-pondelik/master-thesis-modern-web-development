@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Dialog, DialogTitle, List, ListItem, ListItemText, Radio } from '@mui/material';
-import { AppUser } from '../../../store';
+import { AppUser } from 'stores';
 import {
   StoryQueryStory, useAddStoryIntoReadingListMutation, useRemoveStoryFromReadingListMutation,
   UserReadingListsWithStoriesQueryReadingList,

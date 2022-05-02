@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { Paths } from 'helpers';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { CustomLink } from 'features/core';
 
 export const SessionControl = () => {

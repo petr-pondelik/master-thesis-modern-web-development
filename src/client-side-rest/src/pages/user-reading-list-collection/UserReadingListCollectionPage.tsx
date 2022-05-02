@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import { ReadingListCollection } from 'features/user/reading-list-collection/ReadingListCollection';
 import { findLink } from 'services/rest-api-service';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { PageContainer } from 'features/core/page-container';
 
 export const UserReadingListCollectionPage = () => {

@@ -6,7 +6,7 @@ import {
 } from 'services/rest-api-service';
 import { Fragment, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { FullscreenDialog } from 'features/core/dialogs';
 import { ReadingListForm } from 'features/reading-list';
 import { useQueryClient } from 'react-query';

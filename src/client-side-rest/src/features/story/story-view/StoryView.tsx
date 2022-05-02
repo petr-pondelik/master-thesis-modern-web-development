@@ -1,6 +1,6 @@
 import { CardContent, Grid, Typography } from '@mui/material';
 import { findLink, StoryEnvelope } from 'services/rest-api-service';
-import { AppUser, useUserStore } from 'store';
+import { AppUser, useUserStore } from 'stores';
 import { ReadingListsRelations, Shell_StoryCard, StoryUpdateDialog } from 'features/story';
 import { EntityCard, EntityCardHeader } from 'features/core/entity-card';
 

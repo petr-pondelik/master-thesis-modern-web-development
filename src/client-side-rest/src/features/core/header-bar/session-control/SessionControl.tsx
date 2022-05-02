@@ -1,4 +1,4 @@
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';

@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Typography } from '@mui/material';
 import { CSSProperties } from 'react';
 import { Paths } from 'helpers';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { CustomLink } from 'features/core';
 
 const ItemLinkStyle: CSSProperties = {

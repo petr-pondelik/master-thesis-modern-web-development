@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import React from 'react';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import {
   SignInPage,
   StoryListPage,

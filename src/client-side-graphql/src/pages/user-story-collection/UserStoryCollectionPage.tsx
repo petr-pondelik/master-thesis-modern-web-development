@@ -3,7 +3,7 @@ import { ErrorPlaceholder, PageContainer } from 'features/core';
 import { StoryCollection } from 'features/user';
 import { useParams } from 'react-router-dom';
 import { useUserStoriesQuery } from 'services/graphql-api-service';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 
 export const UserStoryCollectionPage = () => {
   const params = useParams();

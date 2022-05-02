@@ -3,7 +3,7 @@ import { formatAuthor } from 'helpers';
 import { Shell_StoryCard } from '../story-card';
 import { EntityCard, EntityCardHeader } from 'features/core';
 import { ReadingListsRelations, StoryUpdateDialog } from 'features/story';
-import { AppUser, useUserStore } from 'store';
+import { AppUser, useUserStore } from 'stores';
 import {
   StoryQueryStory,
   useDeleteStoryMutation,

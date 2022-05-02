@@ -5,7 +5,7 @@ import {
   UserReadingListQueryReadingList,
   useUpdateReadingListMutation,
 } from 'services/graphql-api-service';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { CreateDialogState, ReadingListForm } from 'features/reading-list';
 import { FullscreenDialog } from 'features/core';
 import { useApolloClient } from '@apollo/client';

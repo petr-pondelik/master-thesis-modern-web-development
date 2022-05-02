@@ -305,10 +305,7 @@ describe('StoryController (e2e)', () => {
         .post(gql)
         .send(_query)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
   });
 
@@ -325,7 +322,7 @@ describe('StoryController (e2e)', () => {
 
     test('Should create a new story and respond with its id.', () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -345,18 +342,15 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Authorization', 'Bearer ' + user1Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
 
     test('Should respond with 403 Forbidden error.', async () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -376,13 +370,10 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Authorization', 'Bearer ' + user1Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
   });
 
@@ -399,7 +390,7 @@ describe('StoryController (e2e)', () => {
 
     test('Should respond with 403 Forbidden error.', async () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -419,19 +410,16 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Accept', 'application/json')
         .set('Authorization', 'Bearer ' + user4Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
 
     test('Should respond with 404 NotFound error.', () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -451,19 +439,16 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Accept', 'application/json')
         .set('Authorization', 'Bearer ' + user4Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
 
     test('Should update the story and respond with its id.', () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -483,13 +468,10 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Authorization', 'Bearer ' + user4Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
   });
 
@@ -506,7 +488,7 @@ describe('StoryController (e2e)', () => {
 
     test('Should respond with 403 Forbidden error.', async () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -521,19 +503,16 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Accept', 'application/json')
         .set('Authorization', 'Bearer ' + user4Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
 
     test('Should respond with 404 NotFound error.', () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -548,19 +527,16 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Accept', 'application/json')
         .set('Authorization', 'Bearer ' + user4Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
 
     test('Should delete the story and respond with its id.', () => {
       // Set the mutation variables
-      const _query = {
+      const _mutation = {
         ...baseMutation,
         ...{
           variables: {
@@ -575,13 +551,10 @@ describe('StoryController (e2e)', () => {
       // Test the request
       return request(app.getHttpServer())
         .post(gql)
-        .send(_query)
+        .send(_mutation)
         .set('Authorization', 'Bearer ' + user4Jwt)
         .expect(200)
-        .expect((res) => {
-          const actualRes = res.body;
-          expect(actualRes).toStrictEqual(expectedRes);
-        });
+        .expect(expectedRes);
     });
   });
 });

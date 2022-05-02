@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useUserStoryQuery } from 'services/graphql-api-service';
 import { Paths } from 'helpers';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { ErrorPlaceholder, PageContainer } from 'features/core';
 import { StoryView } from 'features/story';
 

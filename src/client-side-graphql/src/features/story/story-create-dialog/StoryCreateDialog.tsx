@@ -4,7 +4,7 @@ import { StoryForm } from 'features/story';
 import Box from '@mui/material/Box';
 import { Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { CreateStoryContent, useCreateStoryMutation } from 'services/graphql-api-service';
 import { useApolloClient } from '@apollo/client';
 

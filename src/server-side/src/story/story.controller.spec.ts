@@ -343,7 +343,7 @@ describe('StoryController', () => {
           sub: user4Fixture.id,
           email: user4Fixture.email,
         }),
-      ).rejects.toEqual(new NotFoundException());
+      ).rejects.toStrictEqual(new NotFoundException());
 
       // Test that the service's findOneById method was called exactly once
       expect(storyService.findOneById.mock.calls.length).toBe(1);
@@ -402,7 +402,7 @@ describe('StoryController', () => {
 
     test('Should throw ForbiddenException.', async () => {
       // Test the exception
-      await expect(storyController.create(createDto, user7Fixture)).rejects.toEqual(new ForbiddenException());
+      await expect(storyController.create(createDto, user7Fixture)).rejects.toStrictEqual(new ForbiddenException());
 
       // Test that the service's create method has not been called
       expect(storyService.create.mock.calls.length).toBe(0);
@@ -422,7 +422,7 @@ describe('StoryController', () => {
 
     test('Should throw ForbiddenException.', async () => {
       // Test the exception
-      await expect(storyController.update(2, updateDto, user4Fixture)).rejects.toEqual(new ForbiddenException());
+      await expect(storyController.update(2, updateDto, user4Fixture)).rejects.toStrictEqual(new ForbiddenException());
 
       // Test that the service's findOneById method was called exactly once
       expect(storyService.findOneById.mock.calls.length).toBe(1);
@@ -436,7 +436,7 @@ describe('StoryController', () => {
 
     test('Should throw NotFoundException.', async () => {
       // Test the exception
-      await expect(storyController.update(100, updateDto, user4Fixture)).rejects.toEqual(new NotFoundException());
+      await expect(storyController.update(100, updateDto, user4Fixture)).rejects.toStrictEqual(new NotFoundException());
 
       // Test that the service's findOneById method was called exactly once
       expect(storyService.findOneById.mock.calls.length).toBe(1);
@@ -493,7 +493,7 @@ describe('StoryController', () => {
 
     test('Should throw ForbiddenException.', async () => {
       // Test the exception
-      await expect(storyController.delete(2, user1Fixture)).rejects.toEqual(new ForbiddenException());
+      await expect(storyController.delete(2, user1Fixture)).rejects.toStrictEqual(new ForbiddenException());
 
       // Test that the service's findOneById method was called exactly once
       expect(storyService.findOneById.mock.calls.length).toBe(1);
@@ -507,7 +507,7 @@ describe('StoryController', () => {
 
     test('Should throw NotFoundException.', async () => {
       // Test the exception
-      await expect(storyController.delete(100, user1Fixture)).rejects.toEqual(new NotFoundException());
+      await expect(storyController.delete(100, user1Fixture)).rejects.toStrictEqual(new NotFoundException());
 
       // Test that the service's findOneById method was called exactly once
       expect(storyService.findOneById.mock.calls.length).toBe(1);

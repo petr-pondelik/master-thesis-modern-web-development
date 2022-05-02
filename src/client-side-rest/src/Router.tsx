@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import App from 'features/core/app/App';
 import {
   SignInPage,

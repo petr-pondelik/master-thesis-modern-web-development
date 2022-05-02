@@ -2,7 +2,7 @@ import { Button, Grid } from '@mui/material';
 import { CustomInput, MessageBox } from 'features/core';
 import { useState } from 'react';
 import { validateEmail, validatePassword } from 'validations';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { SignInContent, SignInData, useSignInMutation } from 'services/graphql-api-service';
 

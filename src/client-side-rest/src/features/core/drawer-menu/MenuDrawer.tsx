@@ -8,7 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Typography } from '@mui/material';
 import { CSSProperties } from 'react';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { findLink } from 'services/rest-api-service';
 import { CustomLink } from 'features/core/custom-link';
 

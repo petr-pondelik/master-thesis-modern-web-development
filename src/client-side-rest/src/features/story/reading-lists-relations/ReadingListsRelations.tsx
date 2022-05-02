@@ -8,7 +8,7 @@ import {
   StoryEnvelope,
   useLinkMutation,
 } from 'services/rest-api-service';
-import { AppUser } from 'store';
+import { AppUser } from 'stores';
 import { useLinkQuery } from 'services/rest-api-service/queries';
 
 export interface SimpleDialogProps {

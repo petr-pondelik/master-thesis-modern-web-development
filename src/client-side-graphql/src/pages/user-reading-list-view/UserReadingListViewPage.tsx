@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useUserStore } from 'store';
+import { useUserStore } from 'stores';
 import { useUserReadingListQuery } from 'services/graphql-api-service';
 import { Paths } from 'helpers';
 import { ErrorPlaceholder, PageContainer } from 'features/core';

@@ -1,5 +1,5 @@
 import ApiConfig from '../services/rest-api-service/config';
-import { getJwtFromStorage } from 'store';
+import { getJwtFromStorage } from 'stores';
 import { HttpMethod } from 'types';
 
 export async function HttpRequest<TResponse, TDto = undefined>(
