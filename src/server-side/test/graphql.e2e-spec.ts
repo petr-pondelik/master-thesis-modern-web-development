@@ -160,10 +160,95 @@ describe('StoryController (e2e)', () => {
     await app.init();
   });
 
+  // Prepare the base object for Notfound errors
+  const notFoundErrorBase = {
+    errors: [
+      {
+        message: 'Not Found',
+        extensions: {
+          code: '404',
+          response: {
+            statusCode: 404,
+            message: 'Not Found',
+          },
+        },
+      },
+    ],
+  };
+
+  // Prepare the base object for Forbidden errors
+  const forbiddenErrorBase = {
+    "errors": [
+      {
+        "message": "Forbidden",
+        "extensions": {
+          "code": "FORBIDDEN",
+          "response": {
+            "statusCode": 403,
+            "message": "Forbidden"
+          }
+        }
+      }
+    ],
+  };
+
+  describe('QUERY Stories', () => {
+    // Prepare the base GraphQL query
+    const baseQuery = {
+      query: `query Stories($searchString: String!, $limit: Int) {
+          stories(searchString: $searchString, limit: $limit) {
+            id
+            createdAt
+            title
+            description
+            author {
+              id
+              givenName
+              familyName
+            }
+          }
+        }`,
+    };
+
+    test('Should get an array of stories.', () => {
+      // Pass the variable into the base query
+      const _query = { ...baseQuery, ...{ variables: { searchString: 'Test 2 title' } } };
+
+      // Prepare the expected result object
+      const expectedRes = {
+        stories: [
+          {
+            ...storiesFixture.find((s) => s.id === 2),
+            ...{
+              author: {
+                id: usersFixture[2].id,
+                familyName: usersFixture[2].familyName,
+                givenName: usersFixture[2].givenName,
+              },
+            },
+          },
+        ],
+      };
+      delete expectedRes.stories[0].authorId;
+      delete expectedRes.stories[0].content;
+
+      // Test the request
+      return request(app.getHttpServer())
+        .post(gql)
+        .send(_query)
+        .expect(200)
+        .expect((res) => {
+          const actualRes = res.body.data;
+          actualRes.stories[0].createdAt = new Date('2022-04-30 19:58:14.654');
+          expect(actualRes).toStrictEqual(expectedRes);
+        });
+    });
+  });
+
   describe('QUERY Story', () => {
-    test('Should get a single story by id.', () => {
-      const _query = {
-        query: `query Story($id: Int!) {
+    // Prepare the base GraphQL query
+    const baseQuery = {
+      query: `query Story($id: Int!) {
           story(id: $id) {
             id
             createdAt
@@ -177,9 +262,13 @@ describe('StoryController (e2e)', () => {
             }
           }
         }`,
-        variables: { id: 1 },
-      };
+    };
 
+    test('Should get a single story by id.', () => {
+      // Pass the variable into the base query
+      const _query = { ...baseQuery, ...{ variables: { id: 1 } } };
+
+      // Prepare the expected result object
       const expectedRes = {
         ...storiesFixture.find((s) => s.id === 1),
         ...{
@@ -190,9 +279,9 @@ describe('StoryController (e2e)', () => {
           },
         },
       };
-
       delete expectedRes.authorId;
 
+      // Test the request
       return request(app.getHttpServer())
         .post(gql)
         .send(_query)
@@ -203,5 +292,113 @@ describe('StoryController (e2e)', () => {
           expect(actualRes).toStrictEqual(expectedRes);
         });
     });
+
+    test('Should respond with the NotFound error.', () => {
+      // Pass the variable into the base query
+      const _query = { ...baseQuery, ...{ variables: { id: 1000 } } };
+
+      // Prepare the expected result object
+      const expectedRes = { ...notFoundErrorBase, ...{ data: { story: null } } };
+
+      // Test the request
+      return request(app.getHttpServer())
+        .post(gql)
+        .send(_query)
+        .expect(200)
+        .expect((res) => {
+          const actualRes = res.body;
+          expect(actualRes).toStrictEqual(expectedRes);
+        });
+    });
+  });
+
+  describe('MUTATION CreateStory', () => {
+    // Prepare the base GraphQL mutation
+    const baseMutation = {
+      query: `
+          mutation CreateStory($content: CreateStoryContent!) {
+            createStory(content: $content) {
+              id
+            }
+          }`,
+    };
+
+    test('Should create a new story and respond with its id.', () => {
+      // Pass the content into the base mutation
+      const _query = {
+        ...baseMutation,
+        ...{
+          variables: {
+            content: {
+              title: 'Testing story title',
+              description: 'Some description',
+              content: 'This is my story content. Keep reading...',
+              authorId: 1,
+            },
+          },
+        },
+      };
+
+      // Prepare the expected result object
+      const expectedRes = { data: { createStory: { id: 4 } } };
+
+      // Test the request
+      return request(app.getHttpServer())
+        .post(gql)
+        .send(_query)
+        .set(
+          'Authorization',
+          // eslint-disable-next-line max-len
+          'Bearer ' + user1Jwt,
+        )
+        .expect(200)
+        .expect((res) => {
+          const actualRes = res.body;
+          expect(actualRes).toStrictEqual(expectedRes);
+        });
+    });
+
+    test('Should respond with 403 Forbidden error.', async () => {
+      // Pass the content into the base mutation
+      const _query = {
+        ...baseMutation,
+        ...{
+          variables: {
+            content: {
+              title: 'Testing story title',
+              description: 'Some description',
+              content: 'This is my story content. Keep reading...',
+              authorId: 4,
+            },
+          },
+        },
+      };
+
+      // Prepare the expected result object
+      const expectedRes = { ...forbiddenErrorBase, ...{ data: { createStory: null } } };
+
+      // Test the request
+      return request(app.getHttpServer())
+        .post(gql)
+        .send(_query)
+        .set(
+          'Authorization',
+          // eslint-disable-next-line max-len
+          'Bearer ' + user1Jwt,
+        )
+        .expect(200)
+        .expect((res) => {
+          const actualRes = res.body;
+          expect(actualRes).toStrictEqual(expectedRes);
+        });
+    });
+  });
+
+  describe('MUTATION UpdateStory', () => {
+    // TODO
+  });
+
+  describe('MUTATION DeleteStory', () => {
+    // TODO
   });
 });

@@ -340,7 +340,7 @@ describe('StoryController (e2e)', () => {
         .expect(JSON.parse(JSON.stringify(expectedResponse)));
     });
 
-    test('Should throw ForbiddenException.', async () => {
+    test('Should respond with 403 Forbidden.', async () => {
       return request(app.getHttpServer())
         .post('/stories')
         .send(createDto)
@@ -359,7 +359,7 @@ describe('StoryController (e2e)', () => {
       description: 'Update test description',
     };
 
-    test('Should throw ForbiddenException.', async () => {
+    test('Should respond with 403 Forbidden.', async () => {
       return request(app.getHttpServer())
         .patch('/stories/2')
         .send(updateDto)
@@ -369,7 +369,7 @@ describe('StoryController (e2e)', () => {
         .expect({ statusCode: 403, message: 'Forbidden' });
     });
 
-    test('Should throw NotFoundException.', async () => {
+    test('Should respond with 404 Not Found.', async () => {
       return request(app.getHttpServer())
         .patch('/stories/1000')
         .send(updateDto)
@@ -408,7 +408,7 @@ describe('StoryController (e2e)', () => {
   });
 
   describe('DELETE /stories/:id', () => {
-    test('Should throw ForbiddenException.', async () => {
+    test('Should respond with 403 Forbidden.', async () => {
       return request(app.getHttpServer())
         .delete('/stories/2')
         .set('Accept', 'application/json')
@@ -417,7 +417,7 @@ describe('StoryController (e2e)', () => {
         .expect({ statusCode: 403, message: 'Forbidden' });
     });
 
-    test('Should throw NotFoundException.', async () => {
+    test('Should respond with 404 Not Found.', async () => {
       return request(app.getHttpServer())
         .delete('/stories/1000')
         .set('Accept', 'application/json')
@@ -426,7 +426,7 @@ describe('StoryController (e2e)', () => {
         .expect({ statusCode: 404, message: 'Not Found' });
     });
 
-    test('Responds with the empty body.', async () => {
+    test('Should respond with 204 No Content and the empty body.', async () => {
       return request(app.getHttpServer())
         .delete('/stories/1')
         .set('Accept', 'application/json')
