@@ -169,7 +169,7 @@ describe('StoryController', () => {
           title: 'Test 3 title',
           description: 'Test 3 description',
           content: 'Test 3 content',
-          authorId: 8,
+          authorId: 1,
         },
       ]);
       addLinks(envelope, [
@@ -234,7 +234,7 @@ describe('StoryController', () => {
           title: 'Test 3 title',
           description: 'Test 3 description',
           content: 'Test 3 content',
-          authorId: 8,
+          authorId: 1,
         },
       ]);
       addLinks(envelope, [createLink('self', apiPath(StoryPath, 'search'), 'POST')]);

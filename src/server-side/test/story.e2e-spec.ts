@@ -293,6 +293,7 @@ describe('StoryController (e2e)', () => {
           'Bearer ' + user1Jwt,
         )
         .expect(200)
+        // TODO: Explain
         .expect(JSON.parse(JSON.stringify(expectedResponse)));
     });
 

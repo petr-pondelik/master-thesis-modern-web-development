@@ -51,7 +51,10 @@ export class StoryResolver {
   ) {
     /** Owner-level access restriction */
     const story = await this.storyService.findOneById(id);
+    console.log(story);
+    console.log(user);
     if (user.id !== story.authorId) {
+      console.log('THROW');
       throw new ForbiddenException();
     }
     return this.storyService.update(id, content);
