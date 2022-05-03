@@ -9,46 +9,42 @@ const Transition = forwardRef(function Transition(
   },
   ref: Ref<unknown>,
 ) {
-  return <Slide direction='up' ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 type FullscreenDialogProps = {
-  title: string,
-  isOpened: boolean,
-  actionEnabled: boolean,
-  handleClose: () => void,
-  handleAction: () => void,
-  containedElement: ReactElement
-}
+  title: string;
+  isOpened: boolean;
+  actionEnabled: boolean;
+  handleClose: () => void;
+  handleAction: () => void;
+  containedElement: ReactElement;
+};
 
 export const FullscreenDialog = (props: FullscreenDialogProps) => {
+  const { title, isOpened, actionEnabled, handleClose, handleAction, containedElement } = props;
 
-  const {title, isOpened, actionEnabled, handleClose, handleAction, containedElement} = props;
-
-  return <Dialog
-    fullScreen
-    open={isOpened}
-    onClose={handleClose}
-    TransitionComponent={Transition}
-  >
-    <AppBar sx={{ position: 'relative', marginBottom: '4rem' }}>
-      <Toolbar>
-        <IconButton
-          edge='start'
-          color='inherit'
-          onClick={handleClose}
-          aria-label='close'
-        >
-          <CloseIcon />
-        </IconButton>
-        <Typography sx={{ ml: 2, flex: 1 }} variant='h6' component='div'>
-          {title}
-        </Typography>
-        <Button autoFocus color='inherit' onClick={handleAction} disabled={!actionEnabled}>
-          save
-        </Button>
-      </Toolbar>
-    </AppBar>
-    {containedElement}
-  </Dialog>
-}
+  return (
+    <Dialog fullScreen open={isOpened} onClose={handleClose} TransitionComponent={Transition}>
+      <AppBar sx={{ position: 'relative', marginBottom: '4rem' }}>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            {title}
+          </Typography>
+          <Button
+            autoFocus
+            color="inherit"
+            onClick={handleAction}
+            disabled={!actionEnabled}
+          >
+            save
+          </Button>
+        </Toolbar>
+      </AppBar>
+      {containedElement}
+    </Dialog>
+  );
+};

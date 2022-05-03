@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useUserStore } from 'stores';
 import { FullscreenDialog } from 'features/core/dialogs';
 import { ReadingListForm } from 'features/reading-list';
+import { FloatingAddButton } from '../../core/buttons';
 
 export type CreateDialogState = {
   open: boolean,
@@ -65,11 +66,7 @@ export const CreateDialog = (props: { createLink: HateoasLink, refetch: any }) =
 
   return (
     <Fragment>
-      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'fixed', bottom: '2%', right: '2%' }} onClick={handleOpen}>
-        <Fab color='primary' aria-label='add'>
-          <AddIcon />
-        </Fab>
-      </Box>
+      <FloatingAddButton onClick={handleOpen}/>
       <FullscreenDialog
         title={'Create Reading List'}
         isOpened={open}

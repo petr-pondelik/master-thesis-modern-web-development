@@ -1,10 +1,7 @@
 import { Fragment, useState } from 'react';
-import Box from '@mui/material/Box';
-import { Fab } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { CreateReadingListContent, useCreateReadingListMutation } from 'services/graphql-api-service';
 import { useUserStore } from 'stores';
-import { FullscreenDialog } from 'features/core';
+import { FloatingAddButton, FullscreenDialog } from 'features/core';
 import { ReadingListForm } from 'features/reading-list';
 import { useApolloClient } from '@apollo/client';
 
@@ -62,11 +59,7 @@ export const ReadingListCreateDialog = () => {
 
   return (
     <Fragment>
-      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'fixed', bottom: '2%', right: '2%' }} onClick={handleOpen}>
-        <Fab color="primary" aria-label="add">
-          <AddIcon />
-        </Fab>
-      </Box>
+      <FloatingAddButton onClick={handleOpen}/>
       <FullscreenDialog
         title={'Create Reading List'}
         isOpened={open}

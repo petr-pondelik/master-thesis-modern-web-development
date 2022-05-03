@@ -1,9 +1,6 @@
 import { Fragment, useState } from 'react';
-import { FullscreenDialog } from 'features/core';
+import { FloatingAddButton, FullscreenDialog } from 'features/core';
 import { StoryForm } from 'features/story';
-import Box from '@mui/material/Box';
-import { Fab } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { useUserStore } from 'stores';
 import { CreateStoryContent, useCreateStoryMutation } from 'services/graphql-api-service';
 import { useApolloClient } from '@apollo/client';
@@ -65,11 +62,7 @@ export const StoryCreateDialog = ( ) => {
 
   return (
     <Fragment>
-      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'fixed', bottom: '2%', right: '2%' }} onClick={handleOpen}>
-        <Fab color='primary' aria-label='add'>
-          <AddIcon />
-        </Fab>
-      </Box>
+      <FloatingAddButton onClick={handleOpen}/>
       <FullscreenDialog
         title={'Create Story'}
         isOpened={open}
