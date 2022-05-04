@@ -16,7 +16,7 @@ describe('FullscreenDialog tests', () => {
     const saveBtn = queryByText('save');
     expect(saveBtn).toBeNull();
   });
-  test('Test the disabled save button render.', () => {
+  test('Test the disabled save button.', () => {
     const {queryByText} = render(
       <FullscreenDialog
         title={'Testing dialog'}
@@ -32,7 +32,7 @@ describe('FullscreenDialog tests', () => {
     expect(saveBtn).toBeVisible();
     expect(saveBtn).toBeDisabled();
   });
-  test('Test the enabled save button render.', () => {
+  test('Test the enabled save button.', () => {
     const {queryByText} = render(
       <FullscreenDialog
         title={'Testing dialog'}

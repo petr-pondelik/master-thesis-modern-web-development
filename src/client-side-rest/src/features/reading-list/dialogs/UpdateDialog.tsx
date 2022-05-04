@@ -23,7 +23,7 @@ export const UpdateDialog = (props: { readingList: ReadingListEnvelope }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(true);
   const [dto, setDto] = useState<UpdateReadingListDto>({
-    title: '',
+    title: readingList.title,
   });
   const queryClient = useQueryClient();
 

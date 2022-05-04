@@ -1,4 +1,4 @@
-# Master Thesis: Modern Web Development
+# Modern Web Development Technologies and Approaches
 
 ## Prerequisites
 

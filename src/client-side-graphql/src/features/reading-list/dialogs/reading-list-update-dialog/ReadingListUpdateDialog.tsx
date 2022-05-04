@@ -22,7 +22,7 @@ export const ReadingListUpdateDialog = (props: { readingList: UserReadingListQue
   const [open, setOpen] = useState<boolean>(false);
   const [actionEnabled, setActionEnabled] = useState<boolean>(true);
   const [dto, setDto] = useState<UpdateReadingListContent>({
-    title: '',
+    title: readingList.title,
   });
   const apolloClient = useApolloClient();
 
