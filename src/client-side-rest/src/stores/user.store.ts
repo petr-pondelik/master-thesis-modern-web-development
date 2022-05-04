@@ -7,8 +7,8 @@ export type AppUser = {
   _links: HateoasLink[]
 };
 
-const JWT_KEY = 'mthesis-rest-jwt';
-const JWT_USER = 'mthesis-rest-user';
+const JWT_KEY = 'mwd-rest-jwt';
+const JWT_USER = 'mwd-rest-user';
 
 type UserStoreState = {
   jwt: string | null;

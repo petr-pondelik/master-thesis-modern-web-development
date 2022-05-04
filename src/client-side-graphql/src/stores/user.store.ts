@@ -4,8 +4,8 @@ import { AuthPayload, JwtPayload } from 'services/graphql-api-service';
 
 export type AppUser = JwtPayload;
 
-const JWT_KEY = 'mthesis-graphql-jwt';
-const JWT_USER = 'mthesis-graphql-user';
+const JWT_KEY = 'mwd-graphql-jwt';
+const JWT_USER = 'mwd-graphql-user';
 
 type UserStoreState = {
   jwt: string | null;

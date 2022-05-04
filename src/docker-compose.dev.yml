@@ -2,42 +2,42 @@ version: "3.7"
 
 services:
 
-  mthesis-postgres:
+  mwd-postgres:
     image: postgres:12.10
-    container_name: mthesis-postgres
+    container_name: mwd-postgres
     restart: always
     environment:
-      - POSTGRES_USER=mthesis_u
-      - POSTGRES_PASSWORD=mthesis_p
-      - POSTGRES_DB=mthesis_db
+      - POSTGRES_USER=mwd_u
+      - POSTGRES_PASSWORD=mwd_p
+      - POSTGRES_DB=mwd_db
     ports:
       - '5438:5432'
     volumes:
       - ./postgres/postgres-data:/var/lib/postgresql/data
 
-  mthesis-prisma-db-init:
-    container_name: mthesis-prisma-db-init
+  mwd-prisma-db-init:
+    container_name: mwd-prisma-db-init
     build:
       context: ./prisma-tools
       dockerfile: Dockerfile
     command: yarn prisma:up
     depends_on:
-      - mthesis-postgres
+      - mwd-postgres
 
-  mthesis-prisma-studio:
-    container_name: mthesis-prisma-studio
+  mwd-prisma-studio:
+    container_name: mwd-prisma-studio
     build:
       context: ./prisma-tools
       dockerfile: Dockerfile-prisma-studio
     depends_on:
-      - mthesis-postgres
-      - mthesis-prisma-db-init
+      - mwd-postgres
+      - mwd-prisma-db-init
     ports:
       - '5555:5555'
     command: yarn prisma studio
 
-  mthesis-server-side:
-    container_name: mthesis-server-side
+  mwd-server-side:
+    container_name: mwd-server-side
     build:
       context: ./server-side
       dockerfile: Dockerfile
@@ -45,12 +45,12 @@ services:
     # Mount api directory (./server-side) to (:) docker container (/usr/src/app)
     # Reflect host file changes within the container
     volumes:
-      - ./server-side:/usr/mthesis/server-side
+      - ./server-side:/usr/mwd/server-side
     # Run in debug mode: yarn run start:debug
     # Run in dev mode: yarn run start:dev
     depends_on:
-      - mthesis-postgres
-      - mthesis-prisma-db-init
+      - mwd-postgres
+      - mwd-prisma-db-init
     expose:
       - '3000'
     ports:
@@ -61,18 +61,18 @@ services:
              yarn prisma:generate-client &&
              yarn start:dev"
 
-  mthesis-client-side-rest:
-    container_name: mthesis-client-side-rest
+  mwd-client-side-rest:
+    container_name: mwd-client-side-rest
     build:
       context: ./client-side-rest
       dockerfile: Dockerfile
       target: development
     volumes:
-      - ./client-side-rest/src:/usr/mthesis/client-side-rest/src
+      - ./client-side-rest/src:/usr/mwd/client-side-rest/src
     depends_on:
-      - mthesis-postgres
-      - mthesis-prisma-db-init
-      - mthesis-server-side
+      - mwd-postgres
+      - mwd-prisma-db-init
+      - mwd-server-side
     expose:
       - '3000'
     ports:
@@ -80,18 +80,18 @@ services:
     command: >
       sh -c "yarn start"
 
-  mthesis-client-side-graphql:
-    container_name: mthesis-client-side-graphql
+  mwd-client-side-graphql:
+    container_name: mwd-client-side-graphql
     build:
       context: ./client-side-graphql
       dockerfile: Dockerfile
       target: development
     volumes:
-      - ./client-side-graphql/src:/usr/mthesis/client-side-graphql/src
+      - ./client-side-graphql/src:/usr/mwd/client-side-graphql/src
     depends_on:
-      - mthesis-postgres
-      - mthesis-prisma-db-init
-      - mthesis-server-side
+      - mwd-postgres
+      - mwd-prisma-db-init
+      - mwd-server-side
     expose:
       - '3000'
     ports:

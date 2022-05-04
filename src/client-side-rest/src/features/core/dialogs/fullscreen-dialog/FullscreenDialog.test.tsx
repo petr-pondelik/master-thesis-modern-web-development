@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { FullscreenDialog } from './FullscreenDialog';
 
-describe('FullscreenDialog tests', () => {
+describe('FullscreenDialog tests.', () => {
   test('Test the save button when the dialog is closed.', () => {
     const {queryByText} = render(
       <FullscreenDialog

@@ -160,55 +160,6 @@ describe('StoryController (e2e)', () => {
     await app.init();
   });
 
-  describe('GET /stories', () => {
-    test('Responds with JSON representation of stories envelope.', () => {
-      const expectedResponse = new StoryCollectionEnvelope([
-        {
-          id: 1,
-          createdAt: new Date('2022-04-30 19:58:14.654'),
-          title: 'Test 1 title',
-          description: 'Test 1 description',
-          content: 'Test 1 content',
-          authorId: 4,
-        },
-        {
-          id: 2,
-          createdAt: new Date('2022-04-30 19:58:14.654'),
-          title: 'Test 2 title',
-          description: 'Test 2 description',
-          content: 'Test 2 content',
-          authorId: 7,
-        },
-        {
-          id: 3,
-          createdAt: new Date('2022-04-30 19:58:14.654'),
-          title: 'Test 3 title',
-          description: 'Test 3 description',
-          content: 'Test 3 content',
-          authorId: 1,
-        },
-      ]);
-
-      addLinks(expectedResponse, [
-        createLink('self', apiPath(StoryPath), 'GET'),
-        createLink('search', apiPath(StoryPath, 'search'), 'POST'),
-      ]);
-      for (const a of expectedResponse.data) {
-        addLinks(a, [
-          createLink('self', apiPath(StoryPath, a.id), 'GET'),
-          createLink('author', apiPath(UserPath, a.authorId), 'GET'),
-        ]);
-      }
-
-      return request(app.getHttpServer())
-        .get('/stories')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .expect(JSON.parse(JSON.stringify(expectedResponse)));
-    });
-  });
-
   describe('POST /stories/search', () => {
     test('Responds with JSON representation of stories envelope.', () => {
       const expectedResponse = new StoryCollectionEnvelope([

@@ -45,31 +45,6 @@ export class StoryController {
   constructor(private readonly storyService: StoryService) {}
 
   @ApiOperation({
-    summary: 'Find newest stories.',
-  })
-  @ApiOkResponse({
-    description: 'Stories successfully retrieved.',
-    type: StoryCollectionEnvelope,
-  })
-  @Get()
-  @HttpCode(200)
-  async findNewest(@Limit() limit?: number | undefined): Promise<StoryCollectionEnvelope> {
-    const stories = await this.storyService.findMany(limit);
-    const envelope = new StoryCollectionEnvelope(stories);
-    addLinks(envelope, [
-      createLink('self', apiPath(StoryPath), 'GET'),
-      createLink('search', apiPath(StoryPath, 'search'), 'POST'),
-    ]);
-    for (const a of envelope.data) {
-      addLinks(a, [
-        createLink('self', apiPath(StoryPath, a.id), 'GET'),
-        createLink('author', apiPath(UserPath, a.authorId), 'GET'),
-      ]);
-    }
-    return envelope;
-  }
-
-  @ApiOperation({
     summary: 'Search stories.',
   })
   @ApiOkResponse({

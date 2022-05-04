@@ -7,7 +7,7 @@
 FROM node:16
 
 # Specify our working directory, this is in our container/in our image
-WORKDIR /usr/mthesis/server-side
+WORKDIR /usr/mwd/server-side
 
 # Set node env to dev
 ARG NODE_ENV=dev

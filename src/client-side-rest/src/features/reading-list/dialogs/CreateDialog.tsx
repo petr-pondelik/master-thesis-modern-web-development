@@ -5,9 +5,6 @@ import {
   useLinkMutation,
 } from 'services/rest-api-service';
 import { Fragment, useState } from 'react';
-import Box from '@mui/material/Box';
-import { Fab } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { useUserStore } from 'stores';
 import { FullscreenDialog } from 'features/core/dialogs';
 import { ReadingListForm } from 'features/reading-list';
