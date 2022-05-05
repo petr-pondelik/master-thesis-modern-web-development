@@ -1,0 +1,1121 @@
+{
+	"info": {
+		"_postman_id": "5eed5b3b-dab2-41d3-a79b-90c4faf7afd7",
+		"name": "modern-web-development",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "REST API",
+			"item": [
+				{
+					"name": "/",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/sign-in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"Sophie_Willms66@yahoo.com\",\n    \"password\": \"cebogoli\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/auth/sign-in",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/stories",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"stories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stories",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Post 2\",\n    \"content\": \"Post 1 content\",\n    \"authorId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/stories",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"stories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stories/search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"searchString\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/stories/search",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"stories",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stories/:id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/stories/630",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"stories",
+								"630"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stories/:id",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New Post 102 title\",\n    \"description\": \"Post 101 description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/stories/100",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"stories",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stories/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/stories/74",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"stories",
+								"74"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/sign-up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@test14.com\",\n    \"password\": \"12345678\",\n    \"givenName\": \"\",\n    \"familyName\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/users/sign-up",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"users",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/users/2",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:id/stories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/users/1/stories",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"users",
+								"1",
+								"stories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:uId/stories/:sId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/users/2/stories/90",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"users",
+								"2",
+								"stories",
+								"90"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:id/reading-lists",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/users/2/reading-lists",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"users",
+								"2",
+								"reading-lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:uId/reading-lists/:rId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/users/4/reading-lists/15",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"users",
+								"4",
+								"reading-lists",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reading-lists",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"testing reading 9\",\n    \"authorId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/reading-lists",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"reading-lists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reading-lists/:id",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"TESTING 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/reading-lists/11",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"reading-lists",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reading-lists/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/reading-lists/11",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"reading-lists",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reading-lists/:id/stories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/reading-lists/15/stories",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"reading-lists",
+								"15",
+								"stories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reading-lists/:readingListId/stories/:storyId",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/reading-lists/100/stories/900",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"reading-lists",
+								"100",
+								"stories",
+								"900"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reading-lists/:radingListId/stories/:storyId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{REST_API_URL}}/{{API_VERSION}}/reading-lists/10/stories/90",
+							"host": [
+								"{{REST_API_URL}}"
+							],
+							"path": [
+								"{{API_VERSION}}",
+								"reading-lists",
+								"10",
+								"stories",
+								"90"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GraphQL API",
+			"item": [
+				{
+					"name": "QUERY Stories",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query Stories($searchString: String!, $limit: Int) {\n    stories(searchString: $searchString, limit: $limit) {\n      id\n      title\n      description\n      createdAt\n      author {\n        id\n        givenName\n        familyName\n      }\n    }\n  }",
+								"variables": "{\n    \"searchString\": \"\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY Story",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query Story($id: Int!) {\n    story(id: $id) {\n      id\n      createdAt\n      title\n      description\n      content\n      author {\n        id\n        familyName\n        givenName\n      }\n    }\n  }",
+								"variables": "{\n    \"id\": 1000\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY UserWithStories",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query UserWithStories($id: Int!, $limit: Int) {\n    user(id: $id) {\n      id\n      email\n      givenName\n      familyName\n      stories(limit: $limit) {\n        id\n        createdAt\n        title\n        description\n      }\n    }\n  }",
+								"variables": "{\n    \"id\": 2,\n    \"limit\": 10\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY UserStories",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query UserStories($id: Int!, $limit: Int) {\n    user(id: $id) {\n      id\n      stories(limit: $limit) {\n        id\n        title\n        description\n      }\n    }\n  }",
+								"variables": "{\n    \"id\": 2\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY UserStory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query UserStory($id: Int!, $storyId: Int!) {\n    user(id: $id) {\n      id\n      story(id: $storyId) {\n        id\n        createdAt\n        title\n        description\n        content\n        author {\n          id\n          givenName\n          familyName\n        }\n      }\n    }\n  }",
+								"variables": "{\n    \"id\": 2,\n    \"storyId\": 90\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY UserReadingLists",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query UserReadingLists($id: Int!, $limit: Int) {\n    user(id: $id) {\n      id\n      readingLists(limit: $limit) {\n        id\n        title\n      }\n    }\n  }",
+								"variables": "{\n    \"id\": 2\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY UserReadingListsWithStories",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query UserReadingListsWithStories($id: Int!, $limit: Int) {\n    user(id: $id) {\n      id\n      readingLists(limit: $limit) {\n        title\n        stories {\n          id\n          title\n        }\n      }\n    }\n  }",
+								"variables": "{\n    \"id\": 2\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "QUERY UserReadingList",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "  query UserReadingList($userId: Int!, $readingListId: Int!) {\n    user(id: $userId) {\n      id\n      readingList(id: $readingListId) {\n        title\n        createdAt\n        author {\n          id\n          familyName\n          givenName\n        }\n        stories {\n          id\n          title\n          createdAt\n          author {\n            id\n            givenName\n            familyName\n          }\n        }\n      }\n    }\n  }",
+								"variables": "{\n    \"userId\": 2,\n    \"readingListId\": 10\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION SignIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation SignIn($content: SignInContent!) {\n  signIn (content: $content) {\n    access_token\n  }\n}",
+								"variables": "{\n  \"content\": {\n  \t\"email\": \"Miracle.Gutkowski@gmail.com\",\n    \"password\": \"lajehali\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION CreateStory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateStory($content: CreateStoryContent!) {\n  createStory(content: $content) {\n    id\n  }\n}",
+								"variables": "{\n  \"content\": {\n    \"title\": \"Testing story title\",\n    \"description\": \"Some description\",\n    \"content\": \"This is my story content. Keep reading...\",\n    \"authorId\": 1\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION UpdateStory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateStory($id: Int!, $content: UpdateStoryContent!) {\n  updateStory(id: $id, content: $content) {\n    id\n  }\n}\n",
+								"variables": "{\n  \"id\": 95,\n  \"content\": {\n    \"title\": \"Testfing\",\n    \"description\": \"adf\",\n    \"content\": \"sdfg\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION DeleteStory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation DeleteStory($id: Int!) {\n  deleteStory(id: $id) {\n    id\n    title\n    description\n    content\n  }\n}\n",
+								"variables": "{\n  \"id\": 102\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION CreateReadingList",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateReadingList(\n  $content: CreateReadingListContent!\n) {\n  createReadingList(content: $content) {\n    id\n    title\n    author {\n      id\n      email\n      givenName\n    \tfamilyName\n    }\n  }\n}\n",
+								"variables": "{\n  \"content\": {\n    \"authorId\": 2,\n    \"title\": \"TESTING READING\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION UpdateReadingList",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateReadingList($id: Int!, $content: UpdateReadingListContent!) {\n  updateReadingList(id: $id, content: $content) {\n    id\n    title\n    author {\n      id\n      email\n      givenName\n      familyName\n    }\n  }\n}\n",
+								"variables": "{\n  \"id\": 7,\n  \"content\": {\n    \"title\": \"TESTING READING second\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION DeleteReadingList",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation DeleteReadingList($id: Int!) {\n\tdeleteReadingList(id: $id) {\n    id\n    title\n  }\n}\n",
+								"variables": "{\n  \"id\": 21\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION AddStoryIntoReadingList",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation AddStoryIntoReadingList(\n  $readingListId: Int!\n  $storyId: Int!\n) {\n  addStoryIntoReadingList(readingListId: $readingListId, storyId: $storyId) {\n    id\n    title\n  }\n}\n",
+								"variables": "{\n  \"readingListId\": 100,\n  \"storyId\": 90\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MUTATION RemoveStoryFromReadingList",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation RemoveStoryFromReadingList(\n  $readingListId: Int!\n  $storyId: Int!\n) {\n  removeStoryFromReadingList(readingListId: $readingListId, storyId: $storyId) {\n    id\n    title\n    author {\n      id\n      email\n      givenName\n      familyName\n    }\n    stories {\n      id\n      title\n    }\n  }\n}\n",
+								"variables": "{\n  \"readingListId\": 10,\n  \"storyId\": 49\n}"
+							}
+						},
+						"url": {
+							"raw": "{{GRAPHQL_API_URL}}",
+							"host": [
+								"{{GRAPHQL_API_URL}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

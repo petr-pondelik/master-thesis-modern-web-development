@@ -33,6 +33,8 @@ Follow the installation guide in order to install Docker and docker-compose on U
 
 ## Directory Structure
 
+    images/                     images documenting some aspects of the implementations
+    postman/                    contains Postman collection for both REST and GraphQL APIs 
     src/                        implementation source code
         client-side-graphql/        client implementation that consumes GraphQL API
         client-side-rest/           client implementation that consumes REST API
@@ -102,6 +104,15 @@ Inside the `client-side-rest/` directory, you can run the following commands:
 Tests should end up successful as the following screenshot depicts.
 
 ![Server integration tests result](./images/server-integration-tests-result.png "Server integration tests result.")
+
+## REST API Documentation
+
+REST API exposed by the server is documented using Swagger.  
+The documentations is available under the `/api` route.
+
+## Postman Collection
+
+TODO
 
 ## Docker Commands
 
