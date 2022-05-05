@@ -78,6 +78,10 @@ After successful startup, each of the services is accessible on `localhost:<oute
 * `mwd-prisma-db-init`: this service starts, performs database initialization and shuts down
 * `mwd-prisma-studio`: this service starts only in the development mode
 
+Illustrated by Docker Desktop, in production mode, the services should start as follows:
+
+![Docker Desktop](./images/docker-desktop.png "Docker Desktop")
+
 ## PWA Clients
 
 In production environment (composed by `docker-compose.prod.yml`), the client applications should be installable as follows.
