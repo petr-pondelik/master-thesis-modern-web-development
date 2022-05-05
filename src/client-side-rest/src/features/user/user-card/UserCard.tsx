@@ -12,7 +12,7 @@ export const UserCard = (props: { user: UserEnvelope | undefined, isLoading: boo
   return <Card sx={{ minWidth: '100%', maxWidth: '100%' }} elevation={0}>
     <CardContent>
       <Typography variant={'h4'} style={{ marginBottom: '2rem' }}>
-        {user?.givenName + ' ' + user?.familyName}
+        `${user?.givenName } ${user?.familyName}`
       </Typography>
       <Typography variant={'body1'} style={{ marginBottom: '2rem' }}>
         {user?.profileDescription}

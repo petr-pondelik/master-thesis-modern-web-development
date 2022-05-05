@@ -14,21 +14,48 @@ In order to demonstrate the usage of both REST and GraphQL, the server implement
 
 * Docker 20.10.14+
 
-For running the commands from `package.json` files manually:
+For running the commands from `package.json` files manually (e.g. for tests):
 * NPM 8.5.5+
 * yarn 1.22.11 (optional but recommended)
 
-## Run
+### Docker and Docker Compose Setup on Ubuntu
+
+Follow the installation guide in order to install Docker and docker-compose on Ubuntu:
+* https://docs.docker.com/engine/install/ubuntu
+
+### Docker and Docker Compose Setup on Windows
+
+1. In order to run Docker on Windows, make sure you have Windows Subsystem For Linux 2 (WSL 2) installed and activated.
+   * https://docs.microsoft.com/cs-cz/windows/wsl/install-manual
+2. Install Docker Desktop for Windows.
+   * Docker Desktop runs on top of the WSL and automatically installs command line tools for Docker, including docker-compose
+   * The installed tools can be used in Windows Powershell
+
+## Directory Structure
+
+    src/                        implementation source code
+        client-side-graphql/        client implementation that consumes GraphQL API
+        client-side-rest/           client implementation that consumes REST API
+        postgres/                   directory for internal use by PostgreSQL service
+        prisma-tools/               tools for database initialization
+        server-side/                server implementation that exposes both REST and GraphQL APIs
+
+## Run All Services
+
+All the following commands must be run inside the `src/` directory.  
+The build command can take up to **15 minutes** to complete.
 
 Production mode:
 
 ```bash
+docker-compose -f docker-compose.prod.yml build
 docker-compose -f docker-compose.prod.yml up
 ```
 
 Development mode (not intended for project presentation):
 
 ```bash
+docker-compose -f docker-compose.dev.yml build
 docker-compose -f docker-compose.dev.yml up
 ```
 
@@ -49,19 +76,32 @@ After successful startup, each of the services is accessible on `localhost:<oute
 * `mwd-prisma-db-init`: this service starts, performs database initialization and shuts down
 * `mwd-prisma-studio`: this service starts only in the development mode
 
+## PWA Clients
+
+In production environment (composed by `docker-compose.prod.yml`), the client applications should be installable as follows.
+
+![PWA Installation](./images/pwa-installation.png "PWA Installation")
+
 ## Sign-In Process
 
 In order to log into the client applications, you need to enter any email-password pair from the `prisma-tools/prisma/data/users.json` file.
 
 Note that we seed the database using the passwordHash field hashed by `argon2` instead of password field.
 
-## Directory Structure
+## Run Tests
 
-    client-side-graphql/        client implementation that consumes GraphQL API
-    client-side-rest/           client implementation that consumes REST API
-    postgres/                   directory for internal use by PostgreSQL service
-    prisma-tools/               tools for database initialization
-    server-side/                server implementation that exposes both REST and GraphQL APIs
+In order to run tests, run `yarn` or `npm install` in the corresponding directory first.
+
+Inside the `server-side/` directory, you can run the following commands:
+* `yarn test` or `npm run test` in order to run unit tests
+* `yarn test:int` or `npm run test:int` in order to run integraion tests
+
+Inside the `client-side-rest/` directory, you can run the following commands:
+* `yarn test` or `npm run test` in order to run unit tests
+
+Tests should end up successful as the following screenshot depicts.
+
+![Server integration tests result](./images/server-integration-tests-result.png "Server integration tests result.")
 
 ## Docker Commands
 
