@@ -1,9 +1,9 @@
 export class Config {
-  host = 'http://localhost:8080/api';
+  host = 'http://localhost:8080';
   apiVersion = 'v1';
 
   path = (version = true) => {
-    return version ? `${this.host}/${this.apiVersion}` : this.host;
+    return version ? `${this.host}/api/${this.apiVersion}` : this.host;
   };
 }
 
